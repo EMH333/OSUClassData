@@ -47,7 +47,7 @@ func main() {
 			}
 
 			var c database.Class
-			c.ClassIdentifier = header[1] + header[2]
+			c.ClassIdentifier = strings.TrimSpace(header[1] + header[2])
 			c.Students = util.StringToIntPanic(header[6])
 			c.Credits = util.StringToIntPanic(header[10])
 			c.ClassGPA = util.StringToFloatPanic(header[21])
@@ -55,12 +55,58 @@ func main() {
 
 			classes = append(classes, c)
 		}
+
+		if strings.HasPrefix(v[0], "Grade: ") {
+			var c *database.Class = &classes[len(classes)-1]
+			if util.StringToIntPanic(string(v[1][len(v[1])-1])) == c.Credits {
+				var letter = strings.Split(v[0], " ")[1]
+				var students = util.IntFromMessyString(v[2])
+				//log.Printf("%s %d\n", letter, students)
+				switch letter {
+				case "A":
+					c.A += students
+				case "A-":
+					c.AMinus += students
+				case "B":
+					c.B += students
+				case "B+":
+					c.BPlus += students
+				case "B-":
+					c.BMinus += students
+				case "C":
+					c.C += students
+				case "C+":
+					c.CPlus += students
+				case "C-":
+					c.CMinus += students
+				case "D":
+					c.D += students
+				case "D+":
+					c.DPlus += students
+				case "D-":
+					c.DMinus += students
+				case "F":
+					c.F += students
+				case "S":
+					c.S += students
+				case "U":
+					c.U += students
+				case "W":
+					c.W += students
+				}
+
+				//deal with all incomplete grades as one
+				if strings.HasPrefix(letter, "I") {
+					c.I += students
+				}
+			} else {
+				//TODO handle credits for variable credit classes
+			}
+		}
 	}
 
 	//print the classes
 	for _, v := range classes {
 		log.Println(v)
 	}
-
-	println("Hello, World!")
 }

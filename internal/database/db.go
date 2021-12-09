@@ -35,6 +35,7 @@ type Professor struct {
 
 //struct to tie a professor with a certian term of a classs
 type ProfessorTerm struct {
+	ID              int
 	ProfessorID     int
 	TermID          string
 	ClassIdentifier string
