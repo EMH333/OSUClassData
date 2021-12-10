@@ -1,8 +1,7 @@
 package database
 
+//ClassIdentifier and TermID as primary key
 type Class struct {
-	ID int
-
 	ClassIdentifier string
 	TermID          string
 	Students        int
@@ -25,6 +24,8 @@ type Class struct {
 	U      int
 	W      int
 	I      int // All incompletes regardless of grade (for now)
+
+	Visible bool
 }
 
 type Professor struct {
@@ -34,8 +35,8 @@ type Professor struct {
 }
 
 //struct to tie a professor with a certian term of a classs
+//All 3 values should be used as primary key
 type ProfessorTerm struct {
-	ID              int
 	ProfessorID     int
 	TermID          string
 	ClassIdentifier string
