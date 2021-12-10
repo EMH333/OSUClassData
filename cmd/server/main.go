@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"ethohampton.com/OSUClassData/internal/database"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -41,6 +42,7 @@ func main() {
 		fmt.Fprintf(w, "Hello, %s", html.EscapeString(r.URL.Path)[1:])
 	})
 	http.HandleFunc("/api/v1/classes", getClasses)
+	http.HandleFunc("/api/v1/class", getClass)
 	http.ListenAndServe(":8080", nil)
 
 }
@@ -65,6 +67,52 @@ func getClasses(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse, err := json.Marshal(classList)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
+
+func getClass(w http.ResponseWriter, r *http.Request) {
+	//TODO switch to path routing ie /api/v1/class/:classIdentifier/:term
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	term := r.URL.Query().Get("term")
+	if term == "" {
+		http.Error(w, "Missing term parameter", http.StatusBadRequest)
+		return
+	}
+
+	row := db.QueryRow(`SELECT 
+	ClassIdentifier,TermID,Students,Credits,ClassGPA,
+	A,AMinus,B,BPlus,BMinus,C,CPlus,CMinus,D,DPlus,DMinus,F,S,U,W,I
+	FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE`, class, term)
+	if row == nil {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	var classData database.Class
+	row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
+		&classData.A, &classData.AMinus,
+		&classData.B, &classData.BPlus, &classData.BMinus,
+		&classData.C, &classData.CPlus, &classData.CMinus,
+		&classData.D, &classData.DPlus, &classData.DMinus,
+		&classData.F,
+		&classData.S, &classData.U, &classData.W, &classData.I)
+	classData.Visible = true
+
+	if classData.ClassIdentifier == "" {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	jsonResponse, err := json.Marshal(classData)
 	if err != nil {
 		log.Fatal(err)
 	}
