@@ -32,3 +32,9 @@ CREATE TABLE IF NOT EXISTS Classes (
     Visible BOOLEAN NOT NULL DEFAULT 1,
     PRIMARY KEY (ClassIdentifier, TermID)
 );
+
+CREATE TABLE IF NOT EXISTS ClassInfo (
+    ClassIdentifier VARCHAR(10) PRIMARY KEY,
+    Credits INTEGER NOT NULL,
+    ClassName VARCHAR(255)
+);

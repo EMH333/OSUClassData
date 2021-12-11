@@ -4,10 +4,13 @@
   import wretch from "wretch";
   import { dedupe, retry, throttlingCache } from "wretch-middlewares";
 
-interface BasicClass { displayName: string; id: string }
+  interface BasicClass {
+    displayName: string;
+    id: string;
+  }
 
   const wretchInstance = wretch()
-    .url("api/v1/")
+    .url("api/v0/")
     .middlewares([dedupe(), retry(), throttlingCache()]);
 
   //for search
@@ -20,8 +23,8 @@ interface BasicClass { displayName: string; id: string }
   onMount(() => loadClasses());
 
   $: {
-    if(selectedClass){
-      loadClass((selectedClass as unknown as BasicClass).id, "202001")
+    if (selectedClass) {
+      loadClass((selectedClass as unknown as BasicClass).id);
     }
   }
 
@@ -41,10 +44,10 @@ interface BasicClass { displayName: string; id: string }
       });
   }
 
-  function loadClass(id: string, term: string) {
+  function loadClass(id: string) {
     wretchInstance
-      .url("class")
-      .query({ class: id, term: term })
+      .url("classInfo")
+      .query({ class: id })
       .get()
       .json((json) => {
         classInfo = json;
@@ -52,6 +55,11 @@ interface BasicClass { displayName: string; id: string }
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  function GPAToLetterGrade(averageGPA: number): string {
+    if (averageGPA == undefined) return "";
+    return averageGPA.toFixed(2); //TODO: convert to letter grade
   }
 </script>
 
@@ -63,7 +71,32 @@ interface BasicClass { displayName: string; id: string }
 />
 
 {#if selectedClass}
-  <div>Class info: {JSON.stringify(classInfo)}</div>
+  <!-- <div>Class info: {JSON.stringify(classInfo)}</div> -->
+  {#if classInfo && classInfo.ClassName != null}
+    <div>Class ID: {classInfo.ClassIdentifier}</div>
+    <div>Class Name: {classInfo.ClassName}</div>
+    <div>Credits: {classInfo.Credits}</div>
+    <div>Last Term With Data: {classInfo.LastTerm}</div>
+    <div>
+      Average Grade (from all data): {GPAToLetterGrade(classInfo.AverageGPA)}
+    </div>
+    <div>
+      Average Grade (from last term): {GPAToLetterGrade(
+        classInfo.AverageGPALastTerm
+      )}
+    </div>
+    <div>Average Students Per Term: {classInfo.AverageStudents}</div>
+    <div>Students last term: {classInfo.StudentsLastTerm}</div>
+    <div>Withdrawl Rate: {(classInfo.WithdrawlRate * 100).toFixed(2)}%</div>
+  {/if}
+
+  <br />
+  Possible Graphics:<br />
+  - Grade Distribution Pie Chart (from all data)<br />
+  - Grade Distribution Pie Chart (from last term)<br />
+  - Num As/Bs/etc over time<br />
+  - Students per term over time<br />
+  - Withdrawl Rate over time<br />
 {:else}
   <div>Please pick a class!</div>
 {/if}

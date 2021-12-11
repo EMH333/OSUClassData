@@ -38,8 +38,9 @@ func main() {
 
 	//hello world web server
 	http.Handle("/", http.FileServer(http.Dir("frontend/dist")))
-	http.HandleFunc("/api/v1/classes", getClasses)
-	http.HandleFunc("/api/v1/class", getClass)
+	http.HandleFunc("/api/v0/classes", getClasses)
+	http.HandleFunc("/api/v0/class", getClass)
+	http.HandleFunc("/api/v0/classInfo", getClassInfo)
 
 	http.ListenAndServe(":8080", nil)
 
@@ -86,26 +87,29 @@ func getClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	row := db.QueryRow(`SELECT 
-	ClassIdentifier,TermID,Students,Credits,ClassGPA,
-	A,AMinus,B,BPlus,BMinus,C,CPlus,CMinus,D,DPlus,DMinus,F,S,U,W,I
-	FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE`, class, term)
-	if row == nil {
+	classData, err := database.GetTermClass(db, class, term)
+	if err != nil {
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
 	}
 
-	var classData database.Class
-	row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
-		&classData.A, &classData.AMinus,
-		&classData.B, &classData.BPlus, &classData.BMinus,
-		&classData.C, &classData.CPlus, &classData.CMinus,
-		&classData.D, &classData.DPlus, &classData.DMinus,
-		&classData.F,
-		&classData.S, &classData.U, &classData.W, &classData.I)
-	classData.Visible = true
+	jsonResponse, err := json.Marshal(classData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
 
-	if classData.ClassIdentifier == "" {
+func getClassInfo(w http.ResponseWriter, r *http.Request) {
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	classData, err := database.GetClassInfo(db, class)
+	if err != nil {
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
 	}

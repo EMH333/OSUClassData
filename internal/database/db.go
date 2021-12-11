@@ -28,6 +28,13 @@ type Class struct {
 	Visible bool
 }
 
+//info about a class not specific to a term
+type ClassInfo struct {
+	ClassIdentifier string
+	ClassName       string
+	Credits         int
+}
+
 type Professor struct {
 	ID         int
 	Name       string

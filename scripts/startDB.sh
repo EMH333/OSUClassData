@@ -14,7 +14,7 @@ docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql -v 
 #docker exec -it OSUCD-mysql bash
 sleep 1
 #create sql database named OSUClassData
-#docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"CREATE DATABASE OSUClassData;\""
+#docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw"
 docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SOURCE /tmp/sql/initialSchema.sql;\""
 docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SOURCE /tmp/sql/testData.sql;\""
 
