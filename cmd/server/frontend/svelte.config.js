@@ -1,4 +1,4 @@
-const { typescript } = require('svelte-preprocess-esbuild');
+const typescript = require('svelte-preprocess');
 
 module.exports = {
     preprocess: typescript({})

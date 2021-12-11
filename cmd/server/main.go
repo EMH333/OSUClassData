@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os"
@@ -38,11 +37,10 @@ func main() {
 	fmt.Println("Connected to Database!")
 
 	//hello world web server
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %s", html.EscapeString(r.URL.Path)[1:])
-	})
+	http.Handle("/", http.FileServer(http.Dir("frontend/dist")))
 	http.HandleFunc("/api/v1/classes", getClasses)
 	http.HandleFunc("/api/v1/class", getClass)
+
 	http.ListenAndServe(":8080", nil)
 
 }

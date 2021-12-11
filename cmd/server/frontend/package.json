@@ -2,7 +2,7 @@
   "name": "osu-class-data",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,13 @@
   "devDependencies": {
     "esbuild": "^0.14.2",
     "esbuild-svelte": "^0.6.0",
+    "svelte-preprocess": "^4.9.8",
     "svelte-preprocess-esbuild": "^2.0.0",
-    "wretch": "^1.7.6"
+    "typescript": "^4.5.3"
+  },
+  "dependencies": {
+    "simple-svelte-autocomplete": "^2.2.4",
+    "wretch": "^1.7.6",
+    "wretch-middlewares": "^0.1.13"
   }
 }

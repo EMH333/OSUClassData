@@ -19,7 +19,7 @@ if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] 
   const directory = './dist';
 
   if (fs.existsSync(directory)) {
-    fs.rmdirSync(directory, { recursive: true });
+    fs.rmSync(directory, { recursive: true });
   }
 
   if (!fs.existsSync(directory)) {
@@ -27,10 +27,12 @@ if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] 
   }
 }
 
+copyHTML();
+
 if (process.argv.length >= 2 && process.argv[2] === "serve") {
   let serveOptions = esbuildOptions;
   serveOptions.minify = false;
-  copyHTML();
+
   esbuild.serve({
     port: 3000,
     servedir: './dist',
@@ -40,12 +42,15 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
     //process.exit(0)
   })
 } else {
-  esbuild.build(esbuildOptions).then(() => {
+  let compileOptions = esbuildOptions;
+  //allow for non-minified code
+  if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
+  
+  esbuild.build(compileOptions).then(() => {
     if (process.argv.length >= 2 && process.argv[2] === "production") {
       compressJSandCSS();
     }
   }).catch(() => process.exit(1))
-  copyHTML();
 }
 
 function compressJSandCSS() {
