@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"ethohampton.com/OSUClassData/internal/database"
@@ -11,11 +13,15 @@ import (
 )
 
 func main() {
-	//TODO get term we are reading from
-	var term = "202001"
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: classParser <csv file> <term>")
+		os.Exit(1)
+	}
+
+	var term = os.Args[2]
 
 	// open file
-	f, err := os.Open("classes.csv")
+	f, err := os.Open(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,17 +47,20 @@ func main() {
 			//log.Println(v[0])
 			var header []string = strings.Split(v[0], " ")
 
-			if header[10] == "Variable" {
-				//TODO we don't know how to handle this
-				continue
-			}
-
 			var c database.Class
 			c.ClassIdentifier = strings.TrimSpace(header[1] + header[2])
 			c.Students = util.StringToIntPanic(header[6])
-			c.Credits = util.StringToIntPanic(header[10])
 			c.ClassGPA = util.StringToFloatPanic(header[21])
 			c.TermID = term
+
+			if header[10] == "Variable" {
+				//TODO we don't know how to handle this
+				//continue
+				log.Printf("Variable Class: %s\n", strings.TrimSpace(header[1]+header[2]))
+				c.Credits = -1
+			} else {
+				c.Credits = util.StringToIntPanic(header[10])
+			}
 
 			classes = append(classes, c)
 		}
@@ -101,12 +110,38 @@ func main() {
 				}
 			} else {
 				//TODO handle credits for variable credit classes
+				continue
 			}
 		}
 	}
 
+	var upsertString string = "REPLACE INTO classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES\n"
 	//print the classes
-	for _, v := range classes {
-		log.Println(v)
+	for index, v := range classes {
+		//log.Println(v)
+		upsertString = upsertString + " ROW('" + v.ClassIdentifier + "', '" + v.TermID + "', " + fmt.Sprint(v.Students) + ", " + fmt.Sprint(v.Credits) + ", " +
+			fmt.Sprint(v.A) + ", " + fmt.Sprint(v.AMinus) + ", " +
+			fmt.Sprint(v.B) + ", " + fmt.Sprint(v.BPlus) + ", " + fmt.Sprint(v.BMinus) + ", " +
+			fmt.Sprint(v.C) + ", " + fmt.Sprint(v.CPlus) + ", " + fmt.Sprint(v.CMinus) + ", " +
+			fmt.Sprint(v.D) + ", " + fmt.Sprint(v.DPlus) + ", " + fmt.Sprint(v.DMinus) + ", " +
+			fmt.Sprint(v.F) + ", " +
+			fmt.Sprint(v.S) + ", " + fmt.Sprint(v.U) + ", " + fmt.Sprint(v.W) + ", " + fmt.Sprint(v.I) + ", " + strconv.FormatFloat(v.ClassGPA, 'f', -1, 64) + ")"
+		if index != len(classes)-1 {
+			upsertString = upsertString + ",\n"
+		} else {
+			upsertString = upsertString + ";"
+		}
 	}
+
+	output, err := os.Create(string(term) + "Classes.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer output.Close()
+
+	// write the upsert string to the file
+	if _, err := output.WriteString(upsertString); err != nil {
+		log.Fatal(err)
+	}
+
 }
