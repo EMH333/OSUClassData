@@ -2,7 +2,7 @@ const esbuildSvelte = require('esbuild-svelte');
 const svelteConfig = require('./svelte.config');
 
 module.exports = {
-    entryPoints: ['./dev/index.ts'],
+    entryPoints: ['./dev/index.ts', './dev/class.ts'],
     format: 'esm',
     minify: true,
     bundle: true,

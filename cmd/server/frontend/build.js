@@ -13,6 +13,10 @@ function copyHTML() {
   fs.copyFile('./dev/index.html', './dist/index.html', (err) => {
     if (err) throw err;
   });
+
+  fs.copyFile('./dev/class.html', './dist/class.html', (err) => {
+    if (err) throw err;
+  });
 }
 
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
@@ -53,6 +57,7 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   }).catch(() => process.exit(1))
 }
 
+//TODO compress other pages too
 function compressJSandCSS() {
   if (!fs.existsSync("./dist/precompressed")) {
     fs.mkdirSync("./dist/precompressed", { recursive: true });
