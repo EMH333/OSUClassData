@@ -41,9 +41,10 @@ type ClassInfoResponse struct {
 }
 
 //TODO remove withdrawled students from total count
+//TODO combine into one query
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
-	var classInfoQuerry = "SELECT Credits, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
-	var lastTermQuerry = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
+	var classInfoQuery = "SELECT Credits, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
+	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
 	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
 	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawlRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 
@@ -51,14 +52,14 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	classData.ClassIdentifier = id
 
 	// Get name and credits
-	row := db.QueryRow(classInfoQuerry, id)
+	row := db.QueryRow(classInfoQuery, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
 	row.Scan(&classData.Credits, &classData.ClassName)
 
 	// Get the last term the class was taught in
-	row = db.QueryRow(lastTermQuerry, id)
+	row = db.QueryRow(lastTermQuery, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
