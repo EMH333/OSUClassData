@@ -1,2 +1,4 @@
 - deploy script
 - Fill out second page with more detailed info
+- Leaderboard w/ largest classes, highest grades, highest withdrawl, average overall grade over time
+- About this site page

@@ -42,7 +42,7 @@
       case 2:
         return "Winter " + year;
       case 3:
-        return "Spring" + year;
+        return "Spring " + year;
     }
   }
 </script>
