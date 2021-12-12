@@ -1,3 +1,2 @@
-- include ClassInfo in initial info load
 - deploy script
 - Fill out second page with more detailed info

@@ -10,7 +10,10 @@ cd .. || exit
 mkdir -p /tmp/OSUCD-mysql
 
 # create database docker
-docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql -v "$(pwd)"/sql:/tmp/sql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
+docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql \
+    -v "$(pwd)"/sql:/tmp/sql \
+    -v "$(pwd)"/cmd/classParser:/tmp/classData \
+    -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
 #docker exec -it OSUCD-mysql bash
 sleep 1
 #create sql database named OSUClassData

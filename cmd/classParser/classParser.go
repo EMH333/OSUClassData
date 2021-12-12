@@ -117,7 +117,7 @@ func main() {
 
 	//TODO also create SQL for ClassInfo table (could also do that in a follow up query)
 
-	var upsertString string = "REPLACE INTO classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES\n"
+	var upsertString string = "REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES\n"
 	//print the classes
 	for index, v := range classes {
 		//log.Println(v)
