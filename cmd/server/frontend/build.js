@@ -57,39 +57,24 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   }).catch(() => process.exit(1))
 }
 
-//TODO compress other pages too
 function compressJSandCSS() {
   if (!fs.existsSync("./dist/precompressed")) {
     fs.mkdirSync("./dist/precompressed", { recursive: true });
   }
 
-  const gzip = createGzip({ level: constants.Z_MAX_LEVEL });
-  const brotli = createBrotliCompress({
-    params: {
-      [constants.BROTLI_PARAM_QUALITY]: constants.BROTLI_MAX_QUALITY,
+  fs.readdirSync("./dist").forEach(file => {
+    if (file.endsWith(".js") || file.endsWith(".css") || file.endsWith(".html")) {
+      compressFile("./dist/" + file, "./dist/precompressed/" + file +".gz");
     }
   });
-
-
-  compressFile('./dist/index.js', './dist/precompressed/index.js.gz', gzip);
-  compressFile('./dist/index.js', './dist/precompressed/index.js.br', brotli);
-
-  const gzip2 = createGzip({ level: constants.Z_MAX_LEVEL });
-  const brotli2 = createBrotliCompress({
-    params: {
-      [constants.BROTLI_PARAM_QUALITY]: constants.BROTLI_MAX_QUALITY,
-    }
-  });
-
-  compressFile('./dist/index.css', './dist/precompressed/index.css.gz', gzip2);
-  compressFile('./dist/index.css', './dist/precompressed/index.css.br', brotli2);
-
 }
 
-function compressFile(input, output, type){
+function compressFile(input, output){
+  const gzip = createGzip({ level: constants.Z_MAX_LEVEL });
+
   let source = createReadStream(input);
   let destination = createWriteStream(output);
-  pipeline(source, type, destination, (err) => {
+  pipeline(source, gzip, destination, (err) => {
     if (err) {
       console.error('An error occurred:', err);
       process.exitCode = 1;
