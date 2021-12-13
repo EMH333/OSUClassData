@@ -17,7 +17,13 @@ mkdir -p build
 mkdir -p build/frontend/dist
 
 # Build the server executable
-go build -o build/OSUCD-server cmd/server/main.go || exit
+#go build -o build/OSUCD-server cmd/server/main.go || exit
+#-compiler gccgo --gccgoflags "-static"
+#-ldflags="-extldflags=-static -w -s"
+docker run --rm -v "$PWD":/usr/src/ethohampton.com/OSUClassData -w /usr/src/ethohampton.com/OSUClassData/cmd/server \
+    golang:1.17-alpine \
+    sh -c "apk add build-base && go build -v -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server" || exit
+sudo chown "$USER":"$USER" build/OSUCD-server
 
 # Build the frontend
 cd cmd/server/frontend || exit
@@ -28,7 +34,7 @@ cd ../../.. || exit
 cp -r cmd/server/frontend/dist build/frontend || exit
 
 # deploy to server
-read -r -p "Deploy to server? [y/N]" response
+read -r -p "Deploy to server? [Y/n]" response
 response=${response,,} # tolower
 if [[ $response =~ ^(yes|y) ]] || [[ -z $response ]]; then
     rsync -rzcvg --delete --chown=:OSUCD build/ malloy:/var/www/services/OSUCD || exit
@@ -39,10 +45,10 @@ else
 fi
 
 # restart server service
-read -r -p "Restart server service? [y/N]" response
+read -r -p "Restart server service? [Y/n]" response
 response=${response,,} # tolower
 if [[ $response =~ ^(yes|y) ]] || [[ -z $response ]]; then
-    ssh malloy -e "sudo systemctl restart EMH-OSUCD" || exit
+    ssh malloy "sudo systemctl restart EMH-OSUCD" || exit
 else
     echo "Did not restarting server service"
     exit 0

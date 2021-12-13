@@ -15,6 +15,10 @@ import (
 var db *sql.DB
 
 func main() {
+	if os.Getenv("PORT") == "" {
+		os.Setenv("PORT", "8080")
+	}
+
 	// Capture connection properties.
 	cfg := mysql.Config{
 		User:   os.Getenv("DBUSER"),
@@ -38,11 +42,12 @@ func main() {
 
 	//hello world web server
 	http.Handle("/", http.FileServer(http.Dir("frontend/dist")))
+	http.HandleFunc("/api/v0/status", getStatus)
 	http.HandleFunc("/api/v0/classes", getClasses)
 	http.HandleFunc("/api/v0/class", getClass)
 	http.HandleFunc("/api/v0/classInfo", getClassInfo)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
 }
 
@@ -58,16 +63,16 @@ func getClasses(w http.ResponseWriter, r *http.Request) {
 		var class string
 		err := rows.Scan(&class)
 		if err != nil {
-			//just ignore any weird errors
-			log.Println(err)
-			continue
+			http.Error(w, "Error reading classes", http.StatusInternalServerError)
+			return
 		}
 		classList = append(classList, class)
 	}
 
 	jsonResponse, err := json.Marshal(classList)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonResponse)
@@ -95,7 +100,8 @@ func getClass(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse, err := json.Marshal(classData)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonResponse)
@@ -116,8 +122,18 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse, err := json.Marshal(classData)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonResponse)
+}
+
+func getStatus(w http.ResponseWriter, r *http.Request) {
+	pingErr := db.Ping()
+	if pingErr != nil {
+		http.Error(w, "Can't ping DB", http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("OK"))
 }

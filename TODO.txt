@@ -1,9 +1,4 @@
-- deploy script
-- Add HTTPS to nginx config
 - Confirm precompressed stuff is working
-- Create user
-- Enable nginx config
-- Enable service
 - Fill out second page with more detailed info
 - Leaderboard w/ largest classes, highest grades, highest withdrawl, average overall grade over time
 - About this site page
