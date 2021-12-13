@@ -81,3 +81,57 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 
 	return classData, nil
 }
+
+type StudentsPerTermResponse struct {
+	Terms    []string
+	Students []int
+}
+
+func GetStudentsPerTerm(db *sql.DB, id string) (StudentsPerTermResponse, error) {
+	var query = "SELECT TermID, Students FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var response StudentsPerTermResponse
+	response.Terms = make([]string, 0)
+	response.Students = make([]int, 0)
+
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return StudentsPerTermResponse{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var term string
+		var students int
+		rows.Scan(&term, &students)
+		response.Terms = append(response.Terms, term)
+		response.Students = append(response.Students, students)
+	}
+	return response, nil
+}
+
+type AvgGPAPerTermResponse struct {
+	Terms []string
+	GPA   []float64
+}
+
+func GetAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
+	var query = "SELECT TermID, ClassGPA FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var response AvgGPAPerTermResponse
+	response.Terms = make([]string, 0)
+	response.GPA = make([]float64, 0)
+
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return AvgGPAPerTermResponse{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var term string
+		var GPA float64
+		rows.Scan(&term, &GPA)
+		response.Terms = append(response.Terms, term)
+		response.GPA = append(response.GPA, GPA)
+	}
+	return response, nil
+}

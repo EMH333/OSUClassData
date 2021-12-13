@@ -46,6 +46,8 @@ func main() {
 	http.HandleFunc("/api/v0/classes", getClasses)
 	http.HandleFunc("/api/v0/class", getClass)
 	http.HandleFunc("/api/v0/classInfo", getClassInfo)
+	http.HandleFunc("/api/v0/chart/studentsPerTerm", getStudentsPerTerm)
+	http.HandleFunc("/api/v0/chart/avgGPAPerTerm", getAvgGPAPerTerm)
 
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
@@ -136,4 +138,48 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("OK"))
+}
+
+func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	studentsPerTerm, err := database.GetStudentsPerTerm(db, class)
+	if err != nil {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	jsonResponse, err := json.Marshal(studentsPerTerm)
+	if err != nil {
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
+
+func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	GPAPerTerm, err := database.GetAvgGPAPerTerm(db, class)
+	if err != nil {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	jsonResponse, err := json.Marshal(GPAPerTerm)
+	if err != nil {
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
 }
