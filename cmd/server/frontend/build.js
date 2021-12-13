@@ -54,7 +54,7 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
     if (process.argv.length >= 2 && process.argv[2] === "production") {
       compressJSandCSS();
     }
-  }).catch(() => process.exit(1))
+  }).catch((err) => {console.error(err); process.exit(1)} );
 }
 
 function compressJSandCSS() {

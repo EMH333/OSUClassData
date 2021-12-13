@@ -32,6 +32,8 @@ node build.js production || exit
 # Copy frontend to build directory
 cd ../../.. || exit
 cp -r cmd/server/frontend/dist build/frontend || exit
+mv build/frontend/dist/precompressed/* build/frontend/dist || exit
+rm -r build/frontend/dist/precompressed || exit
 
 # deploy to server
 read -r -p "Deploy to server? [Y/n]" response
