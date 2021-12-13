@@ -21,8 +21,8 @@ mkdir -p build/frontend/dist
 #-compiler gccgo --gccgoflags "-static"
 #-ldflags="-extldflags=-static -w -s"
 docker run --rm -v "$PWD":/usr/src/ethohampton.com/OSUClassData -w /usr/src/ethohampton.com/OSUClassData/cmd/server \
-    golang:1.17-alpine \
-    sh -c "apk add build-base && go build -v -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server" || exit
+    ethohampton/osucd-static-build:latest \
+    sh -c "go build -v -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server" || exit
 sudo chown "$USER":"$USER" build/OSUCD-server
 
 # Build the frontend
@@ -34,6 +34,11 @@ cd ../../.. || exit
 cp -r cmd/server/frontend/dist build/frontend || exit
 mv build/frontend/dist/precompressed/* build/frontend/dist || exit
 rm -r build/frontend/dist/precompressed || exit
+
+# Add cache busting string to all predictablly named assets
+CACHE_STRING=$(date +%s)
+find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.js/\.js?c=$CACHE_STRING/g" || exit
+find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.css/\.css?c=$CACHE_STRING/g" || exit
 
 # deploy to server
 read -r -p "Deploy to server? [Y/n]" response
