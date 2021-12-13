@@ -17,15 +17,15 @@ mkdir -p build
 mkdir -p build/frontend/dist
 
 # Build the server executable
-go build -o build/OSUCD-server cmd/server/main.go
+go build -o build/OSUCD-server cmd/server/main.go || exit
 
 # Build the frontend
 cd cmd/server/frontend || exit
-node build.js production
+node build.js production || exit
 
 # Copy frontend to build directory
 cd ../../.. || exit
-cp -r cmd/server/frontend/dist build/frontend
+cp -r cmd/server/frontend/dist build/frontend || exit
 
 # deploy to server
 read -r -p "Deploy to server? [y/N]" response
