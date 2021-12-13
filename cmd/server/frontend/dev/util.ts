@@ -5,6 +5,18 @@ export const wretchInstance = wretch()
     .url("api/v0/")
     .middlewares([dedupe(), retry(), throttlingCache()]);
 
+export const chartOptions = {
+    displayModeBar: false,
+    responsive: true,
+    scrollZoom: !isTouchEnabled(),
+};
+
+function isTouchEnabled() {
+    return ( 'ontouchstart' in window ) ||
+           ( navigator.maxTouchPoints > 0 ) ||
+           window.matchMedia("(pointer: coarse)").matches;
+}
+
 export function termIDtoString(termID: number): string {
     if (termID == undefined) return "";
     if (termID.toString().length != 6) return "";

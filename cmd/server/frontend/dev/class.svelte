@@ -1,7 +1,7 @@
 <script lang="ts">
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
   import { onMount } from "svelte";
-  import { wretchInstance, termIDtoString, termIDtoPlotID } from "./util";
+  import { wretchInstance, termIDtoString, termIDtoPlotID, chartOptions } from "./util";
   import Plotly from "plotly.js-basic-dist";
 
   let selectedClass: string;
@@ -39,9 +39,7 @@
             ticktext: terms.map((term) => termIDtoString(term)),
           },
         };
-        Plotly.newPlot("studentsPerTermChart", [chartData], chartLayout, {
-          displayModeBar: false,
-        });
+        Plotly.newPlot("studentsPerTermChart", [chartData], chartLayout, chartOptions);
       })
       .catch((err) => {
         console.error(err);
@@ -67,12 +65,10 @@
           xaxis: {
             tickmode: "array",
             tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term) => termIDtoString(term)),
+            ticktext: terms.map((term: number) => termIDtoString(term)),
           },
         };
-        Plotly.newPlot("avgGPAPerTermChart", [chartData], chartLayout, {
-          displayModeBar: false,
-        });
+        Plotly.newPlot("avgGPAPerTermChart", [chartData], chartLayout, chartOptions);
       })
       .catch((err) => {
         console.error(err);
