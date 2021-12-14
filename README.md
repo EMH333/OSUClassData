@@ -19,6 +19,7 @@ node build.js
 
 # go back to root directory and start DB and dev server
 # NOTE: This takes some time b/c it also preloads the DB tables
+cd -
 ./scripts/startDB.sh && sleep 30 && ./scripts/startDB.sh
 ./scripts/devServer.sh
 ```
