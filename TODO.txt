@@ -7,8 +7,8 @@
 - Dependabot
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
+- Look into PH212
 
 MVP:
 - About this site page
 - Improve CSS
-- Switch asset compression to use CLI to take into account query string
