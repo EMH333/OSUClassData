@@ -10,5 +10,3 @@ T- About this site page
 - Grade distribution last term bar chart
 T- Add README, LICENCE and other repository files
 T- rate-limiting
-T- Publish to GH
-T- Favicon

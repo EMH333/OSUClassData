@@ -21,6 +21,10 @@ function copyHTML() {
   fs.copyFile('./dev/about.html', './dist/about.html', (err) => {
     if (err) throw err;
   });
+
+  fs.copyFile('./dev/icon.ico', './dist/favicon.ico', (err) => {
+    if (err) throw err;
+  });
 }
 
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
@@ -53,12 +57,12 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   let compileOptions = esbuildOptions;
   //allow for non-minified code
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
-  
+
   esbuild.build(compileOptions).then(() => {
     if (process.argv.length >= 2 && process.argv[2] === "production") {
       compressJSandCSS();
     }
-  }).catch((err) => {console.error(err); process.exit(1)} );
+  }).catch((err) => { console.error(err); process.exit(1) });
 }
 
 function compressJSandCSS() {
@@ -68,12 +72,12 @@ function compressJSandCSS() {
 
   fs.readdirSync("./dist").forEach(file => {
     if (file.endsWith(".js") || file.endsWith(".css") || file.endsWith(".html")) {
-      compressFile("./dist/" + file, "./dist/precompressed/" + file +".gz");
+      compressFile("./dist/" + file, "./dist/precompressed/" + file + ".gz");
     }
   });
 }
 
-function compressFile(input, output){
+function compressFile(input, output) {
   const gzip = createGzip({ level: constants.Z_MAX_LEVEL });
 
   let source = createReadStream(input);
