@@ -28,6 +28,27 @@ func GetTermClass(db *sql.DB, id string, term string) (Class, error) {
 	return classData, nil
 }
 
+func GetLastTermClass(db *sql.DB, id string) (Class, error) {
+	row := db.QueryRow(`SELECT 
+	ClassIdentifier,TermID,Students,Credits,ClassGPA,
+	A,AMinus,B,BPlus,BMinus,C,CPlus,CMinus,D,DPlus,DMinus,F,S,U,W,I
+	FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1`, id)
+	if row == nil {
+		return Class{}, ErrNotFound
+	}
+
+	var classData Class
+	row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
+		&classData.A, &classData.AMinus,
+		&classData.B, &classData.BPlus, &classData.BMinus,
+		&classData.C, &classData.CPlus, &classData.CMinus,
+		&classData.D, &classData.DPlus, &classData.DMinus,
+		&classData.F,
+		&classData.S, &classData.U, &classData.W, &classData.I)
+	classData.Visible = true
+	return classData, nil
+}
+
 type ClassInfoResponse struct {
 	ClassIdentifier    string
 	ClassName          string
@@ -132,6 +153,33 @@ func GetAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
 		rows.Scan(&term, &GPA)
 		response.Terms = append(response.Terms, term)
 		response.GPA = append(response.GPA, GPA)
+	}
+	return response, nil
+}
+
+type WithdrawlRatePerTermResponse struct {
+	Terms         []string
+	WithdrawlRate []float64
+}
+
+func GetWithdrawlRatePerTerm(db *sql.DB, id string) (WithdrawlRatePerTermResponse, error) {
+	var query = "SELECT TermID, (W / Students) AS WithdrawlRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var response WithdrawlRatePerTermResponse
+	response.Terms = make([]string, 0)
+	response.WithdrawlRate = make([]float64, 0)
+
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return WithdrawlRatePerTermResponse{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var term string
+		var WithdrawlRate float64
+		rows.Scan(&term, &WithdrawlRate)
+		response.Terms = append(response.Terms, term)
+		response.WithdrawlRate = append(response.WithdrawlRate, WithdrawlRate)
 	}
 	return response, nil
 }

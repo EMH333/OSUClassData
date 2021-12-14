@@ -8,7 +8,7 @@ export const wretchInstance = wretch()
 export const chartOptions = {
     displayModeBar: false,
     responsive: true,
-    scrollZoom: !isTouchEnabled(),
+    scrollZoom: false,//!isTouchEnabled(),
 };
 
 function isTouchEnabled() {

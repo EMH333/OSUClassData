@@ -48,6 +48,8 @@ func main() {
 	http.HandleFunc("/api/v0/classInfo", getClassInfo)
 	http.HandleFunc("/api/v0/chart/studentsPerTerm", getStudentsPerTerm)
 	http.HandleFunc("/api/v0/chart/avgGPAPerTerm", getAvgGPAPerTerm)
+	http.HandleFunc("/api/v0/chart/withdrawlRatePerTerm", getWithdrawlRatePerTerm)
+	http.HandleFunc("/api/v0/chart/lastTermGradeDistribution", getLastTermGradeDistribution)
 
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
@@ -176,6 +178,50 @@ func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse, err := json.Marshal(GPAPerTerm)
+	if err != nil {
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
+
+func getWithdrawlRatePerTerm(w http.ResponseWriter, r *http.Request) {
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	WithdrawlPerTerm, err := database.GetWithdrawlRatePerTerm(db, class)
+	if err != nil {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	jsonResponse, err := json.Marshal(WithdrawlPerTerm)
+	if err != nil {
+		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
+}
+
+func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
+	class := r.URL.Query().Get("class")
+	if class == "" {
+		http.Error(w, "Missing class parameter", http.StatusBadRequest)
+		return
+	}
+
+	latestClass, err := database.GetLastTermClass(db, class)
+	if err != nil {
+		http.Error(w, "Class not found", http.StatusNotFound)
+		return
+	}
+
+	jsonResponse, err := json.Marshal(latestClass)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return

@@ -1,7 +1,12 @@
 <script lang="ts">
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
   import { onMount } from "svelte";
-  import { wretchInstance, termIDtoString, termIDtoPlotID, chartOptions } from "./util";
+  import {
+    wretchInstance,
+    termIDtoString,
+    termIDtoPlotID,
+    chartOptions,
+  } from "./util";
   import Plotly from "plotly.js-basic-dist";
 
   let selectedClass: string;
@@ -14,6 +19,8 @@
 
     createStudentsPerTermChart();
     createAvgGPAPerTermChart();
+    createWithdrawlRatePerTermChart();
+    createLastTermGradeDistributionChart();
   });
 
   function createStudentsPerTermChart() {
@@ -39,7 +46,12 @@
             ticktext: terms.map((term) => termIDtoString(term)),
           },
         };
-        Plotly.newPlot("studentsPerTermChart", [chartData], chartLayout, chartOptions);
+        Plotly.newPlot(
+          "studentsPerTermChart",
+          [chartData],
+          chartLayout,
+          chartOptions
+        );
       })
       .catch((err) => {
         console.error(err);
@@ -68,24 +80,131 @@
             ticktext: terms.map((term: number) => termIDtoString(term)),
           },
         };
-        Plotly.newPlot("avgGPAPerTermChart", [chartData], chartLayout, chartOptions);
+        Plotly.newPlot(
+          "avgGPAPerTermChart",
+          [chartData],
+          chartLayout,
+          chartOptions
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function createWithdrawlRatePerTermChart() {
+    wretchInstance
+      .url("chart/withdrawlRatePerTerm")
+      .query({ class: selectedClass })
+      .get()
+      .json((data) => {
+        const withdrawlRate = data.WithdrawlRate;
+        const terms = data.Terms.map((term: string) => Number(term));
+
+        const chartData = {
+          x: terms.map((term: number) => termIDtoPlotID(term)),
+          y: withdrawlRate,
+          mode: "lines+markers",
+          name: "Withdrawl Rate",
+        };
+        const chartLayout = {
+          title: "Withdrawl Rate per Term",
+          xaxis: {
+            tickmode: "array",
+            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
+            ticktext: terms.map((term: number) => termIDtoString(term)),
+          },
+          yaxis: {
+            tickformat: ".0%",
+          },
+        };
+        Plotly.newPlot(
+          "withdrawlRatePerTermChart",
+          [chartData],
+          chartLayout,
+          chartOptions
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function createLastTermGradeDistributionChart() {
+    wretchInstance
+      .url("chart/lastTermGradeDistribution")
+      .query({ class: selectedClass })
+      .get()
+      .json((data) => {
+        const chartData = {
+          x: [
+            "A",
+            "A-",
+            "B+",
+            "B",
+            "B-",
+            "C+",
+            "C",
+            "C-",
+            "D+",
+            "D",
+            "D-",
+            "F",
+            "S",
+            "U",
+            "I",
+            "W",
+          ],
+          y: [
+            data.A,
+            data.AMinus,
+            data.BPlus,
+            data.B,
+            data.BMinus,
+            data.CPlus,
+            data.C,
+            data.CMinus,
+            data.DPlus,
+            data.D,
+            data.DMinus,
+            data.F,
+            data.S,
+            data.U,
+            data.I,
+            data.W,
+          ],
+          type: "bar",
+        };
+        const chartLayout = {
+          title: "Grade Distribution (last term)",
+        };
+        Plotly.newPlot(
+          "lastTermGradeDistributionChart",
+          [chartData],
+          chartLayout,
+          chartOptions
+        );
       })
       .catch((err) => {
         console.error(err);
       });
   }
 </script>
+
 <p><a href="/">Go Back</a></p>
 <BasicClassInfo {selectedClass} />
+<div id="lastTermGradeDistributionChart" />
 <div id="studentsPerTermChart" />
 <div id="avgGPAPerTermChart" />
+<div id="withdrawlRatePerTermChart" />
 <br />
-Possible Graphics:<br />
+<!--Possible Graphics:<br />
 - Grade Distribution Pie Chart (from all data)<br />
 - Grade Distribution Pie Chart (from last term)<br />
 - Num As/Bs/etc over time<br />
 - Students per term over time<br />
-- Withdrawl Rate over time<br />
+- Withdrawl Rate over time<br />-->
 <p>Copyright © 2021 Ethan Hampton</p>
+
 <style>
 </style>

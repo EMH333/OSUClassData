@@ -3,6 +3,7 @@
 - Fill out class titles in ClassInfo DB table
 - Tie class terms to teachers
 - Class ID as page title
+- Fix variable credit classes
 - Dependabot
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
@@ -10,5 +11,4 @@
 MVP:
 - About this site page
 - Improve CSS
-- Grade distribution last term bar chart
-- Withdrawl rate over time chart
+- Switch asset compression to use CLI to take into account query string
