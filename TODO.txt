@@ -7,7 +7,8 @@
 - GH Actions CI
 
 MVP:
-T- About this site page
+- About this site page
 - Improve CSS
+- Map GPA to A-F grade
 - Grade distribution last term bar chart
-T- rate-limiting
+- rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
