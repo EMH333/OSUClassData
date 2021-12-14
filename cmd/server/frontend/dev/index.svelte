@@ -50,7 +50,7 @@
     <BasicClassInfo selectedClass={selectedClass.id} />
 
     <!--Link to more info-->
-    <a href={`class.html?class=${selectedClass.id}`}>More info</a>
+    <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;">More info about {selectedClass.id}</a>
   {:else}
     <div>Please pick a class!</div>
   {/if}
