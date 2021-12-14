@@ -1,3 +1,14 @@
 - Fill out second page with more detailed info
 - Leaderboard w/ largest classes, highest grades, highest withdrawl, average overall grade over time
-- About this site page
+- Class ID as page title
+- Dependabot
+- GH Actions CI
+
+MVP:
+T- About this site page
+- Improve CSS
+- Grade distribution last term bar chart
+T- Add README, LICENCE and other repository files
+T- rate-limiting
+T- Publish to GH
+T- Favicon

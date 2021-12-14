@@ -17,6 +17,10 @@ function copyHTML() {
   fs.copyFile('./dev/class.html', './dist/class.html', (err) => {
     if (err) throw err;
   });
+
+  fs.copyFile('./dev/about.html', './dist/about.html', (err) => {
+    if (err) throw err;
+  });
 }
 
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {

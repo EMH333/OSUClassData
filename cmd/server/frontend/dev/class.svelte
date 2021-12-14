@@ -75,7 +75,7 @@
       });
   }
 </script>
-
+<p><a href="/">Go Back</a></p>
 <BasicClassInfo {selectedClass} />
 <div id="studentsPerTermChart" />
 <div id="avgGPAPerTermChart" />
@@ -86,6 +86,6 @@ Possible Graphics:<br />
 - Num As/Bs/etc over time<br />
 - Students per term over time<br />
 - Withdrawl Rate over time<br />
-
+<p>Copyright © 2021 Ethan Hampton</p>
 <style>
 </style>

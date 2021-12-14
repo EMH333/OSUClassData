@@ -52,6 +52,8 @@
 {:else}
   <div>Please pick a class!</div>
 {/if}
+<p>Copyright © 2021 Ethan Hampton</p>
+<p><a href="about.html">About This Website</a></p>
 
 <style>
   /* your styles go here */

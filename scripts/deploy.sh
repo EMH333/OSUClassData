@@ -35,6 +35,7 @@ cp -r cmd/server/frontend/dist build/frontend || exit
 mv build/frontend/dist/precompressed/* build/frontend/dist || exit
 rm -r build/frontend/dist/precompressed || exit
 
+# TODO deal with precompressed assets lol
 # Add cache busting string to all predictablly named assets
 CACHE_STRING=$(date +%s)
 find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.js/\.js?c=$CACHE_STRING/g" || exit
