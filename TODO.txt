@@ -1,3 +1,4 @@
+- Wait for DB to start before quiting
 - Fill out class page with more detailed info
 - Leaderboard w/ largest classes, highest grades, highest withdrawl, average overall grade over time
 - Fill out class titles in ClassInfo DB table
