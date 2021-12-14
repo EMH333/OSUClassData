@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wretchInstance, termIDtoString } from "../util";
+  import { wretchInstance, termIDtoString, GPAToLetterGrade } from "../util";
 
   export let selectedClass: string;
   let classInfo: any;
@@ -22,11 +22,6 @@
         console.log(error);
       });
   }
-
-  function GPAToLetterGrade(averageGPA: number): string {
-    if (averageGPA == undefined) return "";
-    return averageGPA.toFixed(2); //TODO: convert to letter grade
-  }
 </script>
 
 {#if classInfo && classInfo.ClassName != null}
@@ -42,7 +37,7 @@
       classInfo.AverageGPALastTerm
     )}
   </div>
-  <div>Average Students Per Term: {classInfo.AverageStudents}</div>
+  <div>Average Students Per Term: {parseInt(classInfo.AverageStudents).toFixed(2)}</div>
   <div>Students last term: {classInfo.StudentsLastTerm}</div>
   <div>Withdrawl Rate: {(classInfo.WithdrawlRate * 100).toFixed(2)}%</div>
 {/if}

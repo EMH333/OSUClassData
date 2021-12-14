@@ -5,10 +5,10 @@
 - Class ID as page title
 - Dependabot
 - GH Actions CI
+- rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 
 MVP:
 - About this site page
 - Improve CSS
-- Map GPA to A-F grade
 - Grade distribution last term bar chart
-- rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
+- Withdrawl rate over time chart
