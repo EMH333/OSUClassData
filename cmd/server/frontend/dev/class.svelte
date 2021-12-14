@@ -191,8 +191,9 @@
   }
 </script>
 
-<p><a href="/">Go Back</a></p>
-<BasicClassInfo {selectedClass} />
+<p style="font-weight: bold;"><a href="/">Go Back</a></p>
+<div class="center buffer"><BasicClassInfo {selectedClass} /></div>
+
 <div id="lastTermGradeDistributionChart" />
 <div id="studentsPerTermChart" />
 <div id="avgGPAPerTermChart" />
@@ -204,7 +205,15 @@
 - Num As/Bs/etc over time<br />
 - Students per term over time<br />
 - Withdrawl Rate over time<br />-->
-<p>Copyright © 2021 Ethan Hampton</p>
+<p class="center">Copyright © 2021 Ethan Hampton</p>
 
 <style>
+  .center {
+    margin: auto;
+    width: max-content;
+    max-width: 100%;
+  }
+  .buffer {
+    margin-bottom: 3em;
+  }
 </style>

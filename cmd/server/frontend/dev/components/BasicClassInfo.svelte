@@ -24,23 +24,52 @@
   }
 </script>
 
-{#if classInfo && classInfo.ClassName != null}
-  <div>Class ID: {classInfo.ClassIdentifier}</div>
-  <div>Class Name: {classInfo.ClassName}</div>
-  <div>Credits: {classInfo.Credits}</div>
-  <div>Last Term With Data: {termIDtoString(classInfo.LastTerm)}</div>
-  <div>
-    Average Grade (from all data): {GPAToLetterGrade(classInfo.AverageGPA)}
-  </div>
-  <div>
-    Average Grade (from last term): {GPAToLetterGrade(
-      classInfo.AverageGPALastTerm
-    )}
-  </div>
-  <div>Average Students Per Term: {parseInt(classInfo.AverageStudents).toFixed(2)}</div>
-  <div>Students last term: {classInfo.StudentsLastTerm}</div>
-  <div>Withdrawl Rate: {(classInfo.WithdrawlRate * 100).toFixed(2)}%</div>
-{/if}
+<div class="display">
+  {#if classInfo && classInfo.ClassName != null}
+    <h2>
+      {classInfo.ClassIdentifier}
+      {#if classInfo.ClassName != null && classInfo.ClassName != ""}
+        - {classInfo.ClassName}
+      {/if}
+    </h2>
+
+    <div>Credits: <span class="data">{classInfo.Credits}</span></div>
+    <div>
+      Last Term With Data: <span class="data"
+        >{termIDtoString(classInfo.LastTerm)}</span
+      >
+    </div>
+    <div>
+      Average Grade (from all data): <span class="data"
+        >{GPAToLetterGrade(classInfo.AverageGPA)}</span
+      >
+    </div>
+    <div>
+      Average Grade (from last term): <span class="data"
+        >{GPAToLetterGrade(classInfo.AverageGPALastTerm)}</span
+      >
+    </div>
+    <div>
+      Average Students Per Term: <span class="data"
+        >{parseInt(classInfo.AverageStudents).toFixed(2)}</span
+      >
+    </div>
+    <div>
+      Students last term: <span class="data">{classInfo.StudentsLastTerm}</span>
+    </div>
+    <div>
+      Withdrawl Rate: <span class="data"
+        >{(classInfo.WithdrawlRate * 100).toFixed(2)}%</span
+      >
+    </div>
+  {/if}
+</div>
 
 <style>
+  .data {
+    font-weight: bold;
+  }
+  .display {
+    text-align: center;
+  }
 </style>

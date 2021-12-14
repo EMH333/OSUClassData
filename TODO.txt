@@ -8,7 +8,3 @@
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 - Look into PH212
-
-MVP:
-- About this site page
-- Improve CSS

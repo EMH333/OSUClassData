@@ -35,26 +35,34 @@
   }
 </script>
 
-<AutoComplete
-  text="Search for a class"
-  items={classesToPick}
-  bind:selectedItem={selectedClassAny}
-  labelFieldName="displayName"
-/>
+<div class="container">
+  <h1>OSU Class Data Explorer</h1>
 
-{#if selectedClass}
-  <!-- <div>Class info: {JSON.stringify(classInfo)}</div> -->
-  <BasicClassInfo selectedClass={selectedClass.id} />
+  <AutoComplete
+    text="Search for a class"
+    items={classesToPick}
+    bind:selectedItem={selectedClassAny}
+    labelFieldName="displayName"
+  />
 
-  <!--Link to more info-->
-  <a href={`class.html?class=${selectedClass.id}`}>More info</a>
-  
-{:else}
-  <div>Please pick a class!</div>
-{/if}
-<p>Copyright © 2021 Ethan Hampton</p>
-<p><a href="about.html">About This Website</a></p>
+  {#if selectedClass}
+    <!-- <div>Class info: {JSON.stringify(classInfo)}</div> -->
+    <BasicClassInfo selectedClass={selectedClass.id} />
+
+    <!--Link to more info-->
+    <a href={`class.html?class=${selectedClass.id}`}>More info</a>
+  {:else}
+    <div>Please pick a class!</div>
+  {/if}
+  <p><a href="about.html">About This Website</a></p>
+  <p>Copyright © 2021 Ethan Hampton</p>
+</div>
 
 <style>
-  /* your styles go here */
+  .container {
+    margin: auto;
+    width: max-content;
+    max-width: 100%;
+    text-align: center;
+  }
 </style>
