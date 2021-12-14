@@ -2,7 +2,7 @@
 
 [See the deployed version here](https://osuclassdata.ethohampton.com)
 
-This is a web application that allows you to explore the raw data provided by **\_\_\_** acquired through a FOIA request for Oregon State University classes. The included data is between Fall 2019 and Summer 2021. Hopefully this will help your class forecasting in some way!
+This is a web application that allows you to explore the raw data provided by [mirrorkeydev/osu-grades](https://github.com/mirrorkeydev/osu-grades) acquired through a FOIA request for Oregon State University classes. The included data is between Fall 2018 and Summer 2021. Hopefully this will help your class forecasting in some way!
 
 This application is still in development. This application is under a AGPLv3 license. For all you CS majors out there (or anyone who writes code), PRs are welcome!
 
