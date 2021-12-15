@@ -84,7 +84,7 @@ func getSubjectAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResponse)
 }
 
-func getSubjectWithdrawlRatePerTerm(w http.ResponseWriter, r *http.Request) {
+func getSubjectWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 	subject := r.URL.Query().Get("subject")
 	if subject == "" {
 		http.Error(w, "Missing subject parameter", http.StatusBadRequest)
@@ -95,13 +95,13 @@ func getSubjectWithdrawlRatePerTerm(w http.ResponseWriter, r *http.Request) {
 		subject = ""
 	}
 
-	WithdrawlPerTerm, err := database.GetSubjectWithdrawlRatePerTerm(db, subject)
+	WithdrawalPerTerm, err := database.GetSubjectWithdrawalRatePerTerm(db, subject)
 	if err != nil {
 		http.Error(w, "Subject not found", http.StatusNotFound)
 		return
 	}
 
-	jsonResponse, err := json.Marshal(WithdrawlPerTerm)
+	jsonResponse, err := json.Marshal(WithdrawalPerTerm)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return

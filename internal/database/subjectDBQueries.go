@@ -24,24 +24,24 @@ func GetSubjectAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, erro
 	return response, nil
 }
 
-func GetSubjectWithdrawlRatePerTerm(db *sql.DB, id string) (WithdrawlRatePerTermResponse, error) {
-	var query = "SELECT TermID, AVG(W / Students) AS WithdrawlRate FROM Classes WHERE ClassIdentifier LIKE ? AND Visible=TRUE GROUP BY TermID ORDER BY TermID"
-	var response WithdrawlRatePerTermResponse
+func GetSubjectWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermResponse, error) {
+	var query = "SELECT TermID, AVG(W / Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier LIKE ? AND Visible=TRUE GROUP BY TermID ORDER BY TermID"
+	var response WithdrawalRatePerTermResponse
 	response.Terms = make([]string, 0)
-	response.WithdrawlRate = make([]float64, 0)
+	response.WithdrawalRate = make([]float64, 0)
 
 	rows, err := db.Query(query, id+"%") //note the added % which allows us to ignore the numbers at end of each class id
 	if err != nil {
-		return WithdrawlRatePerTermResponse{}, err
+		return WithdrawalRatePerTermResponse{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var term string
-		var WithdrawlRate float64
-		rows.Scan(&term, &WithdrawlRate)
+		var WithdrawalRate float64
+		rows.Scan(&term, &WithdrawalRate)
 		response.Terms = append(response.Terms, term)
-		response.WithdrawlRate = append(response.WithdrawlRate, WithdrawlRate)
+		response.WithdrawalRate = append(response.WithdrawalRate, WithdrawalRate)
 	}
 	return response, nil
 }

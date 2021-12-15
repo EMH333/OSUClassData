@@ -19,7 +19,7 @@
 
     createStudentsPerTermChart();
     createAvgGPAPerTermChart();
-    createWithdrawlRatePerTermChart();
+    createWithdrawalRatePerTermChart();
     createLastTermGradeDistributionChart();
   });
 
@@ -92,23 +92,23 @@
       });
   }
 
-  function createWithdrawlRatePerTermChart() {
+  function createWithdrawalRatePerTermChart() {
     wretchInstance
-      .url("chart/withdrawlRatePerTerm")
+      .url("chart/withdrawalRatePerTerm")
       .query({ class: selectedClass })
       .get()
       .json((data) => {
-        const withdrawlRate = data.WithdrawlRate;
+        const withdrawalRate = data.WithdrawalRate;
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
           x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: withdrawlRate,
+          y: withdrawalRate,
           mode: "lines+markers",
-          name: "Withdrawl Rate",
+          name: "Withdrawal Rate",
         };
         const chartLayout = {
-          title: "Withdrawl Rate per Term",
+          title: "Withdrawal Rate per Term",
           xaxis: {
             tickmode: "array",
             tickvals: terms.map((term: number) => termIDtoPlotID(term)),
@@ -119,7 +119,7 @@
           },
         };
         Plotly.newPlot(
-          "withdrawlRatePerTermChart",
+          "withdrawalRatePerTermChart",
           [chartData],
           chartLayout,
           chartOptions
@@ -197,14 +197,14 @@
 <div id="lastTermGradeDistributionChart" />
 <div id="studentsPerTermChart" />
 <div id="avgGPAPerTermChart" />
-<div id="withdrawlRatePerTermChart" />
+<div id="withdrawalRatePerTermChart" />
 <br />
 <!--Possible Graphics:<br />
 - Grade Distribution Pie Chart (from all data)<br />
 - Grade Distribution Pie Chart (from last term)<br />
 - Num As/Bs/etc over time<br />
 - Students per term over time<br />
-- Withdrawl Rate over time<br />-->
+- Withdrawal Rate over time<br />-->
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
 <style>

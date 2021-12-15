@@ -58,8 +58,8 @@
       Students last term: <span class="data">{classInfo.StudentsLastTerm}</span>
     </div>
     <div>
-      Withdrawl Rate: <span class="data"
-        >{(classInfo.WithdrawlRate * 100).toFixed(2)}%</span
+      Withdrawal Rate: <span class="data"
+        >{(classInfo.WithdrawalRate * 100).toFixed(2)}%</span
       >
     </div>
   {/if}

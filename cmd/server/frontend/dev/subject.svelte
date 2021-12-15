@@ -26,7 +26,7 @@
     // reload charts when subject is changed
     if (selectedSubject) {
       createAvgGPAPerTermChart();
-      createWithdrawlRatePerTermChart();
+      createWithdrawalRatePerTermChart();
     }
   }
 
@@ -80,23 +80,23 @@
       });
   }
 
-  function createWithdrawlRatePerTermChart() {
+  function createWithdrawalRatePerTermChart() {
     wretchInstance
-      .url("subject/chart/withdrawlRatePerTerm")
+      .url("subject/chart/withdrawalRatePerTerm")
       .query({ subject: selectedSubject })
       .get()
       .json((data) => {
-        const withdrawlRate = data.WithdrawlRate;
+        const withdrawalRate = data.WithdrawalRate;
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
           x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: withdrawlRate,
+          y: withdrawalRate,
           mode: "lines+markers",
-          name: "Withdrawl Rate",
+          name: "Withdrawal Rate",
         };
         const chartLayout = {
-          title: "Withdrawl Rate per Term",
+          title: "Withdrawal Rate per Term",
           xaxis: {
             tickmode: "array",
             tickvals: terms.map((term: number) => termIDtoPlotID(term)),
@@ -106,9 +106,9 @@
             tickformat: ".0%",
           },
         };
-        Plotly.purge("withdrawlRatePerTermChart"); // clear previous chart
+        Plotly.purge("withdrawalRatePerTermChart"); // clear previous chart
         Plotly.newPlot(
-          "withdrawlRatePerTermChart",
+          "withdrawalRatePerTermChart",
           [chartData],
           chartLayout,
           chartOptions
@@ -134,7 +134,7 @@
   />
 </div>
 <div id="avgGPAPerTermChart" />
-<div id="withdrawlRatePerTermChart" />
+<div id="withdrawalRatePerTermChart" />
 <br />
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 

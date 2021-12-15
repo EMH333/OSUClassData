@@ -48,12 +48,12 @@ func main() {
 	http.HandleFunc("/api/v0/classInfo", getClassInfo)
 	http.HandleFunc("/api/v0/chart/studentsPerTerm", getStudentsPerTerm)
 	http.HandleFunc("/api/v0/chart/avgGPAPerTerm", getAvgGPAPerTerm)
-	http.HandleFunc("/api/v0/chart/withdrawlRatePerTerm", getWithdrawlRatePerTerm)
+	http.HandleFunc("/api/v0/chart/withdrawalRatePerTerm", getWithdrawalRatePerTerm)
 	http.HandleFunc("/api/v0/chart/lastTermGradeDistribution", getLastTermGradeDistribution)
 
 	http.HandleFunc("/api/v0/subjects", getSubjects)
 	http.HandleFunc("/api/v0/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
-	http.HandleFunc("/api/v0/subject/chart/withdrawlRatePerTerm", getSubjectWithdrawlRatePerTerm)
+	http.HandleFunc("/api/v0/subject/chart/withdrawalRatePerTerm", getSubjectWithdrawalRatePerTerm)
 
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
@@ -190,20 +190,20 @@ func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResponse)
 }
 
-func getWithdrawlRatePerTerm(w http.ResponseWriter, r *http.Request) {
+func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 	class := r.URL.Query().Get("class")
 	if class == "" {
 		http.Error(w, "Missing class parameter", http.StatusBadRequest)
 		return
 	}
 
-	WithdrawlPerTerm, err := database.GetWithdrawlRatePerTerm(db, class)
+	WithdrawalPerTerm, err := database.GetWithdrawalRatePerTerm(db, class)
 	if err != nil {
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
 	}
 
-	jsonResponse, err := json.Marshal(WithdrawlPerTerm)
+	jsonResponse, err := json.Marshal(WithdrawalPerTerm)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return

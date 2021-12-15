@@ -58,16 +58,16 @@ type ClassInfoResponse struct {
 	AverageGPALastTerm float64
 	AverageStudents    float64
 	StudentsLastTerm   int
-	WithdrawlRate      float64
+	WithdrawalRate     float64
 }
 
-//TODO remove withdrawled students from total count
+//TODO remove withdrawn students from total count
 //TODO combine into one query
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	var classInfoQuery = "SELECT Credits, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
 	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
 	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
-	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawlRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 
 	var classData ClassInfoResponse
 	classData.ClassIdentifier = id
@@ -98,7 +98,7 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawlRate)
+	row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate)
 
 	return classData, nil
 }
@@ -157,29 +157,29 @@ func GetAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
 	return response, nil
 }
 
-type WithdrawlRatePerTermResponse struct {
-	Terms         []string
-	WithdrawlRate []float64
+type WithdrawalRatePerTermResponse struct {
+	Terms          []string
+	WithdrawalRate []float64
 }
 
-func GetWithdrawlRatePerTerm(db *sql.DB, id string) (WithdrawlRatePerTermResponse, error) {
-	var query = "SELECT TermID, (W / Students) AS WithdrawlRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
-	var response WithdrawlRatePerTermResponse
+func GetWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermResponse, error) {
+	var query = "SELECT TermID, (W / Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var response WithdrawalRatePerTermResponse
 	response.Terms = make([]string, 0)
-	response.WithdrawlRate = make([]float64, 0)
+	response.WithdrawalRate = make([]float64, 0)
 
 	rows, err := db.Query(query, id)
 	if err != nil {
-		return WithdrawlRatePerTermResponse{}, err
+		return WithdrawalRatePerTermResponse{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var term string
-		var WithdrawlRate float64
-		rows.Scan(&term, &WithdrawlRate)
+		var WithdrawalRate float64
+		rows.Scan(&term, &WithdrawalRate)
 		response.Terms = append(response.Terms, term)
-		response.WithdrawlRate = append(response.WithdrawlRate, WithdrawlRate)
+		response.WithdrawalRate = append(response.WithdrawalRate, WithdrawalRate)
 	}
 	return response, nil
 }
