@@ -16,6 +16,10 @@ function copyHTML() {
     if (err) throw err;
   });
 
+  fs.copyFile('./dev/subject.html', './dist/subject.html', (err) => {
+    if (err) throw err;
+  });
+
   fs.copyFile('./dev/icon.ico', './dist/favicon.ico', (err) => {
     if (err) throw err;
   });

@@ -54,6 +54,7 @@
   {:else}
     <div>Please pick a class!</div>
   {/if}
+  <p><a href="subject.html">Stats by Subject</a></p>
   <p><a href="about.html">About This Website</a></p>
   <p>Copyright © 2021 Ethan Hampton</p>
 </div>

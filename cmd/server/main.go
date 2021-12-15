@@ -51,6 +51,10 @@ func main() {
 	http.HandleFunc("/api/v0/chart/withdrawlRatePerTerm", getWithdrawlRatePerTerm)
 	http.HandleFunc("/api/v0/chart/lastTermGradeDistribution", getLastTermGradeDistribution)
 
+	http.HandleFunc("/api/v0/subjects", getSubjects)
+	http.HandleFunc("/api/v0/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
+	http.HandleFunc("/api/v0/subject/chart/withdrawlRatePerTerm", getSubjectWithdrawlRatePerTerm)
+
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
 }
