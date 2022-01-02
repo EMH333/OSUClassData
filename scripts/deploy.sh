@@ -39,9 +39,9 @@ find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.j
 find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.css/\.css?c=$CACHE_STRING/g" || exit
 
 # gzip compress files (with best compression)
-find build/frontend/dist -type f -name "*.html" -exec sh -c 'gzip $1 --best -k' shell {} \; || exit
-find build/frontend/dist -type f -name "*.css" -exec sh -c 'gzip $1 --best -k' shell {} \; || exit
-find build/frontend/dist -type f -name "*.js" -exec sh -c 'gzip $1 --best -k' shell {} \; || exit
+find build/frontend/dist -type f -name "*.html" -exec sh -c 'gzip $1 --best -k -n' shell {} \; || exit
+find build/frontend/dist -type f -name "*.css" -exec sh -c 'gzip $1 --best -k -n' shell {} \; || exit
+find build/frontend/dist -type f -name "*.js" -exec sh -c 'gzip $1 --best -k -n' shell {} \; || exit
 
 # deploy to server
 read -r -p "Deploy to server? [Y/n]" response
