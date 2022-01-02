@@ -34,9 +34,10 @@ cd ../../.. || exit
 cp -r cmd/server/frontend/dist build/frontend || exit
 
 # Add cache busting string to all predictablly named assets
-CACHE_STRING=$(date +%s)
-find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.js/\.js?c=$CACHE_STRING/g" || exit
-find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.css/\.css?c=$CACHE_STRING/g" || exit
+JS_CACHE_STRING=$(sha256sum <(find build/frontend/dist -name "*.js"  -type f -exec sha256sum {} \; | sort))
+CSS_CACHE_STRING=$(sha256sum <(find build/frontend/dist -name "*.css"  -type f -exec sha256sum {} \; | sort))
+find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.js/\.js?c=${JS_CACHE_STRING:0:7}/g" || exit
+find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.css/\.css?c=${CSS_CACHE_STRING:0:7}/g" || exit
 
 # gzip compress files (with best compression)
 find build/frontend/dist -type f -name "*.html" -exec sh -c 'gzip $1 --best -k -n' shell {} \; || exit
