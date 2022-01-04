@@ -56,6 +56,9 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   //allow for non-minified code
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
+  //allow for non-minified code but no watching
+  if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false;}
+
   esbuild.build(compileOptions)
     .catch((err) => { console.error(err); process.exit(1) });
 }
