@@ -55,7 +55,10 @@ func getSubjects(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getSubjectAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +84,10 @@ func getSubjectAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getSubjectWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
@@ -107,5 +113,8 @@ func getSubjectWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }

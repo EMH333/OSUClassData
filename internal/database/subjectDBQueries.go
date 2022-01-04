@@ -17,7 +17,11 @@ func GetSubjectAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, erro
 	for rows.Next() {
 		var term string
 		var GPA float64
-		rows.Scan(&term, &GPA)
+		err := rows.Scan(&term, &GPA)
+		if err != nil {
+			return AvgGPAPerTermResponse{}, err
+		}
+
 		response.Terms = append(response.Terms, term)
 		response.GPA = append(response.GPA, GPA)
 	}
@@ -39,7 +43,11 @@ func GetSubjectWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTe
 	for rows.Next() {
 		var term string
 		var WithdrawalRate float64
-		rows.Scan(&term, &WithdrawalRate)
+		err := rows.Scan(&term, &WithdrawalRate)
+		if err != nil {
+			return WithdrawalRatePerTermResponse{}, err
+		}
+
 		response.Terms = append(response.Terms, term)
 		response.WithdrawalRate = append(response.WithdrawalRate, WithdrawalRate)
 	}

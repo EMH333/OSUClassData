@@ -65,8 +65,10 @@ func main() {
 	http.HandleFunc("/api/v0/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
 	http.HandleFunc("/api/v0/subject/chart/withdrawalRatePerTerm", getSubjectWithdrawalRatePerTerm)
 
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-
+	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func tryToConnectToDB(config *mysql.Config) error {
@@ -117,7 +119,10 @@ func getClasses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getClass(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +151,10 @@ func getClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getClassInfo(w http.ResponseWriter, r *http.Request) {
@@ -168,7 +176,10 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getStatus(w http.ResponseWriter, r *http.Request) {
@@ -177,7 +188,10 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Can't ping DB", http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("OK"))
+	_, err := w.Write([]byte("OK"))
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
@@ -199,7 +213,10 @@ func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
@@ -221,7 +238,10 @@ func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
@@ -243,7 +263,10 @@ func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }
 
 func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
@@ -265,5 +288,8 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
+	_, err = w.Write(jsonResponse)
+	if err != nil {
+		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
+	}
 }

@@ -17,13 +17,17 @@ func GetTermClass(db *sql.DB, id string, term string) (Class, error) {
 	}
 
 	var classData Class
-	row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
+	err := row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
 		&classData.A, &classData.AMinus,
 		&classData.B, &classData.BPlus, &classData.BMinus,
 		&classData.C, &classData.CPlus, &classData.CMinus,
 		&classData.D, &classData.DPlus, &classData.DMinus,
 		&classData.F,
 		&classData.S, &classData.U, &classData.W, &classData.I)
+	if err != nil {
+		return Class{}, err
+	}
+
 	classData.Visible = true
 	return classData, nil
 }
@@ -38,13 +42,17 @@ func GetLastTermClass(db *sql.DB, id string) (Class, error) {
 	}
 
 	var classData Class
-	row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
+	err := row.Scan(&classData.ClassIdentifier, &classData.TermID, &classData.Students, &classData.Credits, &classData.ClassGPA,
 		&classData.A, &classData.AMinus,
 		&classData.B, &classData.BPlus, &classData.BMinus,
 		&classData.C, &classData.CPlus, &classData.CMinus,
 		&classData.D, &classData.DPlus, &classData.DMinus,
 		&classData.F,
 		&classData.S, &classData.U, &classData.W, &classData.I)
+	if err != nil {
+		return Class{}, err
+	}
+
 	classData.Visible = true
 	return classData, nil
 }
@@ -77,28 +85,40 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	row.Scan(&classData.Credits, &classData.ClassName)
+	err := row.Scan(&classData.Credits, &classData.ClassName)
+	if err != nil {
+		return ClassInfoResponse{}, err
+	}
 
 	// Get the last term the class was taught in
 	row = db.QueryRow(lastTermQuery, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	row.Scan(&classData.LastTerm)
+	err = row.Scan(&classData.LastTerm)
+	if err != nil {
+		return ClassInfoResponse{}, err
+	}
 
 	// Get the last term info
 	row = db.QueryRow(lastTermInfo, id, classData.LastTerm)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	row.Scan(&classData.AverageGPALastTerm, &classData.StudentsLastTerm)
+	err = row.Scan(&classData.AverageGPALastTerm, &classData.StudentsLastTerm)
+	if err != nil {
+		return ClassInfoResponse{}, err
+	}
 
 	// Get all the other averages and info
 	row = db.QueryRow(averageInfo, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate)
+	err = row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate)
+	if err != nil {
+		return ClassInfoResponse{}, err
+	}
 
 	return classData, nil
 }
@@ -123,7 +143,11 @@ func GetStudentsPerTerm(db *sql.DB, id string) (StudentsPerTermResponse, error) 
 	for rows.Next() {
 		var term string
 		var students int
-		rows.Scan(&term, &students)
+		err := rows.Scan(&term, &students)
+		if err != nil {
+			return StudentsPerTermResponse{}, err
+		}
+
 		response.Terms = append(response.Terms, term)
 		response.Students = append(response.Students, students)
 	}
@@ -150,7 +174,11 @@ func GetAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
 	for rows.Next() {
 		var term string
 		var GPA float64
-		rows.Scan(&term, &GPA)
+		err := rows.Scan(&term, &GPA)
+		if err != nil {
+			return AvgGPAPerTermResponse{}, err
+		}
+
 		response.Terms = append(response.Terms, term)
 		response.GPA = append(response.GPA, GPA)
 	}
@@ -177,7 +205,11 @@ func GetWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermRespo
 	for rows.Next() {
 		var term string
 		var WithdrawalRate float64
-		rows.Scan(&term, &WithdrawalRate)
+		err := rows.Scan(&term, &WithdrawalRate)
+		if err != nil {
+			return WithdrawalRatePerTermResponse{}, err
+		}
+
 		response.Terms = append(response.Terms, term)
 		response.WithdrawalRate = append(response.WithdrawalRate, WithdrawalRate)
 	}
