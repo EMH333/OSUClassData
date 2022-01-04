@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"ethohampton.com/OSUClassData/internal/database"
 	"github.com/go-sql-driver/mysql"
@@ -27,17 +28,26 @@ func main() {
 		Addr:   "127.0.0.1:3306",
 		DBName: "OSUClassData",
 	}
-	// Get a database handle.
-	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err)
+
+	// Try to connect to the database
+	const maxConnectionAttempts = 10
+	for i := 0; i < maxConnectionAttempts; i++ {
+		err := tryToConnectToDB(&cfg)
+		//if connected then start server
+		if err == nil {
+			break
+		}
+
+		//if not connected then wait and try again, up to 10 times, then exit with error
+		if err != nil && i == maxConnectionAttempts-1 {
+			log.Fatal(err)
+		}
+
+		//wait 5 seconds before trying again
+		fmt.Println("Could not connect to DB. Retrying in 5 seconds...")
+		time.Sleep(5 * time.Second)
 	}
 
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr)
-	}
 	fmt.Println("Connected to Database!")
 
 	//hello world web server
@@ -57,6 +67,30 @@ func main() {
 
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 
+}
+
+func tryToConnectToDB(config *mysql.Config) error {
+	var err error
+	// Connect to the database
+	db, err = sql.Open("mysql", config.FormatDSN())
+	if err != nil {
+		return err
+	}
+
+	// Test the connection to the database with a ping
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
+
+	// run query to test connection
+	var test int
+	err = db.QueryRow("SELECT 1").Scan(&test)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func getClasses(w http.ResponseWriter, r *http.Request) {
