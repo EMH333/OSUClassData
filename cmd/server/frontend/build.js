@@ -25,18 +25,22 @@ function copyHTML() {
   });
 }
 
-if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
-  const directory = './dist';
+const directory = './dist';
 
+//remove build directory if building clean or for production
+if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
   if (fs.existsSync(directory)) {
     fs.rmSync(directory, { recursive: true });
   }
-
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory);
-  }
 }
 
+
+// make sure dist exists
+if (!fs.existsSync(directory)) {
+  fs.mkdirSync(directory);
+}
+
+//copy all the html files
 copyHTML();
 
 if (process.argv.length >= 2 && process.argv[2] === "serve") {
@@ -57,7 +61,7 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
   //allow for non-minified code but no watching
-  if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false;}
+  if (process.argv.length >= 2 && process.argv[2] === "ci") { compileOptions.minify = false;}
 
   esbuild.build(compileOptions)
     .catch((err) => { console.error(err); process.exit(1) });
