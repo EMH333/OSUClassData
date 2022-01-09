@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -114,16 +113,7 @@ func getClasses(w http.ResponseWriter, r *http.Request) {
 		classList = append(classList, class)
 	}
 
-	jsonResponse, err := json.Marshal(classList)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, classList)
 }
 
 func getClass(w http.ResponseWriter, r *http.Request) {
@@ -146,16 +136,7 @@ func getClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(classData)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, classData)
 }
 
 func getClassInfo(w http.ResponseWriter, r *http.Request) {
@@ -171,16 +152,7 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(classData)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, classData)
 }
 
 func getStatus(w http.ResponseWriter, r *http.Request) {
@@ -215,16 +187,7 @@ func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
 	response.SpecificData = studentsPerTerm.Students
 	//TODO add general subject data
 
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, response)
 }
 
 func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
@@ -247,16 +210,7 @@ func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 	response.SpecificData = GPAPerTerm.GPA
 	//TODO add general subject data
 
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, response)
 }
 
 func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
@@ -279,16 +233,7 @@ func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 	response.SpecificData = WithdrawalPerTerm.WithdrawalRate
 	//TODO add general subject data
 
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, response)
 }
 
 func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
@@ -304,14 +249,5 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(latestClass)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, latestClass)
 }

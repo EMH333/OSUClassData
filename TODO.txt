@@ -4,7 +4,6 @@
 - Tie class terms to teachers
 - Class ID as page title
 - Fix variable credit classes
-- Dependabot
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 - Look into PH212

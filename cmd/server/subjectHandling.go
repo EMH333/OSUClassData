@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"ethohampton.com/OSUClassData/internal/database"
+	"ethohampton.com/OSUClassData/internal/util"
 )
 
 func getSubjects(w http.ResponseWriter, r *http.Request) {
@@ -49,16 +49,7 @@ func getSubjects(w http.ResponseWriter, r *http.Request) {
 		classList = append(classList, class)
 	}
 
-	jsonResponse, err := json.Marshal(classList)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, classList)
 }
 
 func getSubjectAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
@@ -78,16 +69,7 @@ func getSubjectAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(GPAPerTerm)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, GPAPerTerm)
 }
 
 func getSubjectWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
@@ -107,14 +89,5 @@ func getSubjectWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(WithdrawalPerTerm)
-	if err != nil {
-		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	util.WriteJSON(w, WithdrawalPerTerm)
 }
