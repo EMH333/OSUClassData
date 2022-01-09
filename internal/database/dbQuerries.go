@@ -85,17 +85,14 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	err := row.Scan(&classData.Credits, &classData.ClassName)
-	if err != nil {
-		return ClassInfoResponse{}, err
-	}
+	_ = row.Scan(&classData.Credits, &classData.ClassName) // we expect errors here
 
 	// Get the last term the class was taught in
 	row = db.QueryRow(lastTermQuery, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, row.Err()
 	}
-	err = row.Scan(&classData.LastTerm)
+	err := row.Scan(&classData.LastTerm)
 	if err != nil {
 		return ClassInfoResponse{}, err
 	}

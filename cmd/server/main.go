@@ -148,6 +148,7 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 
 	classData, err := database.GetClassInfo(db, class)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
 	}
