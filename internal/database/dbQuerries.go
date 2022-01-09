@@ -125,14 +125,14 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 
 type StudentsPerTermResponse struct {
 	Terms    []string
-	Students []int
+	Students []float64 // doesn't need to be float but makes conversion easier
 }
 
 func GetStudentsPerTerm(db *sql.DB, id string) (StudentsPerTermResponse, error) {
 	var query = "SELECT TermID, Students FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 	var response StudentsPerTermResponse
 	response.Terms = make([]string, 0)
-	response.Students = make([]int, 0)
+	response.Students = make([]float64, 0)
 
 	rows, err := db.Query(query, id)
 	if err != nil {
@@ -149,7 +149,7 @@ func GetStudentsPerTerm(db *sql.DB, id string) (StudentsPerTermResponse, error) 
 		}
 
 		response.Terms = append(response.Terms, term)
-		response.Students = append(response.Students, students)
+		response.Students = append(response.Students, float64(students))
 	}
 	return response, nil
 }

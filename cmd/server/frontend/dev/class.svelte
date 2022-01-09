@@ -29,7 +29,7 @@
       .query({ class: selectedClass })
       .get()
       .json((data) => {
-        const students = data.Students;
+        const students = data.SpecificData;
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
@@ -63,7 +63,7 @@
       .query({ class: selectedClass })
       .get()
       .json((data) => {
-        const avgGPA = data.GPA;
+        const avgGPA = data.SpecificData;
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
@@ -98,7 +98,7 @@
       .query({ class: selectedClass })
       .get()
       .json((data) => {
-        const withdrawalRate = data.WithdrawalRate;
+        const withdrawalRate = data.SpecificData;
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {

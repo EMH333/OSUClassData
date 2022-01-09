@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"ethohampton.com/OSUClassData/internal/database"
+	"ethohampton.com/OSUClassData/internal/util"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -207,7 +208,14 @@ func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(studentsPerTerm)
+	var response util.ClassGraphResponse
+
+	response.Dataset = "SpT"
+	response.Terms = studentsPerTerm.Terms
+	response.SpecificData = studentsPerTerm.Students
+	//TODO add general subject data
+
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return
@@ -232,7 +240,14 @@ func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(GPAPerTerm)
+	var response util.ClassGraphResponse
+
+	response.Dataset = "GpT"
+	response.Terms = GPAPerTerm.Terms
+	response.SpecificData = GPAPerTerm.GPA
+	//TODO add general subject data
+
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return
@@ -257,7 +272,14 @@ func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonResponse, err := json.Marshal(WithdrawalPerTerm)
+	var response util.ClassGraphResponse
+
+	response.Dataset = "WpT"
+	response.Terms = WithdrawalPerTerm.Terms
+	response.SpecificData = WithdrawalPerTerm.WithdrawalRate
+	//TODO add general subject data
+
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
 		return

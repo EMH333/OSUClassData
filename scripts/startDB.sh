@@ -15,10 +15,13 @@ docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql \
     -v "$(pwd)"/cmd/classParser:/tmp/classData \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
 #docker exec -it OSUCD-mysql bash
-sleep 1
+
+# wait till database is up
+while ! docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SELECT 1;\"" >/dev/null 2>&1; do
+    sleep 1
+done
+
 #create sql database named OSUClassData
 #docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw"
 docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SOURCE /tmp/sql/initialSchema.sql;\""
 docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SOURCE /tmp/sql/testData.sql;\""
-
-echo "Please run a second time after about 30 seconds to create the OSUClassData database $(pwd)"
