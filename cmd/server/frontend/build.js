@@ -26,8 +26,13 @@ function copyHTML() {
 }
 
 const directory = './dist';
+let compileOptions = esbuildOptions;
 
-//remove build directory if building clean or for production
+if (process.argv[2] === "production") {
+  compileOptions.pure = ['console.log'];
+}
+
+// remove build directory if building clean or for production
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
   if (fs.existsSync(directory)) {
     fs.rmSync(directory, { recursive: true });
@@ -56,7 +61,6 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
     //process.exit(0)
   })
 } else {
-  let compileOptions = esbuildOptions;
   //allow for non-minified code
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
