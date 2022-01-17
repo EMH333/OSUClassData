@@ -12,7 +12,7 @@
 cd "$(dirname "$0")"/.. || exit
 
 # Start from a clean build dir
-rm -r build
+rm -rf build
 mkdir -p build
 mkdir -p build/frontend/dist
 
@@ -22,8 +22,7 @@ mkdir -p build/frontend/dist
 #-ldflags="-extldflags=-static -w -s"
 docker run --rm -v "$PWD":/usr/src/ethohampton.com/OSUClassData -w /usr/src/ethohampton.com/OSUClassData/cmd/server \
     ethohampton/osucd-static-build:latest \
-    sh -c "go build -v -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server" || exit
-sudo chown "$USER":"$USER" build/OSUCD-server
+    sh -c "go build -v -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server && chown $(id -u):$(id -g) ../../build/OSUCD-server" || exit
 
 # Build the frontend
 cd cmd/server/frontend || exit
