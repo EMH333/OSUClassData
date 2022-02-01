@@ -18,7 +18,7 @@
   "dependencies": {
     "plotly.js-basic-dist": "^2.8.3",
     "simple-svelte-autocomplete": "^2.2.4",
-    "wretch": "^1.7.7",
+    "wretch": "^1.7.9",
     "wretch-middlewares": "^0.1.13"
   }
 }
