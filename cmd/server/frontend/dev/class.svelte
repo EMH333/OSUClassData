@@ -11,11 +11,18 @@
 
   let selectedClass: string;
 
-  // TODO handle non-existent class and/or query string
+  // TODO handle non-existent class
   //get class from query string on mount
   onMount(() => {
     const query = new URLSearchParams(window.location.search);
     selectedClass = query.get("class");
+
+    if (selectedClass == null) {
+      return; //don't bother rendering anything if we don't specify a class
+    }
+
+    // set page title to selectedClass
+    document.title = selectedClass + " - OSU Class Data";
 
     createStudentsPerTermChart();
     createAvgGPAPerTermChart();

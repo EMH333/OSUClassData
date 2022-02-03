@@ -2,7 +2,6 @@
 - Leaderboard w/ largest classes, highest grades, highest withdrawal, average overall grade over time
 - Fill out class titles in ClassInfo DB table
 - Tie class terms to teachers
-- Class ID as page title
 - Fix variable credit classes
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests

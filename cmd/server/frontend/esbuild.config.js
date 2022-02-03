@@ -9,7 +9,5 @@ module.exports = {
     splitting: true,
     outdir: './dist',
     sourcemap: 'external',
-    plugins: [esbuildSvelte({
-        preprocess: svelteConfig.preprocess,
-    })],
+    plugins: [esbuildSvelte(svelteConfig)],
 };
