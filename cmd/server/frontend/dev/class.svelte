@@ -206,12 +206,11 @@
 <div id="avgGPAPerTermChart" />
 <div id="withdrawalRatePerTermChart" />
 <br />
-<!--Possible Graphics:<br />
-- Grade Distribution Pie Chart (from all data)<br />
-- Grade Distribution Pie Chart (from last term)<br />
-- Num As/Bs/etc over time<br />
-- Students per term over time<br />
-- Withdrawal Rate over time<br />-->
+<!--Possible Graphics:
+- Grade Distribution Pie Chart (from all data)-->
+{#if selectedClass == null}
+   <h2 class="center buffer">Please go back and select a class</h2>
+{/if}
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
 <style>
