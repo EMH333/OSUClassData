@@ -6,7 +6,7 @@
     termIDtoPlotID,
     chartOptions,
   } from "./util";
-  import Plotly from "plotly.js-basic-dist";
+  import Plotly from "plotly.js-basic-dist-min";
   import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
 
   onMount(() => {

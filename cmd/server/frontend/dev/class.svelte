@@ -7,7 +7,7 @@
     termIDtoPlotID,
     chartOptions,
   } from "./util";
-  import Plotly from "plotly.js-basic-dist";
+  import Plotly from "plotly.js-basic-dist-min";
 
   let selectedClass: string;
 
