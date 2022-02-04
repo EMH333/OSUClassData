@@ -1,14 +1,21 @@
 package util
 
+import (
+	"sync"
+	"sync/atomic"
+)
+
 //TODO eventually decay values over time
 //Leaderboard keeps track of the top values in a list
+//thread safe for the top calculations and the total count, not for the counters since that matters less
 type Leaderboard struct {
 	counters   map[string]int
 	top        []string
-	totalCount int
+	totalCount int64
 
 	//internal help stuff
 	minimumTopValue int
+	topLock         *sync.Mutex //lock when updating top list
 
 	//config
 	numberOfTop int
@@ -20,9 +27,13 @@ func AddToLeaderboard(leaderboard *Leaderboard, key string) {
 		leaderboard.counters = make(map[string]int)
 	}
 
+	if leaderboard.topLock == nil {
+		leaderboard.topLock = &sync.Mutex{}
+	}
+
 	//actually add to the counter
 	leaderboard.counters[key]++
-	leaderboard.totalCount++
+	atomic.AddInt64(&leaderboard.totalCount, 1) // add to total count w/ thread safety
 
 	//always have a default number of top entries
 	if leaderboard.numberOfTop == 0 {
@@ -57,6 +68,10 @@ func AddToLeaderboard(leaderboard *Leaderboard, key string) {
 // loop through the top list and see if new key is greater than any of them (starting at smallest)
 // if it is, then update the list and the min value
 func figureOutNewTop(leaderboard *Leaderboard, key string) {
+	// make sure we have lock so we are the only one updating the top list at a time
+	leaderboard.topLock.Lock()
+	defer leaderboard.topLock.Unlock()
+
 	var lastIndex = len(leaderboard.top) - 1
 
 	for i := 0; i <= lastIndex; i++ {
