@@ -15,6 +15,10 @@ import (
 
 var db *sql.DB
 
+var classLeaderboard = &util.Leaderboard{
+	NumberOfTop: 10,
+}
+
 func main() {
 	if os.Getenv("PORT") == "" {
 		os.Setenv("PORT", "8080")
@@ -152,6 +156,8 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
 	}
+
+	util.AddToLeaderboard(classLeaderboard, classData.ClassIdentifier) //start tracking this but don't do anything with it for now
 
 	util.WriteJSON(w, classData)
 }
