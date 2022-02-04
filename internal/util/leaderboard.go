@@ -10,15 +10,15 @@ import (
 //thread safe for the top calculations and the total count, not for the counters since that matters less
 type Leaderboard struct {
 	counters   map[string]int
-	top        []string
-	totalCount int64
+	Top        []string
+	TotalCount int64
 
 	//internal help stuff
 	minimumTopValue int
 	topLock         *sync.Mutex //lock when updating top list
 
 	//config
-	numberOfTop int
+	NumberOfTop int
 }
 
 func AddToLeaderboard(leaderboard *Leaderboard, key string) {
@@ -33,24 +33,24 @@ func AddToLeaderboard(leaderboard *Leaderboard, key string) {
 
 	//actually add to the counter
 	leaderboard.counters[key]++
-	atomic.AddInt64(&leaderboard.totalCount, 1) // add to total count w/ thread safety
+	atomic.AddInt64(&leaderboard.TotalCount, 1) // add to total count w/ thread safety
 
 	//always have a default number of top entries
-	if leaderboard.numberOfTop == 0 {
-		leaderboard.numberOfTop = 10
+	if leaderboard.NumberOfTop == 0 {
+		leaderboard.NumberOfTop = 10
 	}
 
 	//move towards the max number of top entries if not already there
-	if len(leaderboard.top) < leaderboard.numberOfTop {
+	if len(leaderboard.Top) < leaderboard.NumberOfTop {
 		var alreadyInTop = false
-		for _, topKey := range leaderboard.top {
+		for _, topKey := range leaderboard.Top {
 			if topKey == key {
 				alreadyInTop = true
 				break
 			}
 		}
 		if !alreadyInTop {
-			leaderboard.top = append(leaderboard.top, key)
+			leaderboard.Top = append(leaderboard.Top, key)
 		}
 	}
 
@@ -58,9 +58,9 @@ func AddToLeaderboard(leaderboard *Leaderboard, key string) {
 		figureOutNewTop(leaderboard, key)
 
 		// update min value if necessary
-		if leaderboard.minimumTopValue == 0 && len(leaderboard.top) > 0 {
-			var lastIndex = len(leaderboard.top) - 1
-			leaderboard.minimumTopValue = leaderboard.counters[leaderboard.top[lastIndex]]
+		if leaderboard.minimumTopValue == 0 && len(leaderboard.Top) > 0 {
+			var lastIndex = len(leaderboard.Top) - 1
+			leaderboard.minimumTopValue = leaderboard.counters[leaderboard.Top[lastIndex]]
 		}
 	}
 }
@@ -72,12 +72,12 @@ func figureOutNewTop(leaderboard *Leaderboard, key string) {
 	leaderboard.topLock.Lock()
 	defer leaderboard.topLock.Unlock()
 
-	var lastIndex = len(leaderboard.top) - 1
+	var lastIndex = len(leaderboard.Top) - 1
 
 	for i := 0; i <= lastIndex; i++ {
-		if leaderboard.counters[key] >= leaderboard.counters[leaderboard.top[i]] {
+		if leaderboard.counters[key] >= leaderboard.counters[leaderboard.Top[i]] {
 			bubbleDown(leaderboard, i, key)
-			leaderboard.minimumTopValue = leaderboard.counters[leaderboard.top[lastIndex]]
+			leaderboard.minimumTopValue = leaderboard.counters[leaderboard.Top[lastIndex]]
 			return
 		}
 	}
@@ -86,23 +86,23 @@ func figureOutNewTop(leaderboard *Leaderboard, key string) {
 // shifts everything down from position and inserts key at position
 // overwrites duplicate if it exists
 func bubbleDown(leaderboard *Leaderboard, pos int, key string) {
-	var lastIndex = len(leaderboard.top) - 1
+	var lastIndex = len(leaderboard.Top) - 1
 
 	// handle case where key is already in the right place
-	if leaderboard.top[pos] == key {
+	if leaderboard.Top[pos] == key {
 		return
 	}
 
 	//handle case where key is already in list
 	for i := pos; i <= lastIndex; i++ {
-		if leaderboard.top[i] == key {
+		if leaderboard.Top[i] == key {
 			for j := i; j >= pos; j-- {
 				if j == 0 {
 					continue
 				}
-				leaderboard.top[j] = leaderboard.top[j-1]
+				leaderboard.Top[j] = leaderboard.Top[j-1]
 			}
-			leaderboard.top[pos] = key
+			leaderboard.Top[pos] = key
 			return
 		}
 	}
@@ -112,8 +112,8 @@ func bubbleDown(leaderboard *Leaderboard, pos int, key string) {
 		if i == 0 {
 			continue
 		}
-		leaderboard.top[i] = leaderboard.top[i-1]
+		leaderboard.Top[i] = leaderboard.Top[i-1]
 	}
 
-	leaderboard.top[pos] = key
+	leaderboard.Top[pos] = key
 }

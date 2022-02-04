@@ -7,7 +7,7 @@ import (
 func TestBasicLeaderboard(t *testing.T) {
 	leaderboard := &Leaderboard{
 		counters: make(map[string]int),
-		top:      []string{},
+		Top:      []string{},
 	}
 
 	AddToLeaderboard(leaderboard, "a")
@@ -32,20 +32,20 @@ func TestBasicLeaderboard(t *testing.T) {
 		t.Errorf("Expected d to have value 1, got %d", leaderboard.counters["d"])
 	}
 
-	if leaderboard.top[0] != "a" {
-		t.Errorf("Expected top[0] to be a, got %s", leaderboard.top[0])
+	if leaderboard.Top[0] != "a" {
+		t.Errorf("Expected top[0] to be a, got %s", leaderboard.Top[0])
 	}
 
-	if leaderboard.totalCount != 5 {
-		t.Errorf("Expected totalCount to be 5, got %d", leaderboard.totalCount)
+	if leaderboard.TotalCount != 5 {
+		t.Errorf("Expected totalCount to be 5, got %d", leaderboard.TotalCount)
 	}
 }
 
 func TestFullLeaderboard(t *testing.T) {
 	leaderboard := &Leaderboard{
 		counters:    make(map[string]int),
-		top:         []string{},
-		numberOfTop: 3,
+		Top:         []string{},
+		NumberOfTop: 3,
 	}
 
 	//note loading in weird order to cause misbehavior if possible
@@ -71,16 +71,16 @@ func TestFullLeaderboard(t *testing.T) {
 	}
 
 	//the top should be a, b, c in that order
-	if leaderboard.top[0] != "a" {
-		t.Errorf("Expected top[0] to be a, got %s", leaderboard.top[0])
+	if leaderboard.Top[0] != "a" {
+		t.Errorf("Expected top[0] to be a, got %s", leaderboard.Top[0])
 	}
 
-	if leaderboard.top[1] != "b" {
-		t.Errorf("Expected top[1] to be b, got %s", leaderboard.top[1])
+	if leaderboard.Top[1] != "b" {
+		t.Errorf("Expected top[1] to be b, got %s", leaderboard.Top[1])
 	}
 
-	if leaderboard.top[2] != "c" {
-		t.Errorf("Expected top[2] to be c, got %s", leaderboard.top[2])
+	if leaderboard.Top[2] != "c" {
+		t.Errorf("Expected top[2] to be c, got %s", leaderboard.Top[2])
 	}
 
 	//actual counter values
@@ -104,8 +104,8 @@ func TestFullLeaderboard(t *testing.T) {
 func TestManyEntriesLeaderboard(t *testing.T) {
 	leaderboard := &Leaderboard{
 		counters:    make(map[string]int),
-		top:         []string{},
-		numberOfTop: 3,
+		Top:         []string{},
+		NumberOfTop: 3,
 	}
 
 	//note loading in weird order to cause misbehavior if possible
@@ -135,52 +135,52 @@ func TestManyEntriesLeaderboard(t *testing.T) {
 	}
 
 	//the top should be a, b, c in that order
-	if leaderboard.top[0] != "a" {
-		t.Errorf("Expected top[0] to be a, got %s", leaderboard.top[0])
+	if leaderboard.Top[0] != "a" {
+		t.Errorf("Expected top[0] to be a, got %s", leaderboard.Top[0])
 	}
 
-	if leaderboard.top[1] != "b" {
-		t.Errorf("Expected top[1] to be b, got %s", leaderboard.top[1])
+	if leaderboard.Top[1] != "b" {
+		t.Errorf("Expected top[1] to be b, got %s", leaderboard.Top[1])
 	}
 
-	if leaderboard.top[2] != "c" {
-		t.Errorf("Expected top[2] to be c, got %s", leaderboard.top[2])
+	if leaderboard.Top[2] != "c" {
+		t.Errorf("Expected top[2] to be c, got %s", leaderboard.Top[2])
 	}
 }
 
 func TestBubbleDown(t *testing.T) {
 	lb := &Leaderboard{
-		top: []string{"a", "b", "c"},
+		Top: []string{"a", "b", "c"},
 	}
 
 	bubbleDown(lb, 0, "a")
-	if !Equal(lb.top, []string{"a", "b", "c"}) {
-		t.Errorf("Expected top to be [a, b, c], got %v", lb.top)
+	if !Equal(lb.Top, []string{"a", "b", "c"}) {
+		t.Errorf("Expected top to be [a, b, c], got %v", lb.Top)
 	}
 
 	bubbleDown(lb, 0, "a")
-	if !Equal(lb.top, []string{"a", "b", "c"}) {
-		t.Errorf("Expected top to be [a, b, c], got %v", lb.top)
+	if !Equal(lb.Top, []string{"a", "b", "c"}) {
+		t.Errorf("Expected top to be [a, b, c], got %v", lb.Top)
 	}
 
 	bubbleDown(lb, 0, "d")
-	if !Equal(lb.top, []string{"d", "a", "b"}) {
-		t.Errorf("Expected top to be [d, a, b], got %v", lb.top)
+	if !Equal(lb.Top, []string{"d", "a", "b"}) {
+		t.Errorf("Expected top to be [d, a, b], got %v", lb.Top)
 	}
 
 	bubbleDown(lb, 1, "i")
-	if !Equal(lb.top, []string{"d", "i", "a"}) {
-		t.Errorf("Expected top to be [d, i, a], got %v", lb.top)
+	if !Equal(lb.Top, []string{"d", "i", "a"}) {
+		t.Errorf("Expected top to be [d, i, a], got %v", lb.Top)
 	}
 
 	bubbleDown(lb, 1, "i")
-	if !Equal(lb.top, []string{"d", "i", "a"}) {
-		t.Errorf("Expected top to be [d, i, a], got %v", lb.top)
+	if !Equal(lb.Top, []string{"d", "i", "a"}) {
+		t.Errorf("Expected top to be [d, i, a], got %v", lb.Top)
 	}
 
 	bubbleDown(lb, 0, "i")
-	if !Equal(lb.top, []string{"i", "d", "a"}) {
-		t.Errorf("Expected top to be [i, d, a], got %v", lb.top)
+	if !Equal(lb.Top, []string{"i", "d", "a"}) {
+		t.Errorf("Expected top to be [i, d, a], got %v", lb.Top)
 	}
 }
 
@@ -191,8 +191,8 @@ func BenchmarkAddToLeaderboard(b *testing.B) {
 			"d": 40, "e": 50, "f": 60, "g": 70, "h": 80, "i": 90, "j": 100,
 			"k": 110, "l": 120, "m": 130, "n": 140, "o": 150, "p": 160, "q": 170, "r": 180,
 			"s": 190, "t": 200, "u": 210, "v": 220, "w": 230, "x": 240, "y": 250, "z": 260},
-		top:         []string{"q", "r", "s", "t", "u", "v", "w", "x", "y", "z"},
-		numberOfTop: 10,
+		Top:         []string{"q", "r", "s", "t", "u", "v", "w", "x", "y", "z"},
+		NumberOfTop: 10,
 	}
 	AddToLeaderboard(leaderboard, "b")
 	AddToLeaderboard(leaderboard, "c")
