@@ -16,7 +16,7 @@ import (
 var db *sql.DB
 
 var classLeaderboard = &util.Leaderboard{
-	NumberOfTop: 10,
+	NumberOfTop: 5,
 }
 
 func main() {
@@ -68,6 +68,8 @@ func main() {
 	http.HandleFunc("/api/v0/subjects", getSubjects)
 	http.HandleFunc("/api/v0/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
 	http.HandleFunc("/api/v0/subject/chart/withdrawalRatePerTerm", getSubjectWithdrawalRatePerTerm)
+
+	http.HandleFunc("/api/v0/trendingClasses", getTrendingClasses)
 
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	if err != nil {
@@ -172,6 +174,12 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
 	}
+}
+
+// pretty simple method to get all the top trending classes
+// TODO: allow trending classes per college
+func getTrendingClasses(w http.ResponseWriter, r *http.Request) {
+	util.WriteJSON(w, classLeaderboard.Top)
 }
 
 func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {

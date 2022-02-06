@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { wretchInstance } from "./util";
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
+  import Trending from "./components/Trending.svelte";
 
   interface BasicClass {
     displayName: string;
@@ -54,6 +55,7 @@
   {:else}
     <div>Please pick a class!</div>
   {/if}
+  <Trending />
   <p><a href="subject.html">Stats by Subject</a></p>
   <p><a href="about.html">About This Website</a></p>
   <p>Copyright © 2021 Ethan Hampton</p>
