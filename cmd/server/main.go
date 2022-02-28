@@ -54,6 +54,8 @@ func main() {
 
 	fmt.Println("Connected to Database!")
 
+	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
+
 	//hello world web server
 	http.Handle("/", http.FileServer(http.Dir("frontend/dist")))
 	http.HandleFunc("/api/v0/status", getStatus)
@@ -75,6 +77,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	close(stopLeaderboard) // stop leaderboard
 }
 
 func tryToConnectToDB(config *mysql.Config) error {

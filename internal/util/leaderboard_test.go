@@ -9,6 +9,7 @@ func TestBasicLeaderboard(t *testing.T) {
 		counters: make(map[string]int),
 		Top:      []string{},
 	}
+	SetUpLeaderboard(leaderboard)
 
 	AddToLeaderboard(leaderboard, "a")
 	AddToLeaderboard(leaderboard, "a")
@@ -47,6 +48,7 @@ func TestFullLeaderboard(t *testing.T) {
 		Top:         []string{},
 		NumberOfTop: 3,
 	}
+	SetUpLeaderboard(leaderboard)
 
 	//note loading in weird order to cause misbehavior if possible
 	AddToLeaderboard(leaderboard, "d")
@@ -107,6 +109,7 @@ func TestManyEntriesLeaderboard(t *testing.T) {
 		Top:         []string{},
 		NumberOfTop: 3,
 	}
+	SetUpLeaderboard(leaderboard)
 
 	//note loading in weird order to cause misbehavior if possible
 	AddToLeaderboard(leaderboard, "d")
@@ -152,6 +155,7 @@ func TestBubbleDown(t *testing.T) {
 	lb := &Leaderboard{
 		Top: []string{"a", "b", "c"},
 	}
+	SetUpLeaderboard(lb)
 
 	bubbleDown(lb, 0, "a")
 	if !Equal(lb.Top, []string{"a", "b", "c"}) {
@@ -184,6 +188,43 @@ func TestBubbleDown(t *testing.T) {
 	}
 }
 
+func TestDecayLeaderboard(t *testing.T) {
+	leaderboard := &Leaderboard{}
+	SetUpLeaderboard(leaderboard)
+
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "b")
+	AddToLeaderboard(leaderboard, "c")
+	AddToLeaderboard(leaderboard, "d")
+
+	if len(leaderboard.Top) != 4 {
+		t.Errorf("Expected length of top to be 4, got %v", leaderboard.Top)
+	}
+
+	DecayLeaderboard(leaderboard)
+
+	if len(leaderboard.Top) != 1 {
+		t.Errorf("Expected length of top to be 1, got %v", leaderboard.Top)
+	}
+
+	DecayLeaderboard(leaderboard)
+
+	if len(leaderboard.Top) != 0 {
+		t.Errorf("Expected top to be empty, got %v", leaderboard.Top)
+	}
+
+	AddToLeaderboard(leaderboard, "a")
+
+	if len(leaderboard.Top) != 1 {
+		t.Errorf("Expected length of top to be 1, got %v", leaderboard.Top)
+	}
+
+	if leaderboard.Top[0] != "a" {
+		t.Errorf("Expected top[0] to be a, got %s", leaderboard.Top[0])
+	}
+}
+
 //a quick benchmark of adding to the leaderboard
 func BenchmarkAddToLeaderboard(b *testing.B) {
 	leaderboard := &Leaderboard{
@@ -194,6 +235,8 @@ func BenchmarkAddToLeaderboard(b *testing.B) {
 		Top:         []string{"q", "r", "s", "t", "u", "v", "w", "x", "y", "z"},
 		NumberOfTop: 10,
 	}
+	SetUpLeaderboard(leaderboard)
+
 	AddToLeaderboard(leaderboard, "b")
 	AddToLeaderboard(leaderboard, "c")
 	AddToLeaderboard(leaderboard, "d") //make sure it doesn't get added to the top initially
