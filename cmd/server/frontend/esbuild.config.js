@@ -7,6 +7,7 @@ module.exports = {
     minify: true,
     bundle: true,
     splitting: true,
+    metafile: true,
     outdir: './dist',
     sourcemap: 'external',
     plugins: [esbuildSvelte(svelteConfig)],

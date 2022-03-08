@@ -68,5 +68,40 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   if (process.argv.length >= 2 && process.argv[2] === "ci") { compileOptions.minify = false;}
 
   esbuild.build(compileOptions)
+    .then(output => {
+      for (file in output.metafile.outputs){
+        let fileInfo = output.metafile.outputs[file];
+        switch (file) {
+          case "dist/index.js":
+            insertPreload('./dist/index.html', fileInfo.imports);
+            break;
+
+          case "dist/class.js":
+            insertPreload('./dist/class.html', fileInfo.imports);
+            break;
+
+          case "dist/subject.js":
+            insertPreload('./dist/subject.html', fileInfo.imports);
+            break;
+          default:
+            break;
+        }
+      }
+    })
     .catch((err) => { console.error(err); process.exit(1) });
+}
+
+function generateLinkHeader(imports) {
+  let header = '';
+  for (let i = 0; i < imports.length; i++) {
+    header += `<link rel="preload" href="${imports[i].path.replace('dist/','')}" as="script">`;
+  }
+  return header;
+}
+
+function insertPreload(htmlPath, imports) {
+  let html = fs.readFileSync(htmlPath, 'utf8');
+  let headers = generateLinkHeader(imports);
+  html = html.replace('<link ref="preloadReplace">', headers);
+  fs.writeFileSync(htmlPath, html);
 }
