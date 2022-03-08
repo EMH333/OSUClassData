@@ -35,7 +35,8 @@ cp -r cmd/server/frontend/dist build/frontend || exit
 # Add cache busting string to all predictablly named assets
 JS_CACHE_STRING=$(sha256sum <(find build/frontend/dist -name "*.js"  -type f -exec sha256sum {} \; | sort))
 CSS_CACHE_STRING=$(sha256sum <(find build/frontend/dist -name "*.css"  -type f -exec sha256sum {} \; | sort))
-find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.js/\.js?c=${JS_CACHE_STRING:0:7}/g" || exit
+#note this only matches js files with lowercase names. This is to get around cachebusting chunks that already are random strings
+find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\([a-z]\)\.js/\1\.js?c=${JS_CACHE_STRING:0:7}/g" || exit
 find build/frontend/dist -type f -name "*.html" -print0 | xargs -0 sed -i "s/\.css/\.css?c=${CSS_CACHE_STRING:0:7}/g" || exit
 
 # gzip compress files (with best compression)
