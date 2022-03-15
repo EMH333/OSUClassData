@@ -127,8 +127,7 @@ func getClasses(c *fiber.Ctx) error {
 		var class string
 		err := rows.Scan(&class)
 		if err != nil {
-			c.SendString("Error reading classes")
-			return c.SendStatus(http.StatusInternalServerError)
+			return util.SendError(c, http.StatusInternalServerError, "Error reading classes")
 		}
 		classList = append(classList, class)
 	}
@@ -181,8 +180,7 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 func getStatus(c *fiber.Ctx) error {
 	pingErr := db.Ping()
 	if pingErr != nil {
-		c.SendString("Can't ping DB")
-		return c.SendStatus(http.StatusInternalServerError)
+		return util.SendError(c, http.StatusInternalServerError, "Can't ping DB")
 	}
 	return c.SendString("OK")
 }

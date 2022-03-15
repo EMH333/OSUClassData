@@ -3,6 +3,8 @@ package util
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // This includes the data specific to the API response as well as the data generalized over the whole college (CS, PH, etc.)
@@ -25,4 +27,12 @@ func WriteJSON(w http.ResponseWriter, v interface{}) {
 	if err != nil {
 		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
 	}
+}
+
+func SendError(c *fiber.Ctx, status int, message string) error {
+	err := c.SendString(message)
+	if err != nil {
+		return err
+	}
+	return c.SendStatus(status)
 }
