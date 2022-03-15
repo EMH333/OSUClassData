@@ -87,6 +87,13 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
             break;
         }
       }
+
+      //do some quick bundle calculations
+      let bundleSize = 0;
+      for (file in output.metafile.outputs){
+       bundleSize += output.metafile.outputs[file].bytes;
+      }
+      console.log(`Bundle size: ${(bundleSize/1024).toFixed(1)} kb`);
     })
     .catch((err) => { console.error(err); process.exit(1) });
 }
