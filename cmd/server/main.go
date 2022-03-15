@@ -11,6 +11,9 @@ import (
 	"ethohampton.com/OSUClassData/internal/database"
 	"ethohampton.com/OSUClassData/internal/util"
 	"github.com/go-sql-driver/mysql"
+	"github.com/gofiber/adaptor/v2"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/etag"
 )
 
 var db *sql.DB
@@ -56,24 +59,28 @@ func main() {
 
 	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
 
-	//hello world web server
-	http.Handle("/", http.FileServer(http.Dir("frontend/dist")))
-	http.HandleFunc("/api/v0/status", getStatus)
-	http.HandleFunc("/api/v0/classes", getClasses)
-	http.HandleFunc("/api/v0/class", getClass)
-	http.HandleFunc("/api/v0/classInfo", getClassInfo)
-	http.HandleFunc("/api/v0/chart/studentsPerTerm", getStudentsPerTerm)
-	http.HandleFunc("/api/v0/chart/avgGPAPerTerm", getAvgGPAPerTerm)
-	http.HandleFunc("/api/v0/chart/withdrawalRatePerTerm", getWithdrawalRatePerTerm)
-	http.HandleFunc("/api/v0/chart/lastTermGradeDistribution", getLastTermGradeDistribution)
+	app := fiber.New()
+	app.Use(etag.New()) //add etag middleware so we are more efficent to cloudflare
 
-	http.HandleFunc("/api/v0/subjects", getSubjects)
-	http.HandleFunc("/api/v0/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
-	http.HandleFunc("/api/v0/subject/chart/withdrawalRatePerTerm", getSubjectWithdrawalRatePerTerm)
+	app.Static("/", "./frontend/dist")
 
-	http.HandleFunc("/api/v0/trendingClasses", getTrendingClasses)
+	api := app.Group("/api/v0")
+	api.Get("/status", adaptor.HTTPHandlerFunc(getStatus))
+	api.Get("/classes", adaptor.HTTPHandlerFunc(getClasses))
+	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
+	api.Get("/classInfo", adaptor.HTTPHandlerFunc(getClassInfo))
+	api.Get("/chart/studentsPerTerm", adaptor.HTTPHandlerFunc(getStudentsPerTerm))
+	api.Get("/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getAvgGPAPerTerm))
+	api.Get("/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getWithdrawalRatePerTerm))
+	api.Get("/chart/lastTermGradeDistribution", adaptor.HTTPHandlerFunc(getLastTermGradeDistribution))
 
-	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	api.Get("/subjects", adaptor.HTTPHandlerFunc(getSubjects))
+	api.Get("/subject/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getSubjectAvgGPAPerTerm))
+	api.Get("/subject/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getSubjectWithdrawalRatePerTerm))
+
+	api.Get("/trendingClasses", adaptor.HTTPHandlerFunc(getTrendingClasses))
+
+	err := app.Listen(":" + os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}
