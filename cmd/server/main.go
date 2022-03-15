@@ -13,7 +13,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/etag"
 )
 
 var db *sql.DB
@@ -59,8 +58,12 @@ func main() {
 
 	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
 
-	app := fiber.New()
-	app.Use(etag.New()) //add etag middleware so we are more efficent to cloudflare
+	app := fiber.New(fiber.Config{
+		ETag:                    true,
+		EnableTrustedProxyCheck: true,
+		TrustedProxies:          []string{"127.0.0.1"}, // localhost
+		ProxyHeader:             fiber.HeaderXForwardedFor,
+	})
 
 	app.Static("/", "./frontend/dist")
 
