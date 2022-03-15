@@ -68,8 +68,8 @@ func main() {
 	app.Static("/", "./frontend/dist")
 
 	api := app.Group("/api/v0")
-	api.Get("/status", adaptor.HTTPHandlerFunc(getStatus))
-	api.Get("/classes", adaptor.HTTPHandlerFunc(getClasses))
+	api.Get("/status", getStatus)
+	api.Get("/classes", getClasses)
 	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
 	api.Get("/classInfo", adaptor.HTTPHandlerFunc(getClassInfo))
 	api.Get("/chart/studentsPerTerm", adaptor.HTTPHandlerFunc(getStudentsPerTerm))
@@ -81,7 +81,7 @@ func main() {
 	api.Get("/subject/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getSubjectAvgGPAPerTerm))
 	api.Get("/subject/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getSubjectWithdrawalRatePerTerm))
 
-	api.Get("/trendingClasses", adaptor.HTTPHandlerFunc(getTrendingClasses))
+	api.Get("/trendingClasses", getTrendingClasses)
 
 	err := app.Listen(":" + os.Getenv("PORT"))
 	if err != nil {
@@ -115,7 +115,7 @@ func tryToConnectToDB(config *mysql.Config) error {
 	return nil
 }
 
-func getClasses(w http.ResponseWriter, r *http.Request) {
+func getClasses(c *fiber.Ctx) error {
 	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
 	if err != nil {
 		log.Fatal(err)
@@ -127,13 +127,13 @@ func getClasses(w http.ResponseWriter, r *http.Request) {
 		var class string
 		err := rows.Scan(&class)
 		if err != nil {
-			http.Error(w, "Error reading classes", http.StatusInternalServerError)
-			return
+			c.SendString("Error reading classes")
+			return c.SendStatus(http.StatusInternalServerError)
 		}
 		classList = append(classList, class)
 	}
 
-	util.WriteJSON(w, classList)
+	return c.JSON(classList)
 }
 
 func getClass(w http.ResponseWriter, r *http.Request) {
@@ -178,22 +178,19 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, classData)
 }
 
-func getStatus(w http.ResponseWriter, r *http.Request) {
+func getStatus(c *fiber.Ctx) error {
 	pingErr := db.Ping()
 	if pingErr != nil {
-		http.Error(w, "Can't ping DB", http.StatusInternalServerError)
-		return
+		c.SendString("Can't ping DB")
+		return c.SendStatus(http.StatusInternalServerError)
 	}
-	_, err := w.Write([]byte("OK"))
-	if err != nil {
-		http.Error(w, "Error writing JSON response", http.StatusInternalServerError)
-	}
+	return c.SendString("OK")
 }
 
 // pretty simple method to get all the top trending classes
 // TODO: allow trending classes per college
-func getTrendingClasses(w http.ResponseWriter, r *http.Request) {
-	util.WriteJSON(w, classLeaderboard.Top)
+func getTrendingClasses(c *fiber.Ctx) error {
+	return c.JSON(classLeaderboard.Top)
 }
 
 func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
