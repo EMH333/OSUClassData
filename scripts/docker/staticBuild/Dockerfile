@@ -1,8 +1,14 @@
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine
 
 LABEL org.opencontainers.image.authors="etho@ethohampton.com"
 
-RUN go get github.com/go-sql-driver/mysql
-RUN go get github.com/gofiber/adaptor/v2
-RUN go get github.com/gofiber/fiber/v2
+COPY ./go.mod /tmp/install/go.mod
+COPY ./go.sum /tmp/install/go.sum
+COPY ./fakeDeps.go /tmp/install/fakeDeps.go
+
+RUN cd /tmp/install && go mod download && go build fakeDeps.go
+
+#remove the temporary go files
+RUN rm -rf /tmp/install
+
 RUN apk add --no-cache build-base
