@@ -30,9 +30,11 @@ type Class struct {
 
 //info about a class not specific to a term
 type ClassInfo struct {
-	ClassIdentifier string
-	ClassName       string
-	Credits         int
+	ClassIdentifier     string
+	Credits             int
+	ClassName           string
+	RetrievedClassName  bool //has the name been retrieved from the OSU API?
+	NormalizedClassName bool //has the name been normalized?
 }
 
 type Professor struct {

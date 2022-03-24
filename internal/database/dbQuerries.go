@@ -71,11 +71,15 @@ type ClassInfoResponse struct {
 
 //TODO remove withdrawn students from total count
 //TODO combine into one query
-func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
-	var classInfoQuery = "SELECT Credits, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
+//returns classinfo response, if the class name should be updated and error
+func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
+	var classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
 	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
 	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
 	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+
+	var classNamedRetrieved bool
+	var classNameNormalized bool
 
 	var classData ClassInfoResponse
 	classData.ClassIdentifier = id
@@ -83,41 +87,41 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, error) {
 	// Get name and credits
 	row := db.QueryRow(classInfoQuery, id)
 	if row.Err() != nil {
-		return ClassInfoResponse{}, row.Err()
+		return ClassInfoResponse{}, false, row.Err()
 	}
-	_ = row.Scan(&classData.Credits, &classData.ClassName) // we expect errors here
+	_ = row.Scan(&classData.Credits, &classNamedRetrieved, &classNameNormalized, &classData.ClassName) // we expect errors here
 
 	// Get the last term the class was taught in
 	row = db.QueryRow(lastTermQuery, id)
 	if row.Err() != nil {
-		return ClassInfoResponse{}, row.Err()
+		return ClassInfoResponse{}, false, row.Err()
 	}
 	err := row.Scan(&classData.LastTerm)
 	if err != nil {
-		return ClassInfoResponse{}, err
+		return ClassInfoResponse{}, false, err
 	}
 
 	// Get the last term info
 	row = db.QueryRow(lastTermInfo, id, classData.LastTerm)
 	if row.Err() != nil {
-		return ClassInfoResponse{}, row.Err()
+		return ClassInfoResponse{}, false, row.Err()
 	}
 	err = row.Scan(&classData.AverageGPALastTerm, &classData.StudentsLastTerm)
 	if err != nil {
-		return ClassInfoResponse{}, err
+		return ClassInfoResponse{}, false, err
 	}
 
 	// Get all the other averages and info
 	row = db.QueryRow(averageInfo, id)
 	if row.Err() != nil {
-		return ClassInfoResponse{}, row.Err()
+		return ClassInfoResponse{}, false, row.Err()
 	}
 	err = row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate)
 	if err != nil {
-		return ClassInfoResponse{}, err
+		return ClassInfoResponse{}, false, err
 	}
 
-	return classData, nil
+	return classData, !(classNameNormalized && classNamedRetrieved), nil
 }
 
 type StudentsPerTermResponse struct {

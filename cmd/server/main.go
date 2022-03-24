@@ -165,11 +165,16 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	classData, err := database.GetClassInfo(db, class)
+	classData, nameUpdateNeeded, err := database.GetClassInfo(db, class)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Class not found", http.StatusNotFound)
 		return
+	}
+
+	// if we need to update the name of the class then do it
+	if nameUpdateNeeded {
+		database.UpdateClassName(db, class)
 	}
 
 	util.AddToLeaderboard(classLeaderboard, classData.ClassIdentifier) //start tracking this but don't do anything with it for now

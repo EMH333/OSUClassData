@@ -36,5 +36,7 @@ CREATE TABLE IF NOT EXISTS Classes (
 CREATE TABLE IF NOT EXISTS ClassInfo (
     ClassIdentifier VARCHAR(10) PRIMARY KEY,
     Credits INTEGER NOT NULL,
-    ClassName VARCHAR(255)
+    ClassName VARCHAR(255),
+    RetrievedClassName BOOLEAN NOT NULL DEFAULT 0, -- whether or not the class name has been retrieved from the OSU API
+    NormalizedClassName BOOLEAN NOT NULL DEFAULT 0, -- whether or not the class name has been normalized (can set whole column to 0 if there is an update to the algorithm)
 );
