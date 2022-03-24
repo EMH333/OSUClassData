@@ -11,10 +11,14 @@ VALUES
     ROW('CS161', "202001", 20, 4, 4, 4),
     ROW('CS161', "202101", 21, 4, 5, 5),
     ROW('CS161', "202201", 22, 4, 6, 6),
+    ROW('CS999', "202001", 10, 4, 1, 1),
+    ROW('HC407', "202001", 10, 4, 1, 1),
     ROW('CS162', "202001", 30, 4, 7, 7);
 
 REPLACE INTO ClassInfo(ClassIdentifier, Credits, ClassName)
 VALUES
-    ROW("CS160", 4, "Basics of Computer Science"),
-    ROW("CS161", 4, "Intro to Computer Science I"),
+    ROW('CS999', 4, 'Does not exist `anymore`'),
+    ROW('HC407', 4, 'Does not have a name'),
+    ROW("CS160", 4, "WRONG - Basics of Computer Science"),
+    ROW("CS161", 4, "WRONG - Intro to Computer Science I"),
     ROW("CS162", 4, NULL);
