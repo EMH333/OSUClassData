@@ -33,6 +33,10 @@ func UpdateClassName(db *sql.DB, class string) {
 	}
 }
 
+func GetClassNameQueueLength() int {
+	return classNameQueue.GetLen()
+}
+
 func classNameTask(db *sql.DB) {
 	classNameTaskRunning = true
 	for classNameTaskRunning {

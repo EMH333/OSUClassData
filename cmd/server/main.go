@@ -187,7 +187,12 @@ func getStatus(c *fiber.Ctx) error {
 	if pingErr != nil {
 		return util.SendError(c, http.StatusInternalServerError, "Can't ping DB")
 	}
-	return c.SendString("OK")
+	c.Response().AppendBodyString("OK\n")
+
+	//check queue length for getting class name
+	c.Response().AppendBodyString(fmt.Sprintf("Queue length: %d\n", database.GetClassNameQueueLength()))
+
+	return c.SendStatus(http.StatusOK)
 }
 
 // pretty simple method to get all the top trending classes
