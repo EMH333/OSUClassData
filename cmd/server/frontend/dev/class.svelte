@@ -5,10 +5,8 @@
     wretchInstance,
     termIDtoString,
     termIDtoPlotID,
-    chartOptions,
     chartColor,
   } from "./util";
-  import Plotly from "plotly.js-basic-dist-min";
   import Chart from "chart.js/auto"; //TODO change this to just import what we need
 
   let selectedClass: string;
@@ -182,7 +180,6 @@
               scales: {
                 y: {
                   ticks: {
-                    // Include a dollar sign in the ticks
                     callback: function (value, index, ticks) {
                       return value + "%";
                     },

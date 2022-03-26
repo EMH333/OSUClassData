@@ -4,9 +4,9 @@
     wretchInstance,
     termIDtoString,
     termIDtoPlotID,
-    chartOptions,
+    chartColor,
   } from "./util";
-  import Plotly from "plotly.js-basic-dist-min";
+  import Chart from "chart.js/auto"; //TODO change this to just import what we need
   import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
 
   onMount(() => {
@@ -37,7 +37,7 @@
       .get()
       .json((json) => {
         classesToPick.push(...(json as string[]));
-        classesToPick = classesToPick;//have to trigger svelte refresh
+        classesToPick = classesToPick; //have to trigger svelte refresh
       })
       .catch((error) => {
         console.log(error);
@@ -54,25 +54,41 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: avgGPA,
-          mode: "lines+markers",
-          name: "GPA",
+          labels: terms.map((term: number) => termIDtoString(term)),
+          datasets: [
+            {
+              label: "GPA",
+              data: avgGPA,
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
+          ],
         };
-        const chartLayout = {
-          title: "Average GPA per Term",
-          xaxis: {
-            tickmode: "array",
-            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term: number) => termIDtoString(term)),
-          },
-        };
-        Plotly.purge("avgGPAPerTermChart"); //clear previous chart
-        Plotly.newPlot(
-          "avgGPAPerTermChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        let chartStatus = Chart.getChart("avgGPAPerTermChart");
+        if (chartStatus != undefined) {
+          chartStatus.destroy();
+        }
+        const chart = new Chart(
+          document.getElementById("avgGPAPerTermChart") as HTMLCanvasElement,
+          {
+            type: "line",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Average GPA per Term",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -90,28 +106,61 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: withdrawalRate,
-          mode: "lines+markers",
-          name: "Withdrawal Rate",
+          labels: terms.map((term: number) => termIDtoString(term)),
+          datasets: [
+            {
+              label: "Withdrawal Rate",
+              data: withdrawalRate,
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
+          ],
         };
-        const chartLayout = {
-          title: "Withdrawal Rate per Term",
-          xaxis: {
-            tickmode: "array",
-            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term: number) => termIDtoString(term)),
-          },
-          yaxis: {
-            tickformat: ".0%",
-          },
-        };
-        Plotly.purge("withdrawalRatePerTermChart"); // clear previous chart
-        Plotly.newPlot(
-          "withdrawalRatePerTermChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        let chartStatus = Chart.getChart("withdrawalRatePerTermChart");
+        if (chartStatus != undefined) {
+          chartStatus.destroy();
+        }
+        const chart = new Chart(
+          document.getElementById(
+            "withdrawalRatePerTermChart"
+          ) as HTMLCanvasElement,
+          {
+            type: "line",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Withdrawal Rate per Term",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      if (context.parsed.y !== null) {
+                        return context.parsed.y + "%";
+                      }
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function (value, index, ticks) {
+                      return value + "%";
+                    },
+                  },
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -128,13 +177,16 @@
     bind:selectedItem={selectedClassAny}
     showClear={true}
     onFocus={() => {
-      console.log("focus");
       selectedClassAny = undefined;
     }}
   />
 </div>
-<div id="avgGPAPerTermChart" />
-<div id="withdrawalRatePerTermChart" />
+<div class="chart-container">
+  <canvas id="avgGPAPerTermChart" />
+</div>
+<div class="chart-container">
+  <canvas id="withdrawalRatePerTermChart" />
+</div>
 <br />
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
@@ -145,6 +197,12 @@
     max-width: 100%;
   }
   .buffer {
+    margin-bottom: 3em;
+  }
+  .chart-container {
+    height: 45vh;
+    min-height: 200px;
+    width: 100%;
     margin-bottom: 3em;
   }
 </style>
