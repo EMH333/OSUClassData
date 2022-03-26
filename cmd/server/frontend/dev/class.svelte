@@ -6,8 +6,10 @@
     termIDtoString,
     termIDtoPlotID,
     chartOptions,
+    chartColor,
   } from "./util";
   import Plotly from "plotly.js-basic-dist-min";
+  import Chart from "chart.js/auto"; //TODO change this to just import what we need
 
   let selectedClass: string;
 
@@ -40,24 +42,37 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: students,
-          mode: "lines+markers",
-          name: "Students",
+          labels: terms.map((term: number) => termIDtoString(term)),
+          datasets: [
+            {
+              label: "Students",
+              data: students,
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
+          ],
         };
-        const chartLayout = {
-          title: "Students per Term",
-          xaxis: {
-            tickmode: "array",
-            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term) => termIDtoString(term)),
-          },
-        };
-        Plotly.newPlot(
-          "studentsPerTermChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        const chart = new Chart(
+          document.getElementById("studentsPerTermChart") as HTMLCanvasElement,
+          {
+            type: "line",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Students Per Term",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -74,24 +89,37 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: avgGPA,
-          mode: "lines+markers",
-          name: "GPA",
+          labels: terms.map((term: number) => termIDtoString(term)),
+          datasets: [
+            {
+              label: "GPA",
+              data: avgGPA,
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
+          ],
         };
-        const chartLayout = {
-          title: "Average GPA per Term",
-          xaxis: {
-            tickmode: "array",
-            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term: number) => termIDtoString(term)),
-          },
-        };
-        Plotly.newPlot(
-          "avgGPAPerTermChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        const chart = new Chart(
+          document.getElementById("avgGPAPerTermChart") as HTMLCanvasElement,
+          {
+            type: "line",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Average GPA per Term",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -105,31 +133,64 @@
       .query({ class: selectedClass })
       .get()
       .json((data) => {
-        const withdrawalRate = data.SpecificData;
+        const withdrawalRate = data.SpecificData.map((rate: number) =>
+          (Number(rate) * 100).toFixed(2)
+        );
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          x: terms.map((term: number) => termIDtoPlotID(term)),
-          y: withdrawalRate,
-          mode: "lines+markers",
-          name: "Withdrawal Rate",
+          labels: terms.map((term: number) => termIDtoString(term)),
+          datasets: [
+            {
+              label: "Withdrawal Rate",
+              data: withdrawalRate,
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
+          ],
         };
-        const chartLayout = {
-          title: "Withdrawal Rate per Term",
-          xaxis: {
-            tickmode: "array",
-            tickvals: terms.map((term: number) => termIDtoPlotID(term)),
-            ticktext: terms.map((term: number) => termIDtoString(term)),
-          },
-          yaxis: {
-            tickformat: ".0%",
-          },
-        };
-        Plotly.newPlot(
-          "withdrawalRatePerTermChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        const chart = new Chart(
+          document.getElementById(
+            "withdrawalRatePerTermChart"
+          ) as HTMLCanvasElement,
+          {
+            type: "line",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Withdrawal Rate per Term",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      if (context.parsed.y !== null) {
+                        return context.parsed.y + "%";
+                      }
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function (value, index, ticks) {
+                      return value + "%";
+                    },
+                  },
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -144,7 +205,7 @@
       .get()
       .json((data) => {
         const chartData = {
-          x: [
+          labels: [
             "A",
             "A-",
             "B+",
@@ -157,39 +218,59 @@
             "D",
             "D-",
             "F",
-            "S",
-            "U",
-            "I",
-            "W",
+            "S (Pass)",
+            "U (Fail)",
+            "I (Incomplete)",
+            "W (Withdrawal)",
           ],
-          y: [
-            data.A,
-            data.AMinus,
-            data.BPlus,
-            data.B,
-            data.BMinus,
-            data.CPlus,
-            data.C,
-            data.CMinus,
-            data.DPlus,
-            data.D,
-            data.DMinus,
-            data.F,
-            data.S,
-            data.U,
-            data.I,
-            data.W,
+          datasets: [
+            {
+              data: [
+                data.A,
+                data.AMinus,
+                data.BPlus,
+                data.B,
+                data.BMinus,
+                data.CPlus,
+                data.C,
+                data.CMinus,
+                data.DPlus,
+                data.D,
+                data.DMinus,
+                data.F,
+                data.S,
+                data.U,
+                data.I,
+                data.W,
+              ],
+              backgroundColor: chartColor,
+              borderColor: chartColor,
+            },
           ],
-          type: "bar",
         };
-        const chartLayout = {
-          title: "Grade Distribution (last term)",
-        };
-        Plotly.newPlot(
-          "lastTermGradeDistributionChart",
-          [chartData],
-          chartLayout,
-          chartOptions
+        const chart = new Chart(
+          document.getElementById(
+            "lastTermGradeDistributionChart"
+          ) as HTMLCanvasElement,
+          {
+            type: "bar",
+            data: chartData,
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Grade Distribution ("+termIDtoString(data.TermID)+")",
+                  font: {
+                    size: 20,
+                  },
+                },
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          }
         );
       })
       .catch((err) => {
@@ -201,15 +282,23 @@
 <p style="font-weight: bold;"><a href="/">Go Back</a></p>
 <div class="center buffer"><BasicClassInfo {selectedClass} /></div>
 
-<div id="lastTermGradeDistributionChart" />
-<div id="studentsPerTermChart" />
-<div id="avgGPAPerTermChart" />
-<div id="withdrawalRatePerTermChart" />
+<div class="chart-container">
+  <canvas id="lastTermGradeDistributionChart" />
+</div>
+<div class="chart-container">
+  <canvas id="studentsPerTermChart" />
+</div>
+<div class="chart-container">
+  <canvas id="avgGPAPerTermChart" />
+</div>
+<div class="chart-container">
+  <canvas id="withdrawalRatePerTermChart" />
+</div>
 <br />
 <!--Possible Graphics:
 - Grade Distribution Pie Chart (from all data)-->
 {#if selectedClass == null}
-   <h2 class="center buffer">Please go back and select a class</h2>
+  <h2 class="center buffer">Please go back and select a class</h2>
 {/if}
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
@@ -220,6 +309,12 @@
     max-width: 100%;
   }
   .buffer {
+    margin-bottom: 3em;
+  }
+  .chart-container {
+    height: 45vh;
+    min-height: 200px;
+    width: 100%;
     margin-bottom: 3em;
   }
 </style>

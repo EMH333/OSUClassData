@@ -11,6 +11,8 @@ export const chartOptions = {
     scrollZoom: false,//!isTouchEnabled(),
 };
 
+export const chartColor = "rgb(31, 119, 180)";
+
 function isTouchEnabled() {
     return ('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||

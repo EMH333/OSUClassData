@@ -15,6 +15,10 @@ VALUES
     ROW('HC407', "202001", 10, 4, 1, 1),
     ROW('CS162', "202001", 30, 4, 7, 7);
 
+-- so we can test the bar chart
+REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES
+    ROW('CS160', '202201', 150, 3, 51, 14, 32, 15, 4, 12, 8, 4, 1, 0, 0, 4, 1, 2, 2, 0, 3.19);
+
 REPLACE INTO ClassInfo(ClassIdentifier, Credits, ClassName)
 VALUES
     ROW('CS999', 4, 'Does not exist `anymore`'),
