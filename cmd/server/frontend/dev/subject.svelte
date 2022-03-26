@@ -119,7 +119,9 @@
       .query({ subject: selectedSubject })
       .get()
       .json((data) => {
-        const withdrawalRate = data.WithdrawalRate;
+        const withdrawalRate = data.WithdrawalRate.map((rate: number) =>
+          (Number(rate) * 100).toFixed(2)
+        );
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
