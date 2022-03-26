@@ -47,6 +47,32 @@ export function termIDtoPlotID(termID: number): number {
     return (year % 100) * 4 + part;
 }
 
+export function convertRawDataToPlotData(terms:Array<number>, data:Array<any>): Array<{x:string, y:string}> {
+    var rawMap = new Map();
+        var termConversionMap = new Map();
+        for (var i = 0; i < terms.length; i++) {
+          rawMap.set(termIDtoPlotID(terms[i]), data[i]);
+          termConversionMap.set(termIDtoPlotID(terms[i]), termIDtoString(terms[i]));
+        }
+        
+        var mediumData = Array();
+        for (let index = termIDtoPlotID(terms[0]); index <= termIDtoPlotID(terms[terms.length-1]); index++) {
+          if(rawMap.has(index)) {
+            mediumData.push({
+              x: termConversionMap.get(index),
+              y: rawMap.get(index),
+            });
+          } else {
+              var fake = " ";
+              for (let i = 0; i < index % 4; i++) {
+                  fake += " ";              
+              }
+            mediumData.push({x: fake, y: null});
+          }
+        } 
+    return mediumData;
+}
+
 export function GPAToLetterGrade(averageGPA: number): string {
     if (averageGPA == undefined) return "";
     //converge gpa to letter grade

@@ -4,10 +4,37 @@
   import {
     wretchInstance,
     termIDtoString,
-    termIDtoPlotID,
     chartColor,
+    convertRawDataToPlotData,
   } from "./util";
-  import Chart from "chart.js/auto"; //TODO change this to just import what we need
+  import {
+    Chart,
+    LineElement,
+    LineController,
+    BarElement,
+    BarController,
+    Legend,
+    Title,
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+ChartData,
+ScatterDataPoint,
+  } from "chart.js";
+
+  Chart.register(
+    LineElement,
+    LineController,
+    BarElement,
+    BarController,
+    Legend,
+    Title,
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    PointElement
+  ); //make sure we register all the plugins we need
 
   let selectedClass: string;
 
@@ -40,13 +67,14 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          labels: terms.map((term: number) => termIDtoString(term)),
           datasets: [
             {
               label: "Students",
-              data: students,
+              data: convertRawDataToPlotData(terms, students),
               backgroundColor: chartColor,
               borderColor: chartColor,
+              spanGaps: true,
+              normalized: true,
             },
           ],
         };
@@ -87,13 +115,14 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          labels: terms.map((term: number) => termIDtoString(term)),
           datasets: [
             {
               label: "GPA",
-              data: avgGPA,
+              data: convertRawDataToPlotData(terms, avgGPA),
               backgroundColor: chartColor,
               borderColor: chartColor,
+              spanGaps: true,
+              normalized: true,
             },
           ],
         };
@@ -131,19 +160,22 @@
       .query({ class: selectedClass })
       .get()
       .json((data) => {
+        const terms: Array<number> = data.Terms.map((term: string) =>
+          Number(term)
+        );
         const withdrawalRate = data.SpecificData.map((rate: number) =>
           (Number(rate) * 100).toFixed(2)
         );
-        const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          labels: terms.map((term: number) => termIDtoString(term)),
           datasets: [
             {
               label: "Withdrawal Rate",
-              data: withdrawalRate,
+              data: convertRawDataToPlotData(terms, withdrawalRate),
               backgroundColor: chartColor,
               borderColor: chartColor,
+              spanGaps: true,
+              normalized: true,
             },
           ],
         };
@@ -257,13 +289,21 @@
               plugins: {
                 title: {
                   display: true,
-                  text: "Grade Distribution ("+termIDtoString(data.TermID)+")",
+                  text:
+                    "Grade Distribution (" + termIDtoString(data.TermID) + ")",
                   font: {
                     size: 20,
                   },
                 },
                 legend: {
                   display: false,
+                },
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    autoSkip: false,
+                  },
                 },
               },
             },

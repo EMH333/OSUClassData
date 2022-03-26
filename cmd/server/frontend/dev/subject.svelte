@@ -1,13 +1,29 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { wretchInstance, chartColor, convertRawDataToPlotData } from "./util";
   import {
-    wretchInstance,
-    termIDtoString,
-    termIDtoPlotID,
-    chartColor,
-  } from "./util";
-  import Chart from "chart.js/auto"; //TODO change this to just import what we need
+    Chart,
+    LineElement,
+    LineController,
+    Legend,
+    Title,
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+  } from "chart.js";
   import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
+
+  Chart.register(
+    LineElement,
+    LineController,
+    Legend,
+    Title,
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    PointElement
+  ); //make sure we register all the plugins we need
 
   onMount(() => {
     loadSubjects();
@@ -54,13 +70,14 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          labels: terms.map((term: number) => termIDtoString(term)),
           datasets: [
             {
               label: "GPA",
-              data: avgGPA,
+              data: convertRawDataToPlotData(terms, avgGPA),
               backgroundColor: chartColor,
               borderColor: chartColor,
+              spanGaps: true,
+              normalized: true,
             },
           ],
         };
@@ -106,13 +123,14 @@
         const terms = data.Terms.map((term: string) => Number(term));
 
         const chartData = {
-          labels: terms.map((term: number) => termIDtoString(term)),
           datasets: [
             {
               label: "Withdrawal Rate",
-              data: withdrawalRate,
+              data: convertRawDataToPlotData(terms, withdrawalRate),
               backgroundColor: chartColor,
               borderColor: chartColor,
+              spanGaps: true,
+              normalized: true,
             },
           ],
         };
