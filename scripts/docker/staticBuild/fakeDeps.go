@@ -5,6 +5,8 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/template/html"
 )
 
 /*
@@ -15,4 +17,6 @@ func main() {
 	_ = adaptor.FiberApp(fiber.New())
 	_ = fiber.New()
 	_ = goconcurrentqueue.NewFixedFIFO(20)
+	_ = html.New("", "")
+	_ = etag.New()
 }

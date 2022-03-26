@@ -13,6 +13,8 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/template/html"
 )
 
 var db *sql.DB
@@ -58,14 +60,21 @@ func main() {
 
 	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
 
+	engine := html.New("./frontend/templates", ".html")
+
 	app := fiber.New(fiber.Config{
-		ETag:                    true,
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"127.0.0.1"}, // localhost
 		ProxyHeader:             fiber.HeaderXForwardedFor,
+
+		Views: engine,
 	})
 
+	app.Use(etag.New())
+
 	app.Static("/", "./frontend/dist")
+
+	app.Get("/leaderboards", getLeaderboards)
 
 	api := app.Group("/api/v0")
 	api.Get("/status", getStatus)

@@ -36,3 +36,7 @@ func SendError(c *fiber.Ctx, status int, message string) error {
 	}
 	return c.SendStatus(status)
 }
+
+func GetClassLink(id string) string {
+	return "https://osuclassdata.ethohampton.com/class.html?class=" + id
+}

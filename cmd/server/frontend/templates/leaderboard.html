@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>OSU Class Data - Leaderboard</title>
+    <link rel="stylesheet" href="./leaderboard.css">
+
+    <script async defer data-website-id="ea753981-e9c9-406d-ab43-6a3e69aea824"
+        data-domains="osuclassdata.ethohampton.com" data-css-events="false"
+        src="https://stats.ethohampton.com/stats.js"></script>
+</head>
+
+<body>
+    {{range .Leaderboards}}
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">{{.Name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Entries}}
+                    <tr>
+                        <td><a href="{{.Link}}">{{.Name}}</a></td>
+                        <td>{{.Score}}</td>
+                    </tr>
+                {{end}}
+            </tbody>
+        </table>
+    {{end}}
+</body>
+
+</html>

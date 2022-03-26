@@ -31,6 +31,7 @@ node build.js production || exit
 # Copy frontend to build directory
 cd ../../.. || exit
 cp -r cmd/server/frontend/dist build/frontend || exit
+cp -r cmd/server/frontend/templates build/frontend || exit
 
 # Add cache busting string to all predictablly named assets
 JS_CACHE_STRING=$(sha256sum <(find build/frontend/dist -name "*.js"  -type f -exec sha256sum {} \; | sort))
