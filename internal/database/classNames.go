@@ -184,6 +184,7 @@ func commonSubstitutions(input string) string {
 	//note case senstive
 	substitutions := map[string]string{
 		"Computer Science": "CS",
+		"*":                "", //remove the asterisk from names (why are they there? :) )
 	}
 
 	for key, value := range substitutions {

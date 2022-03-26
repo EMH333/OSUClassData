@@ -14,8 +14,16 @@ func TestGetClassName(t *testing.T) {
 }
 
 func TestNormalizeName(t *testing.T) {
-	name := normalizeName("INTRODUCTION TO COMPUTER SCIENCE II")
-	if name != "Intro to Computer Science II" {
-		t.Error("Expected 'Intro to Computer Science II', got ", name)
+	testCases := map[string]string{
+		"Computer Science":                    "CS",
+		"Computer Science II":                 "CS II",
+		"INTRODUCTION TO COMPUTER SCIENCE II": "Intro to CS II",
+		"*SOMETHING":                          "Something",
+	}
+
+	for input, expected := range testCases {
+		if actual := normalizeName(input); actual != expected {
+			t.Errorf("Expected '%s', got '%s'", expected, actual)
+		}
 	}
 }
