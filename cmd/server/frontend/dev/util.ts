@@ -63,9 +63,10 @@ export function convertRawDataToPlotData(terms:Array<number>, data:Array<any>): 
               y: rawMap.get(index),
             });
           } else {
+              const numFake = termIDtoPlotID(terms[terms.length-1]) - termIDtoPlotID(terms[0]) + 1; // the number of fake data points to add
               var fake = " ";
-              for (let i = 0; i < index % 4; i++) {
-                  fake += " ";              
+              for (let i = 0; i < index % numFake; i++) {
+                  fake += "​";
               }
             mediumData.push({x: fake, y: null});
           }
