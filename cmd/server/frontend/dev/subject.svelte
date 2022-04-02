@@ -54,6 +54,13 @@
       .json((json) => {
         classesToPick.push(...(json as string[]));
         classesToPick = classesToPick; //have to trigger svelte refresh
+
+        const query = new URLSearchParams(window.location.search);
+        let requestedSubject = query.get("subject");
+        if (requestedSubject) {
+          console.log("Selecting subject", requestedSubject);
+          selectedClassAny = requestedSubject as unknown as any[];
+        }
       })
       .catch((error) => {
         console.log(error);

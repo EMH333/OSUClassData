@@ -179,6 +179,7 @@ func getHighestGPASubjectsLastTerm(db *sql.DB, num int, term int) []LeaderboardE
 		list = append(list, LeaderboardEntry{
 			Name:  name,
 			Score: fmt.Sprintf("%0.2f", score),
+			Link:  util.GetSubjectLink(name),
 		})
 	}
 
@@ -226,6 +227,7 @@ func getHighestWithdrawalSubjectsLastTerm(db *sql.DB, num int, term int) []Leade
 		list = append(list, LeaderboardEntry{
 			Name:  name,
 			Score: fmt.Sprintf("%0.2f%%", score*100),
+			Link:  util.GetSubjectLink(name),
 		})
 	}
 

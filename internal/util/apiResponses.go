@@ -42,6 +42,10 @@ func GetClassLink(id string) string {
 	return "https://osuclassdata.ethohampton.com/class.html?class=" + id
 }
 
+func GetSubjectLink(id string) string {
+	return "https://osuclassdata.ethohampton.com/subject.html?subject=" + id
+}
+
 func TermIDToName(id int) string {
 	var year = id / 100
 	var part = id % 10
