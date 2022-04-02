@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -39,4 +40,20 @@ func SendError(c *fiber.Ctx, status int, message string) error {
 
 func GetClassLink(id string) string {
 	return "https://osuclassdata.ethohampton.com/class.html?class=" + id
+}
+
+func TermIDToName(id int) string {
+	var year = id / 100
+	var part = id % 10
+	switch part {
+	case 0:
+		return "Summer " + fmt.Sprintf("%d", year-1)
+	case 1:
+		return "Fall " + fmt.Sprintf("%d", year-1)
+	case 2:
+		return "Winter " + fmt.Sprintf("%d", year)
+	case 3:
+		return "Spring " + fmt.Sprintf("%d", year)
+	}
+	return "Unknown"
 }
