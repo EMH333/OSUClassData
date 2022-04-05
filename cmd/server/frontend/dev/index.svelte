@@ -1,57 +1,25 @@
 <script lang="ts">
-  import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
-  import { onMount } from "svelte";
-  import { wretchInstance } from "./util";
+  import ClassSelector from "./components/ClassSelector.svelte";
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
   import Trending from "./components/Trending.svelte";
+  import type { BasicClass } from "./types";
 
-  interface BasicClass {
-    displayName: string;
-    id: string;
-  }
-
-  //for search
-  let classesToPick: BasicClass[];
-  let selectedClassAny: any[];
   let selectedClass: BasicClass;
-
-  onMount(() => loadClasses());
-
-  $: selectedClass = selectedClassAny as unknown as BasicClass;
-
-  function loadClasses() {
-    console.log("Loading classes");
-    wretchInstance
-      .url("classes")
-      .get()
-      .json((json) => {
-        classesToPick = (json as string[]).flatMap((className: string) => ({
-          displayName: className,
-          id: className,
-        }));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
 </script>
 
 <div class="container">
   <h1>OSU Class Data Explorer</h1>
 
-  <AutoComplete
-    text="Search for a class"
-    items={classesToPick}
-    bind:selectedItem={selectedClassAny}
-    labelFieldName="displayName"
-  />
+  <ClassSelector bind:selectedClass />
 
   {#if selectedClass}
     <!-- <div>Class info: {JSON.stringify(classInfo)}</div> -->
     <BasicClassInfo selectedClass={selectedClass.id} />
 
     <!--Link to more info-->
-    <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;">More info about {selectedClass.id}</a>
+    <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;">
+      More info about {selectedClass.id}
+    </a>
   {:else}
     <div>Please pick a class!</div>
   {/if}
