@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -65,4 +66,10 @@ func TermIDToName(id int) string {
 		return "Spring " + fmt.Sprintf("%d", year)
 	}
 	return "Unknown"
+}
+
+var classIDAfterNumbers = regexp.MustCompile(`[0-9].*`)
+
+func ClassIDToSubject(id string) string {
+	return classIDAfterNumbers.ReplaceAllLiteralString(id, "")
 }

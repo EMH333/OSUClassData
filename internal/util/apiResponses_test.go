@@ -22,3 +22,22 @@ func TestTermIDToName(t *testing.T) {
 		}
 	}
 }
+
+func TestClassIDToSubject(t *testing.T) {
+	testCases := []struct {
+		classID string
+		subject string
+	}{
+		{"CS101", "CS"},
+		{"CSD102", "CSD"},
+		{"CS103H", "CS"},
+		{"ENGR104", "ENGR"},
+	}
+
+	for _, testCase := range testCases {
+		subject := ClassIDToSubject(testCase.classID)
+		if subject != testCase.subject {
+			t.Errorf("ClassIDToSubject(%s) = %s, want %s", testCase.classID, subject, testCase.subject)
+		}
+	}
+}
