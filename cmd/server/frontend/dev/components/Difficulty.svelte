@@ -14,12 +14,18 @@
         difficultyText = "easier than";
         break;
       case 2:
-        difficultyText = "about the same as";
+        difficultyText = "slightly easier than";
         break;
       case 3:
-        difficultyText = "harder than";
+        difficultyText = "about the same as";
         break;
       case 4:
+        difficultyText = "slightly harder than";
+        break;
+      case 5:
+        difficultyText = "harder than";
+        break;
+      case 6:
         difficultyText = "much harder than";
         break;
       default:
@@ -38,20 +44,15 @@
 </script>
 
 <div>
-  <span
-    >This class is {{ difficultyText }} other classes in {{
-      subject,
-    }}</span
-  >
-  <span
+  <span>This class is {{ difficultyText }} other {{ subject }} classes</span>
+  <!--<span
     ><form action="/TODO" method="post">
-      <input type="hidden" name="classToVote" value={{ classID }} />
-      <!--Add some sort of CORS value-->
-      <button type="submit" name="vote" value="Agree">Agree</button>
-      <button type="submit" name="vote" value="Disagree">Disagree</button>
-      <!--If disagree, then what direction should it go?-->
-    </form></span
-  >
+      <input type="hidden" name="classToVote" value={{ classID }} />-->
+  <!--Add some sort of CORS value-->
+  <!--<button type="submit" name="vote" value="Agree">Agree</button>
+      <button type="submit" name="vote" value="Disagree">Disagree</button>-->
+  <!--If disagree, then what direction should it go?-->
+  <!--</form></span>-->
 </div>
 
 <style>

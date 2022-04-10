@@ -123,6 +123,8 @@ func main() {
 	api.Get("/subject/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getSubjectAvgGPAPerTerm))
 	api.Get("/subject/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getSubjectWithdrawalRatePerTerm))
 
+	api.Get("/relativeDifficulty", getRelativeClassDifficulty)
+
 	api.Get("/trendingClasses", getTrendingClasses)
 
 	err := app.Listen(":" + os.Getenv("PORT"))

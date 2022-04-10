@@ -64,23 +64,25 @@ func GetSubjectWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTe
 	return response, nil
 }
 
-func GetSubjectAvgGPA(db *sql.DB, id string, term string) (float64, error) {
-	var query = "SELECT AVG(ClassGPA) FROM Classes WHERE ClassIdentifier LIKE ? AND TermID=? AND Visible=TRUE GROUP BY TermID ORDER BY TermID"
+//calculate average subject GPA as well as the standard deviation of the subject GPA
+func GetSubjectAvgStdGPA(db *sql.DB, id string, term string) (float64, float64, error) {
+	var query = "SELECT AVG(ClassGPA), STD(ClassGPA) FROM Classes WHERE ClassIdentifier LIKE ? AND TermID=? AND Visible=TRUE GROUP BY TermID ORDER BY TermID"
 
 	var GPA float64
+	var STD float64
 
 	rows, err := db.Query(query, id+"%", term) //note the added % which allows us to ignore the numbers at end of each class id
 	if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&GPA)
+		err := rows.Scan(&GPA, &STD)
 		if err != nil {
-			return -1, err
+			return -1, -1, err
 		}
 	}
 
-	return GPA, nil
+	return GPA, STD, nil
 }
