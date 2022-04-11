@@ -19,6 +19,7 @@
   "dependencies": {
     "chart.js": "^3.7.1",
     "simple-svelte-autocomplete": "^2.3.9",
+    "svelte-toggle": "^3.1.0",
     "wretch": "^1.7.9",
     "wretch-middlewares": "^0.1.13"
   }

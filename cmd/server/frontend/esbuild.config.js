@@ -10,5 +10,6 @@ module.exports = {
     metafile: true,
     outdir: './dist',
     sourcemap: 'external',
+    mainFields: ["svelte", "browser", "module", "main"],
     plugins: [esbuildSvelte(svelteConfig)],
 };

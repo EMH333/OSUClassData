@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
+  import AutoComplete from "simple-svelte-autocomplete";
   import { onMount } from "svelte";
   import { wretchInstance } from "../util";
   import type { BasicClass } from "../types";

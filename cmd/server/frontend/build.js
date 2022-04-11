@@ -65,11 +65,11 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
   //allow for non-minified code but no watching
-  if (process.argv.length >= 2 && process.argv[2] === "ci") { compileOptions.minify = false;}
+  if (process.argv.length >= 2 && process.argv[2] === "ci") { compileOptions.minify = false; }
 
   esbuild.build(compileOptions)
     .then(output => {
-      for (file in output.metafile.outputs){
+      for (file in output.metafile.outputs) {
         let fileInfo = output.metafile.outputs[file];
         switch (file) {
           case "dist/index.js":
@@ -90,10 +90,10 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
 
       //do some quick bundle calculations
       let bundleSize = 0;
-      for (file in output.metafile.outputs){
-       bundleSize += output.metafile.outputs[file].bytes;
+      for (file in output.metafile.outputs) {
+        bundleSize += output.metafile.outputs[file].bytes;
       }
-      console.log(`Bundle size: ${(bundleSize/1024).toFixed(1)} kb`);
+      console.log(`Bundle size: ${(bundleSize / 1024).toFixed(1)} kb`);
     })
     .catch((err) => { console.error(err); process.exit(1) });
 }
@@ -101,7 +101,10 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
 function generateLinkHeader(imports) {
   let header = '';
   for (let i = 0; i < imports.length; i++) {
-    header += `<link rel="preload" href="${imports[i].path.replace('dist/','')}" as="script">`;
+    let fileName = imports[i].path.replace('dist/', '');
+    if (fileName.startsWith("chunk")) { // only preload chunks, not async imports
+      header += `<link rel="preload" href="${fileName}" as="script">`;
+    }
   }
   return header;
 }
