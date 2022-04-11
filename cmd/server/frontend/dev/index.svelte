@@ -39,10 +39,10 @@
   <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
   <p><a href="about.html" class="button-link">About This Website</a></p>
 
-  <details on:toggle={loadBeta}>
+  <!--<details on:toggle={loadBeta}>
     <summary>Advanced</summary>
     <svelte:component this={Beta} />
-  </details>
+  </details>-->
 
   <p>Copyright © 2021 Ethan Hampton</p>
 </div>
