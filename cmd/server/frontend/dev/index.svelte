@@ -5,6 +5,14 @@
   import type { BasicClass } from "./types";
 
   let selectedClass: BasicClass;
+
+  let Beta;
+
+  async function loadBeta(eventDetails) {
+    if (eventDetails.target.open && Beta === undefined) {
+      Beta = (await import("./components/BetaSwitch.svelte")).default;
+    }
+  }
 </script>
 
 <div class="container">
@@ -26,6 +34,12 @@
   <Trending />
   <p><a href="subject.html">Stats by Subject</a></p>
   <p><a href="about.html">About This Website</a></p>
+
+  <details on:toggle={loadBeta}>
+    <summary>Advanced</summary>
+    <svelte:component this={Beta} />
+  </details>
+
   <p>Copyright © 2021 Ethan Hampton</p>
 </div>
 
