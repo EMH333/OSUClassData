@@ -25,15 +25,19 @@
     <BasicClassInfo selectedClass={selectedClass.id} />
 
     <!--Link to more info-->
-    <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;">
-      More info about {selectedClass.id}
-    </a>
+    <p>
+      <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;" class="button-link">
+        More info about {selectedClass.id}
+      </a>
+    </p>
   {:else}
     <div>Please pick a class!</div>
   {/if}
+  <div class="spacer" />
   <Trending />
-  <p><a href="subject.html">Stats by Subject</a></p>
-  <p><a href="about.html">About This Website</a></p>
+  <div class="spacer" />
+  <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
+  <p><a href="about.html" class="button-link">About This Website</a></p>
 
   <details on:toggle={loadBeta}>
     <summary>Advanced</summary>
@@ -43,11 +47,6 @@
   <p>Copyright © 2021 Ethan Hampton</p>
 </div>
 
-<style>
-  .container {
-    margin: auto;
-    width: max-content;
-    max-width: 100%;
-    text-align: center;
-  }
+<style global>
+  @import "./globalCSS.css";
 </style>

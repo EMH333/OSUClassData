@@ -196,8 +196,8 @@
   }
 </script>
 
-<p style="font-weight: bold;"><a href="/">Go Back</a></p>
-<div class="center buffer">
+<p style="font-weight: bold;"><a href="/" class="button-link">Go Back</a></p>
+<div class="center buffer selector">
   <AutoComplete
     text={undefined}
     items={classesToPick}
@@ -218,6 +218,9 @@
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
 <style>
+  @import "./css/buttonLink.css";
+  @import "./css/classSelector.css";
+
   .center {
     margin: auto;
     width: max-content;

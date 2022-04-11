@@ -30,9 +30,15 @@
   }
 </script>
 
-<AutoComplete
+<div class="selector">
+  <AutoComplete
     text="Search for a class"
     items={classesToPick}
     bind:selectedItem={selectedClassAny}
     labelFieldName="displayName"
   />
+</div>
+
+<style>
+  @import "../css/classSelector.css";
+</style>

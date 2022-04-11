@@ -17,10 +17,10 @@
       .get()
       .json((json) => {
         //for each json entry, add to classes set
-        for (const c of (json as string[])) {
+        for (const c of json as string[]) {
           classes.add(c);
         }
-        classes = classes;//force update
+        classes = classes; //force update
       })
       .catch((error) => {
         console.error(error);
@@ -31,9 +31,11 @@
 <!--only display if able to load properly-->
 {#if classes != null && classes.size > 0}
   <div id="trendingClasses">
-    <div style="font-weight: bold;">Trending Classes: </div>
+    <div style="font-weight: bold;">Trending Classes:</div>
     {#each [...classes] as c}
-      <span class="trendingClass"><a href="class.html?class={c}">{c}</a></span>
+      <div class="trendingClass">
+        <a href="class.html?class={c}" class="button-link">{c}</a>
+      </div>
     {/each}
   </div>
 {/if}
@@ -41,6 +43,7 @@
 <style>
   .trendingClass {
     margin: 0.5rem;
+    display: inline-block;
   }
   #trendingClasses {
     justify-content: center;

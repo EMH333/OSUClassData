@@ -316,7 +316,7 @@ ScatterDataPoint,
   }
 </script>
 
-<p style="font-weight: bold;"><a href="/">Go Back</a></p>
+<p style="font-weight: bold;"><a href="/" class="button-link">Go Back</a></p>
 <div class="center buffer"><BasicClassInfo {selectedClass} /></div>
 
 <div class="chart-container">
@@ -340,6 +340,8 @@ ScatterDataPoint,
 <p class="center">Copyright © 2021 Ethan Hampton</p>
 
 <style>
+  @import "./css/buttonLink.css";
+
   .center {
     margin: auto;
     width: max-content;

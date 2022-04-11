@@ -27,7 +27,7 @@
     label="Beta Mode Enabled"
     on="Yes"
     off="No"
-    toggledColor="#1f77b4"
+    toggledColor="#D73F09"
   />
 </div>
 
