@@ -54,33 +54,36 @@ func classNameTask(db *sql.DB) {
 
 		// it's possible that the same item ends up in the queue multiple times, so we need to check if it's still needed
 		// just to keep our requests to the API to a minimum
-		if stillNeedToUpdateName(db, element.(string)) {
+		retrieveClassName, normalizeClassName := whatPartOfNameToUpdate(db, element.(string))
+		if retrieveClassName {
 			// we don't actually care about the API error because it will return an empty string which is fine for our purposes
 			name, _ := getClassName(element.(string))
 			name = normalizeName(name)
 			_ = updateClassNameDatabase(db, element.(string), name)
-			if err != nil {
-				// wait so we don't overload API
-				time.Sleep(classNameWaitTime * time.Second)
-				continue
-			}
 
 			// wait so we don't overload API
 			time.Sleep(classNameWaitTime * time.Second)
+
+		} else if normalizeClassName {
+			// this path doesn't touch the API at all so we don't need to wait
+			name := getNameFromDB(db, element.(string))
+			name = normalizeName(name)
+			_ = updateClassNameDatabase(db, element.(string), name)
 		}
 	}
 	classNameTaskRunning = false
 }
 
-func stillNeedToUpdateName(db *sql.DB, ID string) bool {
+// bools are should retrieve, should normalize
+func whatPartOfNameToUpdate(db *sql.DB, ID string) (bool, bool) {
 	query := `SELECT RetrievedClassName, NormalizedClassName FROM ClassInfo WHERE ClassIdentifier = ?`
 	row := db.QueryRow(query, ID)
 	var retrievedClassName, normalizedClassName bool
 	err := row.Scan(&retrievedClassName, &normalizedClassName)
 	if err != nil {
-		return true
+		return true, true
 	}
-	return !retrievedClassName || !normalizedClassName
+	return !retrievedClassName, !normalizedClassName
 }
 
 func getClassName(class string) (string, error) {
@@ -133,6 +136,17 @@ func getClassName(class string) (string, error) {
 	}
 
 	return name, nil
+}
+
+func getNameFromDB(db *sql.DB, ID string) string {
+	query := `SELECT ClassName FROM ClassInfo WHERE ClassIdentifier = ?`
+	row := db.QueryRow(query, ID)
+	var name string
+	err := row.Scan(&name)
+	if err != nil {
+		return ""
+	}
+	return name
 }
 
 func normalizeName(name string) string {
