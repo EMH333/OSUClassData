@@ -19,6 +19,7 @@ func TestNormalizeName(t *testing.T) {
 		"Computer Science II":                 "CS II",
 		"INTRODUCTION TO COMPUTER SCIENCE II": "Intro to CS II",
 		"*SOMETHING":                          "Something",
+		"ETHICS IN CS":                        "Ethics In CS",
 	}
 
 	for input, expected := range testCases {

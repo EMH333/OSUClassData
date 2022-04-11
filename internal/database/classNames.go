@@ -216,6 +216,9 @@ func commonSubstitutions(input string) string {
 		if word == "introduction" {
 			words[index] = "Intro"
 		}
+		if word == "cs" {
+			words[index] = "CS"
+		}
 	}
 	return strings.Join(words, " ")
 }
