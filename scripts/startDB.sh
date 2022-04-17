@@ -13,7 +13,7 @@ mkdir -p /tmp/OSUCD-mysql
 docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql \
     -v "$(pwd)"/sql:/tmp/sql \
     -v "$(pwd)"/cmd/classParser:/tmp/classData \
-    -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
+    -e MYSQL_ROOT_PASSWORD=my-secret-pw -d docker.io/library/mysql:8
 #docker exec -it OSUCD-mysql bash
 
 # wait till database is up

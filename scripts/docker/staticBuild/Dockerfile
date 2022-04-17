@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine
+FROM docker.io/library/golang:1.18-alpine
 
 LABEL org.opencontainers.image.authors="etho@ethohampton.com"
 
