@@ -2,9 +2,7 @@ FROM docker.io/library/golang:1.18-alpine
 
 LABEL org.opencontainers.image.authors="etho@ethohampton.com"
 
-COPY ./go.mod /tmp/install/go.mod
-COPY ./go.sum /tmp/install/go.sum
-COPY ./fakeDeps.go /tmp/install/fakeDeps.go
+COPY ./go.mod ./go.sum ./fakeDeps.go /tmp/install/
 
 RUN cd /tmp/install && go mod download && go build fakeDeps.go
 
