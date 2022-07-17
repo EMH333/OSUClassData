@@ -1,4 +1,5 @@
 dist
+distSSR
 node_modules
 cmd/classParser/**.sql
 build
