@@ -61,6 +61,7 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
     //process.exit(0)
   })
 } else {
+  ssr();
   //allow for non-minified code
   if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
@@ -114,4 +115,45 @@ function insertPreload(htmlPath, imports) {
   let headers = generateLinkHeader(imports);
   html = html.replace('<link ref="preloadReplace">', headers);
   fs.writeFileSync(htmlPath, html);
+}
+
+function ssr() {
+  // TODO clean this up and use exiting imports for config
+  // TODO also render the class and subject pages
+  const esbuildSvelte = require('esbuild-svelte');
+  const svelteOptions = require("./svelte.config");
+  esbuild
+    .build({
+      ...esbuildOptions,
+      entryPoints: ["ssr.js"],
+      outdir: "./distSSR",
+      format: "cjs",
+      splitting: false,
+      plugins: [
+        esbuildSvelte({
+          ...svelteOptions,
+          compilerOptions: {
+            generate: "ssr",
+          },
+        }),
+      ],
+    })
+    .then(() => {
+      //now we can generate the html
+      const fs = require("fs");
+      const output = require("./distSSR/ssr");
+
+      const initialHTML = fs.readFileSync("./dist/index.html");
+      let rendered = output.render({
+        target: "document.body"
+      });
+      if(rendered.head != "") {
+        console.error("Head is not empty, this is not supported");
+      }
+      //console.log(rendered.html)
+      let final = initialHTML.toString().replace("<!--ssr-html-->", rendered.html)
+
+      fs.writeFileSync("./dist/index.html", final);
+    })
+    .catch((err) => { console.error(err); process.exit(1) });
 }
