@@ -3,6 +3,7 @@
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
   import Trending from "./components/Trending.svelte";
   import type { BasicClass } from "./types";
+  import { wretchInstance } from "./util";
 
   let selectedClass: BasicClass;
 
@@ -12,6 +13,20 @@
     if (eventDetails.target.open && Beta === undefined) {
       Beta = (await import("./components/BetaSwitch.svelte")).default;
     }
+  }
+
+  function submitEmail(form: SubmitEvent) {
+    form.preventDefault();
+    let email = (
+      (form.target as HTMLFormElement).elements[0] as HTMLInputElement
+    ).value;
+    wretchInstance
+      .url("subscribe")
+      .post({ email })
+      .json()
+      .then(() => {
+        alert("Subscribed!");
+      });
   }
 </script>
 
@@ -52,6 +67,17 @@
   </noscript>
   <div class="spacer" />
   <Trending />
+  <div class="spacer" />
+  <div>
+    <p style="width: 50%; min-width: 15em; margin:auto;">
+      Want to get notified when new terms or features are added? Submit your
+      email and we'll let you know when new data is available:
+    </p>
+    <form on:submit={submitEmail}>
+      <input type="email" name="email" />
+      <input type="submit" value="Subscribe" />
+    </form>
+  </div>
   <div class="spacer" />
   <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
   <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
