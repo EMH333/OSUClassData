@@ -26,13 +26,30 @@
 
     <!--Link to more info-->
     <p>
-      <a href={`class.html?class=${selectedClass.id}`} style="font-weight: bold;" class="button-link">
+      <a
+        href={`class.html?class=${selectedClass.id}`}
+        style="font-weight: bold;"
+        class="button-link"
+      >
         More info about {selectedClass.id}
       </a>
     </p>
   {:else}
     <div>Please pick a class!</div>
   {/if}
+  <noscript>
+    <div>
+      <p>
+        <strong> You must have JavaScript enabled to use this site. </strong>
+      </p>
+      <p>
+        This web app allows the exploration of data about courses, subjects, and
+        classes at OSU (Oregon State University) which was obtained through a
+        FOIA request to the university. This website is in no way affiliated
+        with Oregon State University.
+      </p>
+    </div>
+  </noscript>
   <div class="spacer" />
   <Trending />
   <div class="spacer" />
