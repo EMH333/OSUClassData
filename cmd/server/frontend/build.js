@@ -25,7 +25,7 @@ function copyHTML() {
   });
 }
 
-const directory = './dist';
+const directories = ['./dist', './distSSR'];
 let compileOptions = esbuildOptions;
 
 if (process.argv[2] === "production") {
@@ -34,16 +34,20 @@ if (process.argv[2] === "production") {
 
 // remove build directory if building clean or for production
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
-  if (fs.existsSync(directory)) {
-    fs.rmSync(directory, { recursive: true });
-  }
+  directories.forEach(directory => {
+    if (fs.existsSync(directory)) {
+      fs.rmSync(directory, { recursive: true });
+    }
+  });
 }
 
 
 // make sure dist exists
-if (!fs.existsSync(directory)) {
-  fs.mkdirSync(directory);
-}
+directories.forEach(directory => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+});
 
 //copy all the html files
 copyHTML();
@@ -118,7 +122,6 @@ function insertPreload(htmlPath, imports) {
 }
 
 function ssr() {
-  // TODO clean this up and use exiting imports for config
   // TODO also render the class and subject pages
   const esbuildSvelte = require('esbuild-svelte');
   const svelteOptions = require("./svelte.config");
@@ -147,7 +150,7 @@ function ssr() {
       let rendered = output.render({
         target: "document.body"
       });
-      if(rendered.head != "") {
+      if (rendered.head != "") {
         console.error("Head is not empty, this is not supported");
       }
       //console.log(rendered.html)
