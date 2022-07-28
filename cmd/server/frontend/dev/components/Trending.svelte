@@ -16,11 +16,13 @@
       .url(url)
       .get()
       .json((json) => {
-        //for each json entry, add to classes set
-        for (const c of json as string[]) {
-          classes.add(c);
+        if (json) {
+          //for each json entry, add to classes set
+          for (const c of json as string[]) {
+            classes.add(c);
+          }
+          classes = classes; //force update
         }
-        classes = classes; //force update
       })
       .catch((error) => {
         console.error(error);
