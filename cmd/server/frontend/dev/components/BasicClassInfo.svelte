@@ -33,7 +33,11 @@
       {/if}
     </h2>
 
-    <div>Credits: <span class="data">{classInfo.Credits}</span></div>
+    <div>
+      Credits: <span class="data">
+        {classInfo.Credits > 0 ? classInfo.Credits : "Variable"}
+      </span>
+    </div>
     <div>
       Last Term With Data: <span class="data"
         >{termIDtoString(classInfo.LastTerm)}</span
