@@ -60,6 +60,7 @@ func GetLastTermClass(db *sql.DB, id string) (Class, error) {
 type ClassInfoResponse struct {
 	ClassIdentifier    string
 	ClassName          string
+	ClassDescription   string
 	LastTerm           string // Last term the class was taught in data we have
 	Credits            int    //TODO deal with variable credit classes
 	AverageGPA         float64
@@ -73,7 +74,7 @@ type ClassInfoResponse struct {
 //TODO combine into one query
 //returns classinfo response, if the class name should be updated and error
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
-	var classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName FROM ClassInfo WHERE ClassIdentifier=?"
+	var classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
 	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
 	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
 	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
@@ -89,7 +90,7 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	if row.Err() != nil {
 		return ClassInfoResponse{}, false, row.Err()
 	}
-	_ = row.Scan(&classData.Credits, &classNamedRetrieved, &classNameNormalized, &classData.ClassName) // we expect errors here
+	_ = row.Scan(&classData.Credits, &classNamedRetrieved, &classNameNormalized, &classData.ClassName, &classData.ClassDescription) // we expect errors here
 
 	// Get the last term the class was taught in
 	row = db.QueryRow(lastTermQuery, id)

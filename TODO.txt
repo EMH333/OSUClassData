@@ -4,6 +4,6 @@
 - Fix variable credit classes
 - GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
-- Add class descriptions for better SEO
 - Add difficulty estimates
 - Collect emails, feedback and other info for future use
+- Use https://github.com/go-redis/cache to cache generated pages when switching away from query string to path params

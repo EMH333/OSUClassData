@@ -39,19 +39,19 @@
       </span>
     </div>
     <div>
-      Last Term With Data: <span class="data"
-        >{termIDtoString(classInfo.LastTerm)}</span
-      >
+      Last Term With Data: <span class="data">
+        {termIDtoString(classInfo.LastTerm)}
+      </span>
     </div>
     <div>
-      Average Grade (from all data): <span class="data"
-        >{GPAToLetterGrade(classInfo.AverageGPA)}</span
-      >
+      Average Grade (from all data): <span class="data">
+        {GPAToLetterGrade(classInfo.AverageGPA)}
+      </span>
     </div>
     <div>
-      Average Grade (from last term): <span class="data"
-        >{GPAToLetterGrade(classInfo.AverageGPALastTerm)}</span
-      >
+      Average Grade (from last term): <span class="data">
+        {GPAToLetterGrade(classInfo.AverageGPALastTerm)}
+      </span>
     </div>
     <div>
       Average Students Per Term: <span class="data"
@@ -62,10 +62,17 @@
       Students last term: <span class="data">{classInfo.StudentsLastTerm}</span>
     </div>
     <div>
-      Withdrawal Rate: <span class="data"
-        >{(classInfo.WithdrawalRate * 100).toFixed(2)}%</span
-      >
+      Withdrawal Rate: <span class="data">
+        {(classInfo.WithdrawalRate * 100).toFixed(2)}%
+      </span>
     </div>
+    {#if classInfo.ClassDescription}
+      <div class="description">
+        Description: <br> <span>
+          {classInfo.ClassDescription}
+        </span>
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -75,5 +82,10 @@
   }
   .display {
     text-align: center;
+  }
+  .description {
+    min-width: 100%;
+    width: 0;
+    margin-top: 1em;
   }
 </style>

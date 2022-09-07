@@ -19,10 +19,10 @@ VALUES
 REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES
     ROW('CS160', '202201', 150, 3, 51, 14, 32, 15, 4, 12, 8, 4, 1, 0, 0, 4, 1, 2, 2, 0, 3.19);
 
-REPLACE INTO ClassInfo(ClassIdentifier, Credits, ClassName)
+REPLACE INTO ClassInfo(ClassIdentifier, Credits, ClassName, ClassDescription)
 VALUES
-    ROW('CS999', 4, 'Does not exist `anymore`'),
-    ROW('HC407', 4, 'Does not have a name'),
-    ROW("CS160", 4, "WRONG - Basics of Computer Science"),
-    ROW("CS161", 4, "WRONG - Intro to Computer Science I"),
-    ROW("CS162", 4, NULL);
+    ROW('CS999', 4, 'Does not exist `anymore`', 'This class is not offered anymore'),
+    ROW('HC407', 4, 'Does not have a name', 'This class does not have a name'),
+    ROW("CS160", 4, "WRONG - Basics of Computer Science", 'Computer Science intro is a class designed to do a whole bunch of stuff blah blah blah this goes on for a while and needs to be formmatted correctly so there is that too'),
+    ROW("CS161", 4, "WRONG - Intro to Computer Science I", 'Computer Science Intro (but this time it is actually programming) is a class designed to do a whole bunch of stuff blah blah blah this goes on for a while and needs to be formmatted correctly so there is that too'),
+    ROW("CS162", 4, NULL, NULL);

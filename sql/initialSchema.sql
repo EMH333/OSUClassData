@@ -40,5 +40,7 @@ CREATE TABLE IF NOT EXISTS ClassInfo (
     -- whether or not the class name has been retrieved from the OSU API
     RetrievedClassName BOOLEAN NOT NULL DEFAULT 0,
     -- whether or not the class name has been normalized (can set whole column to 0 if there is an update to the algorithm)
-    NormalizedClassName BOOLEAN NOT NULL DEFAULT 0
+    NormalizedClassName BOOLEAN NOT NULL DEFAULT 0,
+    -- class description
+    ClassDescription VARCHAR(4096)
 );

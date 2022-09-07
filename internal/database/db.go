@@ -35,6 +35,7 @@ type ClassInfo struct {
 	ClassName           string
 	RetrievedClassName  bool //has the name been retrieved from the OSU API?
 	NormalizedClassName bool //has the name been normalized?
+	ClassDescription    string
 }
 
 type Professor struct {
