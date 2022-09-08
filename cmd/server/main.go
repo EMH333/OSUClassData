@@ -15,6 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/template/html"
 )
 
@@ -81,6 +82,10 @@ func main() {
 		Expiration:   10 * time.Minute,
 		CacheControl: true,
 		MaxBytes:     1024 * 1024 * 8, // 8 MB
+		KeyGenerator: func(c *fiber.Ctx) string {
+			//TODO add path parameters to key once we have them
+			return utils.CopyString(c.Path()) + utils.CopyString(c.Query("class")) + utils.CopyString(c.Query("term")) + utils.CopyString(c.Query("subject"))
+		},
 	}))
 
 	app.Get("/leaderboards", getLeaderboards)
