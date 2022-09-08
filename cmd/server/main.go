@@ -13,6 +13,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/template/html"
 )
@@ -73,6 +74,14 @@ func main() {
 	app.Use(etag.New())
 
 	app.Static("/", "./frontend/dist")
+
+	// Can use a cache for all requests right now since we don't have any dynamic content per user
+	// for 10 minutes
+	app.Use(cache.New(cache.Config{
+		Expiration:   10 * time.Minute,
+		CacheControl: true,
+		MaxBytes:     1024 * 1024 * 8, // 8 MB
+	}))
 
 	app.Get("/leaderboards", getLeaderboards)
 
