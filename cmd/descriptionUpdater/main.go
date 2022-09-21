@@ -26,7 +26,10 @@ func main() {
 	// read csv values using csv.Reader
 	csvReader := csv.NewReader(f)
 	csvReader.FieldsPerRecord = -1 //there will be varying number of fields in each record
-	csvReader.Read()               //skip header
+	_, err = csvReader.Read()      //skip header
+	if err != nil {
+		log.Fatal(err)
+	}
 	data, err := csvReader.ReadAll()
 	if err != nil {
 		log.Fatal(err)
