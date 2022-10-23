@@ -1,7 +1,9 @@
 import wretch from "wretch";
-import { dedupe, retry, throttlingCache } from "wretch-middlewares";
+import { dedupe, retry, throttlingCache } from "wretch/middlewares/index";
+import queryString from "wretch/addons/queryString";
 
 export const wretchInstance = wretch()
+    .addon(queryString)
     .url("api/v0/")
     .middlewares([dedupe(), retry(), throttlingCache()]);
 
@@ -47,30 +49,30 @@ export function termIDtoPlotID(termID: number): number {
     return (year % 100) * 4 + part;
 }
 
-export function convertRawDataToPlotData(terms:Array<number>, data:Array<any>): Array<{x:string, y:string}> {
+export function convertRawDataToPlotData(terms: Array<number>, data: Array<any>): Array<{ x: string, y: string }> {
     var rawMap = new Map();
-        var termConversionMap = new Map();
-        for (var i = 0; i < terms.length; i++) {
-          rawMap.set(termIDtoPlotID(terms[i]), data[i]);
-          termConversionMap.set(termIDtoPlotID(terms[i]), termIDtoString(terms[i]));
-        }
-        
-        var mediumData = Array();
-        for (let index = termIDtoPlotID(terms[0]); index <= termIDtoPlotID(terms[terms.length-1]); index++) {
-          if(rawMap.has(index)) {
+    var termConversionMap = new Map();
+    for (var i = 0; i < terms.length; i++) {
+        rawMap.set(termIDtoPlotID(terms[i]), data[i]);
+        termConversionMap.set(termIDtoPlotID(terms[i]), termIDtoString(terms[i]));
+    }
+
+    var mediumData = Array();
+    for (let index = termIDtoPlotID(terms[0]); index <= termIDtoPlotID(terms[terms.length - 1]); index++) {
+        if (rawMap.has(index)) {
             mediumData.push({
-              x: termConversionMap.get(index),
-              y: rawMap.get(index),
+                x: termConversionMap.get(index),
+                y: rawMap.get(index),
             });
-          } else {
-              const numFake = termIDtoPlotID(terms[terms.length-1]) - termIDtoPlotID(terms[0]) + 1; // the number of fake data points to add
-              var fake = " ";
-              for (let i = 0; i < index % numFake; i++) {
-                  fake += "​";
-              }
-            mediumData.push({x: fake, y: null});
-          }
-        } 
+        } else {
+            const numFake = termIDtoPlotID(terms[terms.length - 1]) - termIDtoPlotID(terms[0]) + 1; // the number of fake data points to add
+            var fake = " ";
+            for (let i = 0; i < index % numFake; i++) {
+                fake += "​";
+            }
+            mediumData.push({ x: fake, y: null });
+        }
+    }
     return mediumData;
 }
 
