@@ -5,7 +5,6 @@
     Chart,
     LineElement,
     LineController,
-    Legend,
     Title,
     Tooltip,
     CategoryScale,
@@ -17,7 +16,6 @@
   Chart.register(
     LineElement,
     LineController,
-    Legend,
     Title,
     Tooltip,
     CategoryScale,

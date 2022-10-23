@@ -13,14 +13,11 @@
     LineController,
     BarElement,
     BarController,
-    Legend,
     Title,
     Tooltip,
     CategoryScale,
     LinearScale,
     PointElement,
-ChartData,
-ScatterDataPoint,
   } from "chart.js";
 
   Chart.register(
@@ -28,7 +25,6 @@ ScatterDataPoint,
     LineController,
     BarElement,
     BarController,
-    Legend,
     Title,
     Tooltip,
     CategoryScale,
