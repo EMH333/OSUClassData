@@ -5,17 +5,20 @@ go 1.18
 require (
 	github.com/enriquebris/goconcurrentqueue v0.6.3
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gofiber/adaptor/v2 v2.1.24
-	github.com/gofiber/fiber/v2 v2.36.0
-	github.com/gofiber/template v1.6.29
+	github.com/gofiber/adaptor/v2 v2.1.29
+	github.com/gofiber/fiber/v2 v2.39.0
+	github.com/gofiber/template v1.7.1
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/gofiber/utils v0.1.2 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-runewidth v0.0.14 // indirect
+	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.38.0 // indirect
+	github.com/valyala/fasthttp v1.41.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
