@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"strings"
 )
 
 var ErrNotFound = errors.New("item not found")
@@ -83,7 +84,7 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	var classNameNormalized bool
 
 	var classData ClassInfoResponse
-	classData.ClassIdentifier = id
+	classData.ClassIdentifier = strings.Clone(id) // needed to prevent fasthttp from reusing the underlying buffer
 
 	// Get name and credits
 	row := db.QueryRow(classInfoQuery, id)
