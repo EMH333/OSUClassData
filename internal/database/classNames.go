@@ -175,10 +175,10 @@ var caser = cases.Title(language.AmericanEnglish)
 
 func properTitle(input string) string {
 	words := strings.Split(strings.ToLower(input), " ")
-	smallwords := " a an on the to "
+	smallwords := " a an on the to in of and or for nor but yet so at by from with as if  "
 
 	for index, word := range words {
-		if strings.Contains(smallwords, " "+word+" ") && word != string(word[0]) {
+		if strings.Contains(smallwords, " "+word+" ") && word != string(words[0]) {
 			words[index] = word
 		} else {
 			words[index] = caser.String(word)
