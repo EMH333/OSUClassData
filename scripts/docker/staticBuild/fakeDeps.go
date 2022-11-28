@@ -7,6 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/template/html"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 /*
@@ -19,4 +21,5 @@ func main() {
 	_ = goconcurrentqueue.NewFixedFIFO(20)
 	_ = html.New("", "")
 	_ = etag.New()
+	_ = cases.Title(language.AmericanEnglish)
 }

@@ -7,12 +7,14 @@ import (
 	"encoding/json"
 	"errors"
 	"html"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/enriquebris/goconcurrentqueue"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const classNameWaitTime = 30
@@ -100,7 +102,7 @@ func getClassName(class string) (string, error) {
 
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
@@ -169,6 +171,8 @@ func updateClassNameDatabase(db *sql.DB, ID, name string) error {
 	return nil
 }
 
+var caser = cases.Title(language.AmericanEnglish)
+
 func properTitle(input string) string {
 	words := strings.Split(strings.ToLower(input), " ")
 	smallwords := " a an on the to "
@@ -177,7 +181,7 @@ func properTitle(input string) string {
 		if strings.Contains(smallwords, " "+word+" ") && word != string(word[0]) {
 			words[index] = word
 		} else {
-			words[index] = strings.Title(word)
+			words[index] = caser.String(word)
 		}
 	}
 	return strings.Join(words, " ")
