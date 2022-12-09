@@ -218,3 +218,9 @@ func GetWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermRespo
 	}
 	return response, nil
 }
+
+func AddEmailToSubscribers(db *sql.DB, email string, userHash uint32) error {
+	var query = "INSERT INTO EmailSubscribers (Email, UserHash) VALUES (?, ?)"
+	_, err := db.Exec(query, email, int32(userHash))
+	return err
+}

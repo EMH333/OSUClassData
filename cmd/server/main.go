@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"hash/adler32"
 	"log"
 	"net/http"
 	"os"
@@ -24,6 +25,8 @@ var db *sql.DB
 var classLeaderboard = &util.Leaderboard{
 	NumberOfTop: 5,
 }
+
+var dev = os.Getenv("DEV") == "true"
 
 func main() {
 	if os.Getenv("PORT") == "" {
@@ -105,6 +108,8 @@ func main() {
 	api.Get("/subject/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getSubjectWithdrawalRatePerTerm))
 
 	api.Get("/trendingClasses", getTrendingClasses)
+
+	api.Post("/subscribe", emailSubscribe)
 
 	err := app.Listen(":" + os.Getenv("PORT"))
 	if err != nil {
@@ -222,6 +227,37 @@ func getStatus(c *fiber.Ctx) error {
 // TODO: allow trending classes per college
 func getTrendingClasses(c *fiber.Ctx) error {
 	return c.JSON(classLeaderboard.Top)
+}
+
+func emailSubscribe(c *fiber.Ctx) error {
+	//interface with email string
+	var body struct {
+		Email string `json:"email"`
+	}
+
+	err := c.BodyParser(&body)
+	if err != nil {
+		return util.SendError(c, http.StatusBadRequest, "Invalid email")
+	}
+
+	if !util.IsValidEmail(body.Email) {
+		return util.SendError(c, http.StatusBadRequest, "Invalid email")
+	}
+
+	// compute a hash of IP/user agent to prevent spam; this won't be perfect but it's better than nothing
+	const salt = "emailSubscribe"
+	hash := adler32.Checksum([]byte(c.IP() + c.Get("User-Agent", "no-user-agent") + salt))
+
+	err = database.AddEmailToSubscribers(db, body.Email, hash)
+
+	if err != nil {
+		if dev {
+			return util.SendError(c, http.StatusInternalServerError, err.Error())
+		}
+		return util.SendError(c, http.StatusInternalServerError, "Error adding email to subscribers")
+	}
+
+	return c.SendStatus(http.StatusOK)
 }
 
 func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {

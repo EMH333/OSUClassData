@@ -44,3 +44,11 @@ CREATE TABLE IF NOT EXISTS ClassInfo (
     -- class description
     ClassDescription VARCHAR(4096)
 );
+
+CREATE TABLE IF NOT EXISTS EmailSubscribers (
+    ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    Email VARCHAR(255) NOT NULL,
+    -- some sort of hash of IP/user to prevent spam
+    UserHash INT NOT NULL,
+    DateAdded DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
