@@ -2,7 +2,6 @@
 - Leaderboard w/ largest classes, highest grades, highest withdrawal, average overall grade over time
 - Tie class terms to teachers
 - Fix variable credit classes
-- GH Actions CI
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 - Add difficulty estimates
 - Collect emails, feedback and other info for future use
