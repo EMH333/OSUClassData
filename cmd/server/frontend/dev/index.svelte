@@ -7,13 +7,13 @@
 
   let selectedClass: BasicClass;
 
-  let Beta;
+  /*let Beta;
 
   async function loadBeta(eventDetails) {
     if (eventDetails.target.open && Beta === undefined) {
       Beta = (await import("./components/BetaSwitch.svelte")).default;
     }
-  }
+  }*/
 </script>
 
 <div class="container">
