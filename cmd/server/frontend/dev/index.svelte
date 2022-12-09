@@ -3,6 +3,7 @@
   import BasicClassInfo from "./components/BasicClassInfo.svelte";
   import Trending from "./components/Trending.svelte";
   import type { BasicClass } from "./types";
+  import Footer from "./components/Footer.svelte";
 
   let selectedClass: BasicClass;
 
@@ -61,8 +62,7 @@
     <summary>Advanced</summary>
     <svelte:component this={Beta} />
   </details>-->
-
-  <p>Copyright © 2021 Ethan Hampton</p>
+  <Footer />
 </div>
 
 <style global>

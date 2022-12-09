@@ -19,6 +19,7 @@
     LinearScale,
     PointElement,
   } from "chart.js";
+  import Footer from "./components/Footer.svelte";
 
   Chart.register(
     LineElement,
@@ -333,7 +334,7 @@
 {#if selectedClass == null}
   <h2 class="center buffer">Please go back and select a class</h2>
 {/if}
-<p class="center">Copyright © 2021 Ethan Hampton</p>
+<Footer />
 
 <style>
   @import "./css/buttonLink.css";

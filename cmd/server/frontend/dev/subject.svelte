@@ -12,6 +12,7 @@
     PointElement,
   } from "chart.js";
   import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
+  import Footer from "./components/Footer.svelte";
 
   Chart.register(
     LineElement,
@@ -213,7 +214,7 @@
   <canvas id="withdrawalRatePerTermChart" />
 </div>
 <br />
-<p class="center">Copyright © 2021 Ethan Hampton</p>
+<Footer />
 
 <style>
   @import "./css/buttonLink.css";
