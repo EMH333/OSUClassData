@@ -25,6 +25,8 @@ var classLeaderboard = &util.Leaderboard{
 	NumberOfTop: 5,
 }
 
+var dev = os.Getenv("DEV") == "true"
+
 func main() {
 	if os.Getenv("PORT") == "" {
 		os.Setenv("PORT", "8080")
@@ -85,6 +87,14 @@ func main() {
 		KeyGenerator: func(c *fiber.Ctx) string {
 			//TODO add path parameters to key once we have them
 			return utils.CopyString(c.Path()) + utils.CopyString(c.Query("class")) + utils.CopyString(c.Query("term")) + utils.CopyString(c.Query("subject"))
+		},
+		Next: func(c *fiber.Ctx) bool {
+			// Don't cache if getting trending classes
+			shouldSkip := c.Path() == "/api/v0/trendingClasses" || c.Path() == "/api/v0/status"
+			if dev {
+				log.Println(c.Path(), " can be cached: ", !shouldSkip)
+			}
+			return shouldSkip
 		},
 	}))
 
