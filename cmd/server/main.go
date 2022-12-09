@@ -16,6 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/template/html"
 )
@@ -109,7 +110,12 @@ func main() {
 
 	api.Get("/trendingClasses", getTrendingClasses)
 
-	api.Post("/subscribe", emailSubscribe)
+	api.Post("/subscribe", limiter.New(limiter.Config{
+		//This limits based on IP which is not ideal, but should serve our purposes for now
+		Max:                1,
+		Expiration:         5 * time.Minute,
+		SkipFailedRequests: true, // that way people who don't enter a valid email don't get blocked from subscribing
+	}), emailSubscribe)
 
 	err := app.Listen(":" + os.Getenv("PORT"))
 	if err != nil {
@@ -246,7 +252,7 @@ func emailSubscribe(c *fiber.Ctx) error {
 
 	// compute a hash of IP/user agent to prevent spam; this won't be perfect but it's better than nothing
 	const salt = "emailSubscribe"
-	hash := adler32.Checksum([]byte(c.IP() + c.Get("User-Agent", "no-user-agent") + salt))
+	hash := adler32.Checksum([]byte(c.Get("User-Agent", "no-user-agent") + salt))
 
 	err = database.AddEmailToSubscribers(db, body.Email, hash)
 
