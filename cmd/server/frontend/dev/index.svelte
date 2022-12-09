@@ -9,6 +9,9 @@
 
   let Beta;
 
+  //TODO make this stick around in local storage
+  let submittedEmail = false;
+
   async function loadBeta(eventDetails) {
     if (eventDetails.target.open && Beta === undefined) {
       Beta = (await import("./components/BetaSwitch.svelte")).default;
@@ -23,8 +26,10 @@
     wretchInstance
       .url("subscribe")
       .post({ email })
-      .json()
+      .text()
       .then(() => {
+        submittedEmail = true;
+        //TODO make this a toast or something
         alert("Subscribed!");
       });
   }
@@ -68,21 +73,20 @@
   <div class="spacer" />
   <Trending />
   <div class="spacer" />
-  <div>
+  <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
+  <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
+  <p><a href="about.html" class="button-link">About This Website</a></p>
+  <div class="spacer" />
+  <div style:display={submittedEmail ? 'none': undefined}>
     <p style="width: 50%; min-width: 15em; margin:auto;">
       Want to get notified when new terms or features are added? Submit your
       email and we'll let you know when new data is available:
     </p>
     <form on:submit={submitEmail}>
       <input type="email" name="email" />
-      <input type="submit" value="Subscribe" />
+      <input type="submit" value="Subscribe" class="button-link" style="border: medium none;"/>
     </form>
   </div>
-  <div class="spacer" />
-  <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
-  <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
-  <p><a href="about.html" class="button-link">About This Website</a></p>
-
   <!--<details on:toggle={loadBeta}>
     <summary>Advanced</summary>
     <svelte:component this={Beta} />
