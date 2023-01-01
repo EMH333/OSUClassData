@@ -20,6 +20,6 @@
     "chart.js": "^4.0.1",
     "simple-svelte-autocomplete": "^2.5.1",
     "svelte-toggle": "^3.1.0",
-    "wretch": "^2.2.3"
+    "wretch": "^2.3.0"
   }
 }
