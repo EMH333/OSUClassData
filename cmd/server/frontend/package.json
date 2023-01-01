@@ -9,7 +9,7 @@
   "author": "Ethan Hampton",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "esbuild": "^0.16.3",
+    "esbuild": "^0.16.12",
     "esbuild-svelte": "^0.7.3",
     "svelte": "^3.54.0",
     "svelte-preprocess": "^4.10.7",
