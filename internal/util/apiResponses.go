@@ -16,6 +16,11 @@ type ClassGraphResponse struct {
 	OverallData  []float64
 }
 
+type CombinedClassGraphResponse struct {
+	Terms        []string
+	SpecificData map[string][]float64
+}
+
 // Write data to the response, handles all errors
 func WriteJSON(w http.ResponseWriter, v interface{}) {
 	jsonResponse, err := json.Marshal(v)

@@ -33,6 +33,11 @@
     PointElement
   ); //make sure we register all the plugins we need
 
+  interface CombinedResponse {
+    Terms: number[];
+    SpecificData: Map<string, Float64Array>;
+  }
+
   let selectedClass: string;
 
   // TODO handle non-existent class
@@ -48,180 +53,167 @@
     // set page title to selectedClass
     document.title = selectedClass + " - OSU Class Data";
 
-    createStudentsPerTermChart();
-    createAvgGPAPerTermChart();
-    createWithdrawalRatePerTermChart();
+    getCombinedData(selectedClass)
+      .then((data) => {
+        //console.log(data);
+        createStudentsPerTermChart(data);
+        createAvgGPAPerTermChart(data);
+        createWithdrawalRatePerTermChart(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
     createLastTermGradeDistributionChart();
   });
 
-  function createStudentsPerTermChart() {
-    wretchInstance
-      .url("chart/studentsPerTerm")
-      .query({ class: selectedClass })
+  function getCombinedData(selected: string) {
+    return wretchInstance
+      .url("chart/combinedData/" + selected)
       .get()
       .json((data) => {
-        const students = data.SpecificData;
-        const terms = data.Terms.map((term: string) => Number(term));
-
-        const chartData = {
-          datasets: [
-            {
-              label: "Students",
-              data: convertRawDataToPlotData(terms, students),
-              backgroundColor: chartColor,
-              borderColor: chartColor,
-              spanGaps: true,
-              normalized: true,
-            },
-          ],
-        };
-        const chart = new Chart(
-          document.getElementById("studentsPerTermChart") as HTMLCanvasElement,
-          {
-            type: "line",
-            data: chartData,
-            options: {
-              maintainAspectRatio: false,
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Students Per Term",
-                  font: {
-                    size: 20,
-                  },
-                },
-                legend: {
-                  display: false,
-                },
-              },
-            },
-          }
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-  function createAvgGPAPerTermChart() {
-    wretchInstance
-      .url("chart/avgGPAPerTerm")
-      .query({ class: selectedClass })
-      .get()
-      .json((data) => {
-        const avgGPA = data.SpecificData;
-        const terms = data.Terms.map((term: string) => Number(term));
-
-        const chartData = {
-          datasets: [
-            {
-              label: "GPA",
-              data: convertRawDataToPlotData(terms, avgGPA),
-              backgroundColor: chartColor,
-              borderColor: chartColor,
-              spanGaps: true,
-              normalized: true,
-            },
-          ],
-        };
-        const chart = new Chart(
-          document.getElementById("avgGPAPerTermChart") as HTMLCanvasElement,
-          {
-            type: "line",
-            data: chartData,
-            options: {
-              maintainAspectRatio: false,
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Average GPA per Term",
-                  font: {
-                    size: 20,
-                  },
-                },
-                legend: {
-                  display: false,
-                },
-              },
-            },
-          }
-        );
-      })
-      .catch((err) => {
-        console.error(err);
+        data.Terms = data.Terms.map((term: string) => Number(term)); // do some formatting
+        return data;
       });
   }
 
-  function createWithdrawalRatePerTermChart() {
-    wretchInstance
-      .url("chart/withdrawalRatePerTerm")
-      .query({ class: selectedClass })
-      .get()
-      .json((data) => {
-        const terms: Array<number> = data.Terms.map((term: string) =>
-          Number(term)
-        );
-        const withdrawalRate = data.SpecificData.map((rate: number) =>
-          (Number(rate) * 100).toFixed(2)
-        );
+  function createStudentsPerTermChart(data: CombinedResponse) {
+    const students = data.SpecificData["S"];
+    const terms = data.Terms;
 
-        const chartData = {
-          datasets: [
-            {
-              label: "Withdrawal Rate",
-              data: convertRawDataToPlotData(terms, withdrawalRate),
-              backgroundColor: chartColor,
-              borderColor: chartColor,
-              spanGaps: true,
-              normalized: true,
-            },
-          ],
-        };
-        const chart = new Chart(
-          document.getElementById(
-            "withdrawalRatePerTermChart"
-          ) as HTMLCanvasElement,
-          {
-            type: "line",
-            data: chartData,
-            options: {
-              maintainAspectRatio: false,
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Withdrawal Rate per Term",
-                  font: {
-                    size: 20,
-                  },
-                },
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  callbacks: {
-                    label: function (context) {
-                      if (context.parsed.y !== null) {
-                        return context.parsed.y + "%";
-                      }
-                    },
-                  },
-                },
-              },
-              scales: {
-                y: {
-                  ticks: {
-                    callback: function (value, index, ticks) {
-                      return value + "%";
-                    },
-                  },
-                },
+    const chartData = {
+      datasets: [
+        {
+          label: "Students",
+          data: convertRawDataToPlotData(terms, students),
+          backgroundColor: chartColor,
+          borderColor: chartColor,
+          spanGaps: true,
+          normalized: true,
+        },
+      ],
+    };
+    const chart = new Chart(
+      document.getElementById("studentsPerTermChart") as HTMLCanvasElement,
+      {
+        type: "line",
+        data: chartData,
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: "Students Per Term",
+              font: {
+                size: 20,
               },
             },
-          }
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+            legend: {
+              display: false,
+            },
+          },
+        },
+      }
+    );
+  }
+  function createAvgGPAPerTermChart(data: CombinedResponse) {
+    const avgGPA = data.SpecificData["GPA"];
+    const terms = data.Terms;
+
+    const chartData = {
+      datasets: [
+        {
+          label: "GPA",
+          data: convertRawDataToPlotData(terms, avgGPA),
+          backgroundColor: chartColor,
+          borderColor: chartColor,
+          spanGaps: true,
+          normalized: true,
+        },
+      ],
+    };
+    const chart = new Chart(
+      document.getElementById("avgGPAPerTermChart") as HTMLCanvasElement,
+      {
+        type: "line",
+        data: chartData,
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: "Average GPA per Term",
+              font: {
+                size: 20,
+              },
+            },
+            legend: {
+              display: false,
+            },
+          },
+        },
+      }
+    );
+  }
+
+  function createWithdrawalRatePerTermChart(data: CombinedResponse) {
+    const terms = data.Terms;
+    const withdrawalRate = data.SpecificData["WR"];
+
+    const chartData = {
+      datasets: [
+        {
+          label: "Withdrawal Rate",
+          data: convertRawDataToPlotData(terms, withdrawalRate),
+          backgroundColor: chartColor,
+          borderColor: chartColor,
+          spanGaps: true,
+          normalized: true,
+        },
+      ],
+    };
+    const chart = new Chart(
+      document.getElementById(
+        "withdrawalRatePerTermChart"
+      ) as HTMLCanvasElement,
+      {
+        type: "line",
+        data: chartData,
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: "Withdrawal Rate per Term",
+              font: {
+                size: 20,
+              },
+            },
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  if (context.parsed.y !== null) {
+                    return context.parsed.y + "%";
+                  }
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: function (value, index, ticks) {
+                  return value + "%";
+                },
+              },
+            },
+          },
+        },
+      }
+    );
   }
 
   function createLastTermGradeDistributionChart() {

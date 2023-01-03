@@ -105,10 +105,8 @@ func main() {
 	api.Get("/classes", getClasses)
 	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
 	api.Get("/classInfo", adaptor.HTTPHandlerFunc(getClassInfo))
-	api.Get("/chart/studentsPerTerm", adaptor.HTTPHandlerFunc(getStudentsPerTerm))
-	api.Get("/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getAvgGPAPerTerm))
-	api.Get("/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getWithdrawalRatePerTerm))
 	api.Get("/chart/lastTermGradeDistribution", adaptor.HTTPHandlerFunc(getLastTermGradeDistribution))
+	api.Get("/chart/combinedData/:class", getCombinedClassStats)
 
 	api.Get("/subjects", adaptor.HTTPHandlerFunc(getSubjects))
 	api.Get("/subject/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getSubjectAvgGPAPerTerm))
@@ -234,73 +232,28 @@ func getTrendingClasses(c *fiber.Ctx) error {
 	return c.JSON(classLeaderboard.Top)
 }
 
-func getStudentsPerTerm(w http.ResponseWriter, r *http.Request) {
-	class := r.URL.Query().Get("class")
+func getCombinedClassStats(c *fiber.Ctx) error {
+	class := c.Params("class")
 	if class == "" {
-		http.Error(w, "Missing class parameter", http.StatusBadRequest)
-		return
+		return util.SendError(c, fiber.StatusBadRequest, "Missing class")
+
 	}
 
-	studentsPerTerm, err := database.GetStudentsPerTerm(db, class)
+	CombinedClassStats, err := database.GetCombinedClassStats(db, class)
 	if err != nil {
-		http.Error(w, "Class not found", http.StatusNotFound)
-		return
+		return util.SendError(c, fiber.StatusNotFound, "Class not found")
 	}
 
-	var response util.ClassGraphResponse
+	var response util.CombinedClassGraphResponse
 
-	response.Dataset = "SpT"
-	response.Terms = studentsPerTerm.Terms
-	response.SpecificData = studentsPerTerm.Students
+	response.Terms = CombinedClassStats.Terms
+	response.SpecificData = make(map[string][]float64, 3)
+	response.SpecificData["WR"] = CombinedClassStats.WithdrawalRate
+	response.SpecificData["GPA"] = CombinedClassStats.GPA
+	response.SpecificData["S"] = CombinedClassStats.Students
 	//TODO add general subject data
 
-	util.WriteJSON(w, response)
-}
-
-func getAvgGPAPerTerm(w http.ResponseWriter, r *http.Request) {
-	class := r.URL.Query().Get("class")
-	if class == "" {
-		http.Error(w, "Missing class parameter", http.StatusBadRequest)
-		return
-	}
-
-	GPAPerTerm, err := database.GetAvgGPAPerTerm(db, class)
-	if err != nil {
-		http.Error(w, "Class not found", http.StatusNotFound)
-		return
-	}
-
-	var response util.ClassGraphResponse
-
-	response.Dataset = "GpT"
-	response.Terms = GPAPerTerm.Terms
-	response.SpecificData = GPAPerTerm.GPA
-	//TODO add general subject data
-
-	util.WriteJSON(w, response)
-}
-
-func getWithdrawalRatePerTerm(w http.ResponseWriter, r *http.Request) {
-	class := r.URL.Query().Get("class")
-	if class == "" {
-		http.Error(w, "Missing class parameter", http.StatusBadRequest)
-		return
-	}
-
-	WithdrawalPerTerm, err := database.GetWithdrawalRatePerTerm(db, class)
-	if err != nil {
-		http.Error(w, "Class not found", http.StatusNotFound)
-		return
-	}
-
-	var response util.ClassGraphResponse
-
-	response.Dataset = "WpT"
-	response.Terms = WithdrawalPerTerm.Terms
-	response.SpecificData = WithdrawalPerTerm.WithdrawalRate
-	//TODO add general subject data
-
-	util.WriteJSON(w, response)
+	return c.JSON(response)
 }
 
 func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {

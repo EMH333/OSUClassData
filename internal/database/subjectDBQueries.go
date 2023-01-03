@@ -2,6 +2,11 @@ package database
 
 import "database/sql"
 
+type AvgGPAPerTermResponse struct {
+	Terms []string
+	GPA   []float64
+}
+
 func GetSubjectAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
 	var query = "SELECT TermID, AVG(ClassGPA) FROM Classes WHERE ClassIdentifier LIKE ? AND Visible=TRUE GROUP BY TermID ORDER BY TermID"
 	var response AvgGPAPerTermResponse
@@ -26,6 +31,11 @@ func GetSubjectAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, erro
 		response.GPA = append(response.GPA, GPA)
 	}
 	return response, nil
+}
+
+type WithdrawalRatePerTermResponse struct {
+	Terms          []string
+	WithdrawalRate []float64
 }
 
 func GetSubjectWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermResponse, error) {

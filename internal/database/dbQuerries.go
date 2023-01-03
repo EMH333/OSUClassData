@@ -126,95 +126,41 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	return classData, !(classNameNormalized && classNamedRetrieved), nil
 }
 
-type StudentsPerTermResponse struct {
-	Terms    []string
-	Students []float64 // doesn't need to be float but makes conversion easier
+type CombinedClassResponse struct {
+	Terms          []string
+	WithdrawalRate []float64
+	GPA            []float64
+	Students       []float64
 }
 
-func GetStudentsPerTerm(db *sql.DB, id string) (StudentsPerTermResponse, error) {
-	var query = "SELECT TermID, Students FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
-	var response StudentsPerTermResponse
+func GetCombinedClassStats(db *sql.DB, id string) (CombinedClassResponse, error) {
+	var query = "SELECT TermID, (W / Students) AS WithdrawalRate, ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var response CombinedClassResponse
 	response.Terms = make([]string, 0)
+	response.WithdrawalRate = make([]float64, 0)
+	response.GPA = make([]float64, 0)
 	response.Students = make([]float64, 0)
 
 	rows, err := db.Query(query, id)
 	if err != nil {
-		return StudentsPerTermResponse{}, err
+		return CombinedClassResponse{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var term string
-		var students int
-		err := rows.Scan(&term, &students)
+		var withdrawalRate float64
+		var gpa float64
+		var students float64
+		err := rows.Scan(&term, &withdrawalRate, &gpa, &students)
 		if err != nil {
-			return StudentsPerTermResponse{}, err
+			return CombinedClassResponse{}, err
 		}
 
 		response.Terms = append(response.Terms, term)
-		response.Students = append(response.Students, float64(students))
-	}
-	return response, nil
-}
-
-type AvgGPAPerTermResponse struct {
-	Terms []string
-	GPA   []float64
-}
-
-func GetAvgGPAPerTerm(db *sql.DB, id string) (AvgGPAPerTermResponse, error) {
-	var query = "SELECT TermID, ClassGPA FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
-	var response AvgGPAPerTermResponse
-	response.Terms = make([]string, 0)
-	response.GPA = make([]float64, 0)
-
-	rows, err := db.Query(query, id)
-	if err != nil {
-		return AvgGPAPerTermResponse{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var term string
-		var GPA float64
-		err := rows.Scan(&term, &GPA)
-		if err != nil {
-			return AvgGPAPerTermResponse{}, err
-		}
-
-		response.Terms = append(response.Terms, term)
-		response.GPA = append(response.GPA, GPA)
-	}
-	return response, nil
-}
-
-type WithdrawalRatePerTermResponse struct {
-	Terms          []string
-	WithdrawalRate []float64
-}
-
-func GetWithdrawalRatePerTerm(db *sql.DB, id string) (WithdrawalRatePerTermResponse, error) {
-	var query = "SELECT TermID, (W / Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
-	var response WithdrawalRatePerTermResponse
-	response.Terms = make([]string, 0)
-	response.WithdrawalRate = make([]float64, 0)
-
-	rows, err := db.Query(query, id)
-	if err != nil {
-		return WithdrawalRatePerTermResponse{}, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var term string
-		var WithdrawalRate float64
-		err := rows.Scan(&term, &WithdrawalRate)
-		if err != nil {
-			return WithdrawalRatePerTermResponse{}, err
-		}
-
-		response.Terms = append(response.Terms, term)
-		response.WithdrawalRate = append(response.WithdrawalRate, WithdrawalRate)
+		response.WithdrawalRate = append(response.WithdrawalRate, withdrawalRate)
+		response.GPA = append(response.GPA, gpa)
+		response.Students = append(response.Students, students)
 	}
 	return response, nil
 }
