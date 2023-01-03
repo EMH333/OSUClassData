@@ -74,6 +74,8 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
 
   esbuild.build(compileOptions)
     .then(output => {
+      //fs.writeFileSync('./dist/metafile.json', JSON.stringify(output.metafile));
+
       for (file in output.metafile.outputs) {
         let fileInfo = output.metafile.outputs[file];
         switch (file) {
@@ -96,6 +98,8 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
       //do some quick bundle calculations
       let bundleSize = 0;
       for (file in output.metafile.outputs) {
+        //don't include map files
+        if (file.endsWith(".map")) { continue; }
         bundleSize += output.metafile.outputs[file].bytes;
       }
       console.log(`Bundle size: ${(bundleSize / 1024).toFixed(1)} kb`);
