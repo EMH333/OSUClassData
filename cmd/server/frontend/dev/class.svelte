@@ -305,7 +305,7 @@
   }
 </script>
 
-<p style="font-weight: bold;"><a href="/" class="button-link">Go Back</a></p>
+<p><a href="/" class="button-link">Go Back</a></p>
 <div class="center buffer"><BasicClassInfo {selectedClass} /></div>
 
 <div class="chart-container">
@@ -329,7 +329,7 @@
 <Footer />
 
 <style>
-  @import "./css/buttonLink.css";
+  @import "./globalCSS.css";
 
   .center {
     margin: auto;

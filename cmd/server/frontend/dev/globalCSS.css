@@ -1,12 +1,37 @@
 @import "./css/buttonLink.css";
 
+
 .container {
   margin: auto;
   width: max-content;
   max-width: 100%;
   text-align: center;
+  font-family: SourceSerif4, serif;
 }
 
 .spacer {
   padding: 0.6rem;
+}
+
+@font-face {
+  font-family: Asap;
+  src: url("./Asap-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: SourceSerif4;
+  src: url("./SourceSerif4-Regular.woff2") format("woff2");
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Asap, sans-serif;
+}
+
+* {
+  font-family: SourceSerif4, serif;
 }

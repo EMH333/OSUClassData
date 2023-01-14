@@ -29,7 +29,6 @@
     <p>
       <a
         href={`class.html?class=${selectedClass.id}`}
-        style="font-weight: bold;"
         class="button-link"
       >
         More info about {selectedClass.id}

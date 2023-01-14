@@ -195,7 +195,7 @@
   }
 </script>
 
-<p style="font-weight: bold;"><a href="/" class="button-link">Go Back</a></p>
+<p><a href="/" class="button-link">Go Back</a></p>
 <div class="center buffer selector">
   <AutoComplete
     text={undefined}

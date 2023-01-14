@@ -3,3 +3,4 @@ distSSR
 node_modules
 cmd/classParser/**.sql
 build
+.DS_store
