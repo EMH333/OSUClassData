@@ -1,12 +1,10 @@
 @import "./css/buttonLink.css";
 
-
 .container {
   margin: auto;
   width: max-content;
   max-width: 100%;
   text-align: center;
-  font-family: SourceSerif4, serif;
 }
 
 .spacer {
