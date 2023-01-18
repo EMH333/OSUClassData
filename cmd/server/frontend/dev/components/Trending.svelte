@@ -33,7 +33,7 @@
 <!--only display if able to load properly-->
 {#if classes != null && classes.size > 0}
   <div id="trendingClasses">
-    <h3>Trending Classes:</h3>
+    <h3 style="margin: 0;">Trending Classes:</h3>
     {#each [...classes] as c}
       <div class="trendingClass">
         <a href="class.html?class={c}" class="button-link">{c}</a>
