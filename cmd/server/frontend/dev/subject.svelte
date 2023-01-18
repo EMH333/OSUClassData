@@ -217,7 +217,7 @@
 <Footer />
 
 <style>
-  @import "./css/buttonLink.css";
+  @import "./css/globalCSS.css";
   @import "./css/classSelector.css";
 
   .center {

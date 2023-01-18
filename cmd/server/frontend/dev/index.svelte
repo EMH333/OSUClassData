@@ -65,5 +65,5 @@
 </div>
 
 <style global>
-  @import "./globalCSS.css";
+  @import "./css/globalCSS.css";
 </style>

@@ -329,7 +329,7 @@
 <Footer />
 
 <style>
-  @import "./globalCSS.css";
+  @import "./css/globalCSS.css";
 
   .center {
     margin: auto;
