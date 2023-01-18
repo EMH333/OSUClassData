@@ -10,8 +10,6 @@ function copyHTML() {
     'about.html',
     'subject.html',
     'icon.ico',
-    'css/Asap-Medium.woff2',
-    'css/SourceSerif4-Regular.woff2'
   ];
 
   for (let i = 0; i < files.length; i++) {
