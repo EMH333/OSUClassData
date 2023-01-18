@@ -23,6 +23,14 @@ function copyHTML() {
   fs.copyFile('./dev/icon.ico', './dist/favicon.ico', (err) => {
     if (err) throw err;
   });
+
+  fs.copyFile('./dev/css/Asap-Medium.woff2', './dist/Asap-Medium.woff2', (err) => {
+    if (err) throw err;
+  });
+
+  fs.copyFile('./dev/css/SourceSerif4-Regular.woff2', './dist/SourceSerif4-Regular.woff2', (err) => {
+    if (err) throw err;
+  });
 }
 
 const directories = ['./dist', './distSSR'];

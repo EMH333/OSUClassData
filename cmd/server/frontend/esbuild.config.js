@@ -12,4 +12,5 @@ module.exports = {
     sourcemap: 'external',
     mainFields: ["svelte", "browser", "module", "main"],
     plugins: [esbuildSvelte(svelteConfig)],
+    external: ['*.woff2']
 };
