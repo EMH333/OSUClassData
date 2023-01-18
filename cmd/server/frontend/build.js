@@ -4,33 +4,19 @@ const esbuildOptions = require('./esbuild.config');
 const fs = require('fs');
 
 function copyHTML() {
-  fs.copyFile('./dev/index.html', './dist/index.html', (err) => {
-    if (err) throw err;
-  });
+  const files = [
+    'index.html',
+    'class.html',
+    'about.html',
+    'subject.html',
+    'icon.ico',
+    'css/Asap-Medium.woff2',
+    'css/SourceSerif4-Regular.woff2'
+  ];
 
-  fs.copyFile('./dev/class.html', './dist/class.html', (err) => {
-    if (err) throw err;
-  });
-
-  fs.copyFile('./dev/about.html', './dist/about.html', (err) => {
-    if (err) throw err;
-  });
-
-  fs.copyFile('./dev/subject.html', './dist/subject.html', (err) => {
-    if (err) throw err;
-  });
-
-  fs.copyFile('./dev/icon.ico', './dist/favicon.ico', (err) => {
-    if (err) throw err;
-  });
-
-  fs.copyFile('./dev/css/Asap-Medium.woff2', './dist/Asap-Medium.woff2', (err) => {
-    if (err) throw err;
-  });
-
-  fs.copyFile('./dev/css/SourceSerif4-Regular.woff2', './dist/SourceSerif4-Regular.woff2', (err) => {
-    if (err) throw err;
-  });
+  for (let i = 0; i < files.length; i++) {
+    fs.copyFileSync(`./dev/${files[i]}`, `./dist/${files[i].split('/').pop()}`);
+  }
 }
 
 const directories = ['./dist', './distSSR'];
