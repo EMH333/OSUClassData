@@ -9,11 +9,11 @@ function copyHTML() {
     'class.html',
     'about.html',
     'subject.html',
-    'icon.ico',
+    'favicon.ico',
   ];
 
   for (let i = 0; i < files.length; i++) {
-    fs.copyFileSync(`./dev/${files[i]}`, `./dist/${files[i].split('/').pop()}`);
+    fs.copyFileSync(`./dev/${files[i]}`, `./dist/${files[i]}`);
   }
 }
 
