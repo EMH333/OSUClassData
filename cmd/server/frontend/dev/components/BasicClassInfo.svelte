@@ -21,6 +21,17 @@
       .catch((error) => {
         console.error(error);
       });
+
+    // track what clsses are being looked at
+    try {
+      //get around typescript error here
+      (window as Window & typeof globalThis & { umami: any }).umami.trackEvent(
+        "classInfo",
+        { class: id }
+      );
+    } catch (e) {
+      // umami not loaded so don't worry about it
+    }
   }
 </script>
 
@@ -68,7 +79,8 @@
     </div>
     {#if classInfo.ClassDescription}
       <div class="description">
-        Description: <br> <span>
+        Description: <br />
+        <span>
           {classInfo.ClassDescription}
         </span>
       </div>

@@ -6,3 +6,4 @@
 - Add difficulty estimates
 - Collect emails, feedback and other info for future use
 - Add related series of classes
+- Add E2E browser tests (testcafe or cypress?)
