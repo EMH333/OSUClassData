@@ -32,7 +32,7 @@
 
 <div class="selector">
   <AutoComplete
-    text="Search for a class"
+    placeholder="Search for a class"
     items={classesToPick}
     bind:selectedItem={selectedClassAny}
     labelFieldName="displayName"
