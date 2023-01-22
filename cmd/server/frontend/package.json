@@ -4,11 +4,13 @@
   "description": "",
   "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "e2e": "cypress run --browser firefox"
   },
   "author": "Ethan Hampton",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "cypress": "^12.3.0",
     "esbuild": "^0.16.3",
     "esbuild-svelte": "^0.7.3",
     "svelte": "^3.54.0",
