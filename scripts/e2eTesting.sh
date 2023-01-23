@@ -1,5 +1,6 @@
 #!/bin/bash
 # This script is used to run the e2e tests for the project.
+# if the DEV environment variable is set, it won't deal with the dev server or stop the database at the end
 
 # cd to script directory
 cd "$(dirname "$0")" || exit
@@ -10,23 +11,31 @@ cd .. || exit
 # start the database
 ./scripts/startDB.sh || exit
 
-# start the dev server
-./scripts/devServer.sh & 
+if [ -z ${DEV+x} ]; then
+    # start the dev server
+    ./scripts/devServer.sh & 
+fi
 
 # go into the frontend directory
 cd cmd/server/frontend || exit
 
-# build the frontend
-node build.js ci|| exit
+if [ -z ${DEV+x} ]; then
+    # build the frontend
+    node build.js ci|| exit
+fi
 
 # run the e2e tests
 npm run e2e
 
-# kill the dev server
-killall "OSUCD-server"
+if [ -z ${DEV+x} ]; then
+    # kill the dev server
+    killall "OSUCD-server"
+fi
 
 # go back to the root directory
 cd ../../../ || exit
 
-# stop the database
-./scripts/stopDB.sh
+if [ -z ${DEV+x} ]; then
+    # stop the database
+    ./scripts/stopDB.sh
+fi
