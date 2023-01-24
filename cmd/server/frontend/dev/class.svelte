@@ -158,7 +158,7 @@
 
   function createWithdrawalRatePerTermChart(data: CombinedResponse) {
     const terms = data.Terms;
-    const withdrawalRate = data.SpecificData["WR"];
+    const withdrawalRate = data.SpecificData["WR"].map((wr) => wr * 100);
 
     const chartData = {
       datasets: [
