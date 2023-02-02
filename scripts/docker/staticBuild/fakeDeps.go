@@ -1,10 +1,13 @@
 package main
 
 import (
+	"container/heap"
+
 	"github.com/enriquebris/goconcurrentqueue"
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/template/html"
 	"golang.org/x/text/cases"
@@ -21,5 +24,7 @@ func main() {
 	_ = goconcurrentqueue.NewFixedFIFO(20)
 	_ = html.New("", "")
 	_ = etag.New()
+	_ = cache.New()
+	_ = heap.Interface(nil)
 	_ = cases.Title(language.AmericanEnglish)
 }
