@@ -4,12 +4,23 @@ const esbuildOptions = require('./esbuild.config');
 const fs = require('fs');
 
 function copyHTML() {
+  const folders = [
+    'img',
+  ];
+
+  for (let i = 0; i < folders.length; i++) {
+    if (!fs.existsSync(`./dist/${folders[i]}`)) {
+      fs.mkdirSync(`./dist/${folders[i]}`);
+    }
+  }
+
   const files = [
     'index.html',
     'class.html',
     'about.html',
     'subject.html',
     'favicon.ico',
+    'img/logo.png',
   ];
 
   for (let i = 0; i < files.length; i++) {
