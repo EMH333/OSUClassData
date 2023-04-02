@@ -16,8 +16,12 @@ VALUES
     ROW('CS162', "202001", 30, 4, 7, 7);
 
 -- so we can test the bar chart
-REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES
-    ROW('CS160', '202201', 150, 3, 51, 14, 32, 15, 4, 12, 8, 4, 1, 0, 0, 4, 1, 2, 2, 0, 3.19);
+REPLACE INTO Classes (classIdentifier, termID, Students, Credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES
+    ROW('CS160', '202201', 380, 3, 56, 34, 33, 13, 4, 12, 8, 3, 2, 0, 0, 4, 1, 2, 4, 0, 3.19),
+    ROW('CS161', '202201', 381, 3, 51, 14, 32, 15, 4, 12, 8, 4, 1, 0, 0, 4, 1, 2, 3, 0, 3.29),
+    ROW('CS162', '202201', 382, 3, 50, 64, 36, 16, 1, 12, 8, 4, 1, 0, 0, 4, 1, 2, 2, 0, 3.39),
+    ROW('CS999', '202201', 383, 3, 58, 24, 35, 15, 4, 12, 8, 4, 1, 0, 1, 4, 1, 2, 1, 0, 3.49),
+    ROW('HC407', '202201', 384, 3, 53, 44, 34, 14, 4, 12, 8, 4, 1, 0, 0, 4, 1, 2, 1, 0, 3.59);
 
 REPLACE INTO ClassInfo(ClassIdentifier, Credits, ClassName, ClassDescription)
 VALUES

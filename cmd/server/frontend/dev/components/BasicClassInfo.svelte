@@ -77,6 +77,11 @@
         {(classInfo.WithdrawalRate * 100).toFixed(2)}%
       </span>
     </div>
+    <div>
+      Pass Rate (C or better): <span class="data">
+        {(classInfo.PassRate * 100).toFixed(2)}%
+      </span>
+    </div>
     {#if classInfo.ClassDescription}
       <div class="description">
         Description: <br />

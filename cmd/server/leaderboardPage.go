@@ -39,15 +39,19 @@ func getLeaderboards(c *fiber.Ctx) error {
 				Entries: getHighestGPAClassesLastTerm(db, 10, termID),
 			},
 			{
-				Name:    "Highest Withdrawal Classes " + latestTerm,
+				Name:    "Highest Withdrawal Rate Classes " + latestTerm,
 				Entries: getHighestWithdrawalClassesLastTerm(db, 10, termID),
+			},
+			{
+				Name:    "Highest Pass Rate Classes " + latestTerm,
+				Entries: getHighestPassRateClassesLastTerm(db, 10, termID),
 			},
 			{
 				Name:    "Highest GPA Subjects " + latestTerm,
 				Entries: getHighestGPASubjectsLastTerm(db, 10, termID),
 			},
 			{
-				Name:    "Highest Withdrawal Subjects " + latestTerm,
+				Name:    "Highest Withdrawal Rate Subjects " + latestTerm,
 				Entries: getHighestWithdrawalSubjectsLastTerm(db, 10, termID),
 			},
 		},
@@ -112,6 +116,34 @@ func getHighestGPAClassesLastTerm(db *sql.DB, num int, term int) []LeaderboardEn
 
 func getHighestWithdrawalClassesLastTerm(db *sql.DB, num int, term int) []LeaderboardEntry {
 	rows, err := db.Query("SELECT ClassIdentifier, (W / Students) AS WithdrawalRate FROM Classes WHERE TermID=? AND Visible=TRUE ORDER BY WithdrawalRate DESC LIMIT ?", term, num)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer rows.Close()
+
+	var list []LeaderboardEntry
+
+	for rows.Next() {
+		var name string
+		var score float32
+		err = rows.Scan(&name, &score)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		list = append(list, LeaderboardEntry{
+			Name:  name,
+			Score: fmt.Sprintf("%0.2f%%", score*100),
+			Link:  util.GetClassLink(name),
+		})
+	}
+
+	return list
+}
+
+func getHighestPassRateClassesLastTerm(db *sql.DB, num int, term int) []LeaderboardEntry {
+	rows, err := db.Query("SELECT ClassIdentifier, ((A+AMinus+B+BPlus+BMinus+C+CPlus) / Students) AS PassRate FROM Classes WHERE TermID=? AND Visible=TRUE ORDER BY PassRate DESC LIMIT ?", term, num)
 	if err != nil {
 		log.Fatal(err)
 	}

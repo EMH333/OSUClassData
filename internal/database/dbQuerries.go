@@ -69,6 +69,7 @@ type ClassInfoResponse struct {
 	AverageStudents    float64
 	StudentsLastTerm   int
 	WithdrawalRate     float64
+	PassRate           float64 //This is percentage passed as a major class (so C or better)
 }
 
 //TODO remove withdrawn students from total count
@@ -78,7 +79,7 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	var classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
 	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
 	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
-	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 
 	var classNamedRetrieved bool
 	var classNameNormalized bool
@@ -118,7 +119,7 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	if row.Err() != nil {
 		return ClassInfoResponse{}, false, row.Err()
 	}
-	err = row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate)
+	err = row.Scan(&classData.AverageGPA, &classData.AverageStudents, &classData.WithdrawalRate, &classData.PassRate)
 	if err != nil {
 		return ClassInfoResponse{}, false, err
 	}
