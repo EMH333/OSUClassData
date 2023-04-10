@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/adaptor/v2 v2.2.0
 	github.com/gofiber/fiber/v2 v2.43.0
 	github.com/gofiber/template v1.8.0
-	golang.org/x/text v0.8.0
+	golang.org/x/text v0.9.0
 )
 
 require (
