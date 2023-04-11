@@ -16,9 +16,15 @@ docker run --name OSUCD-mysql -p3306:3306 -v /tmp/OSUCD-mysql:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=my-secret-pw -d docker.io/library/mysql:8
 #docker exec -it OSUCD-mysql bash
 
-# wait till database is up
+# wait till database is up or 1 minute has passed
+timeout=60
+start_time=$(date +%s)
 while ! docker exec -it OSUCD-mysql bash -c "mysql -P3306 -u root -pmy-secret-pw -e \"SELECT 1;\"" >/dev/null 2>&1; do
     sleep 1
+    if [ $(( $(date +%s) - start_time )) -gt $timeout ]; then
+        echo "Database failed to start"
+        exit 1
+    fi
 done
 
 #create sql database named OSUClassData
