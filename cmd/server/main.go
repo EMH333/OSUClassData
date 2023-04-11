@@ -85,7 +85,6 @@ func main() {
 		CacheControl: true,
 		MaxBytes:     1024 * 1024 * 8, // 8 MB
 		KeyGenerator: func(c *fiber.Ctx) string {
-			//TODO add path parameters to key once we have them
 			return utils.CopyString(c.Path()) + utils.CopyString(c.Query("class")) + utils.CopyString(c.Query("term")) + utils.CopyString(c.Query("subject"))
 		},
 		Next: func(c *fiber.Ctx) bool {
