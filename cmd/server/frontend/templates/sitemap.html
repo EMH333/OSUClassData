@@ -1,0 +1,8 @@
+{{ .Header }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {{ range .Classes }}
+        <url>
+            <loc>https://osuclassdata.ethohampton.com/class/{{ . }}</loc>
+        </url>
+    {{ end }}
+</urlset>

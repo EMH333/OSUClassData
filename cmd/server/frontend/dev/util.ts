@@ -4,7 +4,7 @@ import queryString from "wretch/addons/queryString";
 
 export const wretchInstance = wretch()
     .addon(queryString)
-    .url("api/v0/")
+    .url("/api/v0/")
     .middlewares([dedupe(), retry(), throttlingCache()]);
 
 export const chartOptions = {

@@ -26,6 +26,15 @@ function copyHTML() {
   for (let i = 0; i < files.length; i++) {
     fs.copyFileSync(`./dev/${files[i]}`, `./dist/${files[i]}`);
   }
+
+  //copy the templates
+  const templateFiles = [
+    'class.html',
+  ];
+
+  for (let i = 0; i < templateFiles.length; i++) {
+    fs.copyFileSync(`./dev/${templateFiles[i]}`, `./templates/${templateFiles[i]}`);
+  }
 }
 
 const directories = ['./dist', './distSSR'];
@@ -88,6 +97,7 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
 
           case "dist/class.js":
             insertPreload('./dist/class.html', fileInfo.imports);
+            insertPreload('./templates/class.html', fileInfo.imports);
             break;
 
           case "dist/subject.js":

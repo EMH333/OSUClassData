@@ -41,13 +41,22 @@
   let selectedClass: string;
 
   // TODO handle non-existent class
-  //get class from query string on mount
+  //get class from query string (or URL) on mount
   onMount(() => {
     const query = new URLSearchParams(window.location.search);
     selectedClass = query.get("class");
 
     if (selectedClass == null) {
-      return; //don't bother rendering anything if we don't specify a class
+      // then try to get it from the url
+      const url = new URL(window.location.href);
+      selectedClass = url.pathname.split("/").pop();
+      //confirm it is a valid class with regex
+      if (!selectedClass.match(/^[A-Z]{2,4}\d{3}/)) {
+        // if it's not a valid class, then just return
+        console.error("Invalid class: " + selectedClass);
+        return;
+      }
+      console.log("Got class from url");
     }
 
     // set page title to selectedClass

@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/xml"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -24,6 +26,8 @@ var db *sql.DB
 var classLeaderboard = &util.Leaderboard{
 	NumberOfTop: 5,
 }
+
+var templateEngine = html.New("./frontend/templates", ".html")
 
 var dev = os.Getenv("DEV") == "true"
 
@@ -64,14 +68,12 @@ func main() {
 
 	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
 
-	engine := html.New("./frontend/templates", ".html")
-
 	app := fiber.New(fiber.Config{
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"127.0.0.1"}, // localhost
 		ProxyHeader:             fiber.HeaderXForwardedFor,
 
-		Views: engine,
+		Views: templateEngine,
 	})
 
 	app.Use(etag.New())
@@ -98,6 +100,9 @@ func main() {
 	}))
 
 	app.Get("/leaderboards", getLeaderboards)
+	//TODO make sure and redirect the old class pages to the new ones and add a canonical tag
+	app.Get("/class/:class", serveClass)
+	app.Get("/sitemap.xml", getSitemap)
 
 	api := app.Group("/api/v0")
 	api.Get("/status", getStatus)
@@ -143,6 +148,19 @@ func tryToConnectToDB(config *mysql.Config) error {
 	}
 
 	return nil
+}
+
+func serveClass(c *fiber.Ctx) error {
+	// confirm class exists
+	var class string
+	err := db.QueryRow("SELECT ClassIdentifier FROM Classes WHERE ClassIdentifier=?", c.Params("class")).Scan(&class)
+	if err != nil {
+		return util.SendError(c, http.StatusNotFound, "Class not found")
+	}
+
+	return c.Render("class", fiber.Map{
+		"Class": c.Params("class"),
+	})
 }
 
 func getClasses(c *fiber.Ctx) error {
@@ -269,4 +287,33 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 	}
 
 	util.WriteJSON(w, latestClass)
+}
+
+//TODO make sure this doesn't exceed 50,000 URLs
+func getSitemap(c *fiber.Ctx) error {
+	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var classList []string
+
+	for rows.Next() {
+		var class string
+		err := rows.Scan(&class)
+		if err != nil {
+			return util.SendError(c, http.StatusInternalServerError, "Error reading classes")
+		}
+		classList = append(classList, class)
+	}
+
+	err = c.Render("sitemap", fiber.Map{
+		"Classes": classList,
+		"Header":  template.HTML(xml.Header),
+	})
+	if err != nil {
+		return util.SendError(c, http.StatusInternalServerError, "Error rendering sitemap")
+	}
+
+	return c.Type("xml").SendStatus(http.StatusOK)
 }
