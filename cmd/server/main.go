@@ -307,7 +307,7 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSitemap(c *fiber.Ctx) error {
-	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
+	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE ORDER BY ClassIdentifier ASC")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -330,7 +330,11 @@ func getSitemap(c *fiber.Ctx) error {
 
 	err = c.Render("sitemap", fiber.Map{
 		"Classes": classList,
-		"Header":  template.HTML(xml.Header),
+		"Others": []string{
+			"/",
+			"/about.html",
+		},
+		"Header": template.HTML(xml.Header),
 	})
 	if err != nil {
 		return util.SendError(c, http.StatusInternalServerError, "Error rendering sitemap")
