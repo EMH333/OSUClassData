@@ -47,8 +47,8 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        mysql -P3306 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/initialSchema.sql;"
-        mysql -P3306 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/testData.sql;"
+        mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/initialSchema.sql;"
+        mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/testData.sql;"
 
     - name: Start dev server
       run: ./scripts/devServer.sh &
