@@ -12,8 +12,7 @@
 
   function loadClass(id: string) {
     wretchInstance
-      .url("classInfo")
-      .query({ class: id })
+      .url("classInfo/" + id)
       .get()
       .json((json) => {
         classInfo = json;

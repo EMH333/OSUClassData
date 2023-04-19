@@ -108,7 +108,7 @@ func main() {
 	api.Get("/status", getStatus)
 	api.Get("/classes", getClasses)
 	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
-	api.Get("/classInfo", adaptor.HTTPHandlerFunc(getClassInfo))
+	api.Get("/classInfo/:class", getClassInfo)
 	api.Get("/chart/lastTermGradeDistribution", adaptor.HTTPHandlerFunc(getLastTermGradeDistribution))
 	api.Get("/chart/combinedData/:class", getCombinedClassStats)
 
@@ -223,18 +223,16 @@ func getClass(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, classData)
 }
 
-func getClassInfo(w http.ResponseWriter, r *http.Request) {
-	class := r.URL.Query().Get("class")
+func getClassInfo(c *fiber.Ctx) error {
+	class := c.Params("class")
 	if class == "" {
-		http.Error(w, "Missing class parameter", http.StatusBadRequest)
-		return
+		return util.SendError(c, http.StatusBadRequest, "Missing class parameter")
 	}
 
 	classData, nameUpdateNeeded, err := database.GetClassInfo(db, class)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Class not found", http.StatusNotFound)
-		return
+		return util.SendError(c, http.StatusNotFound, "Class not found")
 	}
 
 	// if we need to update the name of the class then do it
@@ -244,7 +242,7 @@ func getClassInfo(w http.ResponseWriter, r *http.Request) {
 
 	util.AddToLeaderboard(classLeaderboard, classData.ClassIdentifier) //start tracking this but don't do anything with it for now
 
-	util.WriteJSON(w, classData)
+	return c.JSON(classData)
 }
 
 func getStatus(c *fiber.Ctx) error {
