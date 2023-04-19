@@ -36,7 +36,7 @@
     <h3 style="margin: 0;">Trending Classes:</h3>
     {#each [...classes] as c}
       <div class="trendingClass">
-        <a href="class.html?class={c}" class="button-link">{c}</a>
+        <a href="/class/{c}" class="button-link">{c}</a>
       </div>
     {/each}
   </div>

@@ -1,9 +1,7 @@
 dist
 distSSR
+distTemplates
 node_modules
 cmd/classParser/**.sql
 build
 .DS_store
-
-# dynamicly built templates (will likely change once the html pages are deprecated)
-cmd/server/frontend/templates/class.html

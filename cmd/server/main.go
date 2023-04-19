@@ -27,7 +27,7 @@ var classLeaderboard = &util.Leaderboard{
 	NumberOfTop: 5,
 }
 
-var templateEngine = html.New("./frontend/templates", ".html")
+var templateEngine = html.New("./frontend/distTemplates", ".html")
 
 var dev = os.Getenv("DEV") == "true"
 
@@ -83,9 +83,9 @@ func main() {
 	// Can use a cache for all requests right now since we don't have any dynamic content per user
 	// for 10 minutes
 	app.Use(cache.New(cache.Config{
-		Expiration:   10 * time.Minute,
+		Expiration:   30 * time.Minute,
 		CacheControl: true,
-		MaxBytes:     1024 * 1024 * 8, // 8 MB
+		MaxBytes:     1024 * 1024 * 20, // 20 MB
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return utils.CopyString(c.Path()) + utils.CopyString(c.Query("class")) + utils.CopyString(c.Query("term")) + utils.CopyString(c.Query("subject"))
 		},
@@ -100,8 +100,8 @@ func main() {
 	}))
 
 	app.Get("/leaderboards", getLeaderboards)
-	//TODO make sure and redirect the old class pages to the new ones and add a canonical tag
 	app.Get("/class/:class", serveClass)
+	app.Get("/class.html", redirectClass) //redirect that can go away eventually
 	app.Get("/sitemap.xml", getSitemap)
 
 	api := app.Group("/api/v0")
@@ -161,6 +161,23 @@ func serveClass(c *fiber.Ctx) error {
 	return c.Render("class", fiber.Map{
 		"Class": c.Params("class"),
 	})
+}
+
+//TODO remove once SEO is done
+func redirectClass(c *fiber.Ctx) error {
+	// don't redirect if class query parameter is missing
+	if c.Query("class") == "" {
+		return util.SendError(c, http.StatusBadRequest, "Missing class query parameter")
+	}
+
+	// confirm class exists
+	var class string
+	err := db.QueryRow("SELECT ClassIdentifier FROM Classes WHERE ClassIdentifier=?", c.Query("class")).Scan(&class)
+	if err != nil {
+		return util.SendError(c, http.StatusNotFound, "Class not found")
+	}
+
+	return c.Redirect("/class/" + c.Query("class"))
 }
 
 func getClasses(c *fiber.Ctx) error {
@@ -289,7 +306,6 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, latestClass)
 }
 
-//TODO make sure this doesn't exceed 50,000 URLs
 func getSitemap(c *fiber.Ctx) error {
 	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
 	if err != nil {
@@ -305,6 +321,11 @@ func getSitemap(c *fiber.Ctx) error {
 			return util.SendError(c, http.StatusInternalServerError, "Error reading classes")
 		}
 		classList = append(classList, class)
+	}
+
+	// xml sitemap can't have more than 50,000 entries, else need to split into multiple
+	if len(classList) > 50000 {
+		return util.SendError(c, http.StatusInternalServerError, "Too many classes to generate sitemap")
 	}
 
 	err = c.Render("sitemap", fiber.Map{

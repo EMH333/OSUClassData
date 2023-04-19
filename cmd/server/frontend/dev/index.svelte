@@ -28,7 +28,7 @@
     <!--Link to more info-->
     <p>
       <a
-        href={`class.html?class=${selectedClass.id}`}
+        href={`/class/${selectedClass.id}`}
         class="button-link"
       >
         More info about {selectedClass.id}

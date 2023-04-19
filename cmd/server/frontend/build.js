@@ -16,7 +16,6 @@ function copyHTML() {
 
   const files = [
     'index.html',
-    'class.html',
     'about.html',
     'subject.html',
     'favicon.ico',
@@ -30,14 +29,16 @@ function copyHTML() {
   //copy the templates
   const templateFiles = [
     'class.html',
+    'leaderboard.html',
+    'sitemap.html',
   ];
 
   for (let i = 0; i < templateFiles.length; i++) {
-    fs.copyFileSync(`./dev/${templateFiles[i]}`, `./templates/${templateFiles[i]}`);
+    fs.copyFileSync(`./templates/${templateFiles[i]}`, `./distTemplates/${templateFiles[i]}`);
   }
 }
 
-const directories = ['./dist', './distSSR'];
+const directories = ['./dist', './distSSR', './distTemplates'];
 let compileOptions = esbuildOptions;
 
 if (process.argv[2] === "production") {
@@ -96,8 +97,8 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
             break;
 
           case "dist/class.js":
-            insertPreload('./dist/class.html', fileInfo.imports);
-            insertPreload('./templates/class.html', fileInfo.imports);
+            //insertPreload('./dist/class.html', fileInfo.imports);
+            insertPreload('./distTemplates/class.html', fileInfo.imports);
             break;
 
           case "dist/subject.js":
@@ -125,7 +126,7 @@ function generateLinkHeader(imports) {
   for (let i = 0; i < imports.length; i++) {
     let fileName = imports[i].path.replace('dist/', '');
     if (fileName.startsWith("chunk")) { // only preload chunks, not async imports
-      header += `<link rel="preload" href="${fileName}" as="script">`;
+      header += `<link rel="preload" href="/${fileName}" as="script">`;
     }
   }
   return header;
