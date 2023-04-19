@@ -11,14 +11,14 @@ describe('Basic Navigation', () => {
     cy.get('h2').contains('CS160')
     cy.contains('Credits: 4')
     cy.contains('Computer Science intro is a class designed to do a whole bunch of stuff')
-    // confirm there is a .button-link with href=class.html?class=CS160
-    cy.get('.button-link').should('have.attr', 'href', 'class.html?class=CS160')
+    // confirm there is a .button-link with href=/class/CS160
+    cy.get('.button-link').should('have.attr', 'href', '/class/CS160')
 
     // Go to class page
-    cy.get('p .button-link[href="class.html?class=CS160"]').click()
+    cy.get('p .button-link[href="/class/CS160"]').click()
 
     // wait for class.html to load
-    cy.url().should('include', 'class.html?class=CS160')
+    cy.url().should('include', '/class/CS160')
 
     ////////////////////////////////////////////////////////////class page
     // confirm the info card loaded correctly
