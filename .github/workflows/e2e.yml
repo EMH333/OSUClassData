@@ -22,7 +22,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: my-secret-pw
           MYSQL_DATABASE: OSUClassData
         volumes:
-          - sql:/tmp/sql
+          - ./sql:/tmp/sql
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -47,6 +47,7 @@ jobs:
 
     - name: Set up MySQL
       run: |
+        ls -la
         mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/initialSchema.sql;"
         mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/testData.sql;"
 
