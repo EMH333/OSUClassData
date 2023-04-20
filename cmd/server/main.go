@@ -109,6 +109,13 @@ func main() {
 	api.Get("/classes", getClasses)
 	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
 	api.Get("/classInfo/:class", getClassInfo)
+	api.Get("/classInfo", func(c *fiber.Ctx) error {
+		// if the class query parameter exists, then redirect to the one using path routing
+		if c.Query("class") != "" {
+			return c.Redirect("/api/v0/classInfo/"+c.Query("class"), fiber.StatusMovedPermanently)
+		}
+		return c.SendStatus(http.StatusBadRequest)
+	})
 	api.Get("/chart/lastTermGradeDistribution", adaptor.HTTPHandlerFunc(getLastTermGradeDistribution))
 	api.Get("/chart/combinedData/:class", getCombinedClassStats)
 
