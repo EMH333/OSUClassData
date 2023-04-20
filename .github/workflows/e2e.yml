@@ -21,8 +21,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: my-secret-pw
           MYSQL_DATABASE: OSUClassData
-        volumes:
-          - /tmp/sql:/tmp/sql
+        #volumes:
+        #  - /tmp/sql:/tmp/sql
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -47,11 +47,8 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        ls -la
-        cp ./sql/initialSchema.sql /tmp/sql/
-        cp ./sql/testData.sql /tmp/sql/
-        mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/initialSchema.sql;"
-        mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw -e "SOURCE /tmp/sql/testData.sql;"
+        cat ./sql/initialSchema.sql | mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw
+        cat ./sql/testData.sql | mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw
 
     - name: Start dev server
       run: ./scripts/devServer.sh &
