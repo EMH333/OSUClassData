@@ -13,8 +13,19 @@ permissions:
 
 jobs:
   build:
-    name: Lint and Build
+    name: End to End Test
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: my-secret-pw
+          MYSQL_DATABASE: OSUClassData
+        #volumes:
+        #  - /tmp/sql:/tmp/sql
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
     - uses: actions/checkout@v3
 
@@ -24,14 +35,27 @@ jobs:
         go-version: "1.20"
     
     - name: Set up nodejs
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: "18"
         cache: 'npm'
         cache-dependency-path: 'cmd/server/frontend/package-lock.json'
 
-    - name: Install npm dependencies
-      run: npm ci --prefix cmd/server/frontend
+    - name: Install npm dependencies and build frontend
+      run: |
+        cd cmd/server/frontend
+        npm ci
+        node build.js ci
+
+    - name: Set up MySQL
+      run: |
+        cat ./sql/initialSchema.sql | mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw
+        cat ./sql/testData.sql | mysql -P3306 -h 127.0.0.1 -u root -pmy-secret-pw
+
+    - name: Start dev server
+      run: ./scripts/devServer.sh &
 
     - name: Run tests
+      env: 
+        DEV: true # this is so it doesn't try to start the database or dev server
       run: ./scripts/e2eTesting.sh
