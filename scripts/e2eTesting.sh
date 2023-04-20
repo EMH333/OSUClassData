@@ -8,10 +8,10 @@ cd "$(dirname "$0")" || exit
 # go up a directory level
 cd .. || exit
 
-# start the database
-./scripts/startDB.sh || exit
-
 if [ -z ${DEV+x} ]; then
+    # start the database
+    ./scripts/startDB.sh || exit
+
     # start the dev server
     ./scripts/devServer.sh & 
 fi
@@ -27,15 +27,13 @@ fi
 # run the e2e tests
 npm run e2e
 
-if [ -z ${DEV+x} ]; then
-    # kill the dev server
-    killall "OSUCD-server"
-fi
-
 # go back to the root directory
 cd ../../../ || exit
 
 if [ -z ${DEV+x} ]; then
+    # kill the dev server
+    killall "OSUCD-server"
+
     # stop the database
     ./scripts/stopDB.sh
 fi
