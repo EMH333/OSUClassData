@@ -44,7 +44,7 @@ func SendError(c *fiber.Ctx, status int, message string) error {
 }
 
 func GetClassLink(id string) string {
-	return "https://osuclassdata.ethohampton.com/class.html?class=" + id
+	return "https://osuclassdata.ethohampton.com/class/" + id
 }
 
 func GetSubjectLink(id string) string {
