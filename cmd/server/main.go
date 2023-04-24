@@ -165,8 +165,9 @@ func serveClass(c *fiber.Ctx) error {
 		return util.SendError(c, http.StatusNotFound, "Class not found")
 	}
 
+	// we use the class from the query since it is properly formatted (uppercased, etc.)
 	return c.Render("class", fiber.Map{
-		"Class": c.Params("class"),
+		"Class": class,
 	})
 }
 
