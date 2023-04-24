@@ -50,6 +50,8 @@
       // then try to get it from the url
       const url = new URL(window.location.href);
       selectedClass = url.pathname.split("/").pop();
+      //make sure and uppercase the class
+      selectedClass = selectedClass.toUpperCase();
       //confirm it is a valid class with regex
       if (!selectedClass.match(/^[A-Z]{2,4}\d{3}/)) {
         // if it's not a valid class, then just return
@@ -58,9 +60,6 @@
       }
       console.log("Got class from url");
     }
-
-    //make sure and uppercase the class
-    selectedClass = selectedClass.toUpperCase();
 
     // set page title to selectedClass
     document.title = selectedClass + " - OSU Class Data";
