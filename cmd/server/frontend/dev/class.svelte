@@ -59,6 +59,9 @@
       console.log("Got class from url");
     }
 
+    //make sure and uppercase the class
+    selectedClass = selectedClass.toUpperCase();
+
     // set page title to selectedClass
     document.title = selectedClass + " - OSU Class Data";
 
