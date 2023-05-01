@@ -19,7 +19,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "chart.js": "^4.2.1",
+    "chart.js": "^4.3.0",
     "simple-svelte-autocomplete": "^2.5.1",
     "svelte-toggle": "^3.1.0",
     "wretch": "^2.5.1"
