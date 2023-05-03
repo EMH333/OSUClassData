@@ -4,8 +4,8 @@ describe('Basic Navigation', () => {
     cy.contains('OSU Class Data Explorer')
 
     // select CS160 on class dropdown
-    cy.get('input.autocomplete-input').click()
-    cy.get('.autocomplete-list .autocomplete-list-item').contains('CS160').click()
+    cy.get('.sv-control').click()
+    cy.get('.sv-dropdown .sv-item').contains('CS160').click()
 
     // confirm the info card loaded correctly
     cy.get('h2').contains('CS160')

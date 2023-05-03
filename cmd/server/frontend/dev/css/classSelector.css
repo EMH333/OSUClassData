@@ -1,5 +1,5 @@
 @import "../css/colorTheme.css";
 
-.selector .autocomplete:not(.hide-arrow):not(.is-loading)::after {
-  border-color: var(--main-color) !important;
+.selector .indicator-icon {
+  color: var(--main-color) !important;
 }
