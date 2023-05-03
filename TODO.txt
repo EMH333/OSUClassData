@@ -1,9 +1,10 @@
 - Fill out class page with more detailed info
-- Leaderboard w/ largest classes, highest grades, highest withdrawal, average overall grade over time
+- Leaderboard over time
 - Tie class terms to teachers
 - Fix variable credit classes
 - rate-limiting - https://www.alexedwards.net/blog/how-to-rate-limit-http-requests
 - Add difficulty estimates
 - Collect emails, feedback and other info for future use
 - Add related series of classes
-- Add E2E browser tests (testcafe or cypress?)
+- Use virtual list or limit number of classes displayed for fast rendering
+- Add more info in subject pages
