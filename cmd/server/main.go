@@ -17,6 +17,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/template/html"
 )
@@ -96,6 +97,17 @@ func main() {
 				log.Println(c.Path(), " can be cached: ", !shouldSkip)
 			}
 			return shouldSkip
+		},
+	}))
+
+	//TODO: confirm this limit is hard to reach in normal use
+	app.Use(limiter.New(limiter.Config{
+		Max:        60,
+		Expiration: 1 * time.Minute,
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": "Too many requests",
+			})
 		},
 	}))
 
