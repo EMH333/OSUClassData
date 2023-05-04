@@ -49,8 +49,10 @@
     ><form action="/TODO" method="post">
       <input type="hidden" name="classToVote" value={{ classID }} />-->
   <!--Add some sort of CORS value-->
+  <!--Make sure to include the rating this vote is agreeing or disagreeing with-->
   <!--<button type="submit" name="vote" value="Agree">Agree</button>
-      <button type="submit" name="vote" value="Disagree">Disagree</button>-->
+      <button type="submit" name="vote" value="DisagreeTooHigh">Disagree ({{ classID }} is easier)</button>
+      <button type="submit" name="vote" value="DisagreeTooLow">Disagree ({{ classID }} is harder)</button>-->
   <!--If disagree, then what direction should it go?-->
   <!--</form></span>-->
 </div>

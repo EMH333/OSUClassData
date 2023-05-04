@@ -11,6 +11,9 @@ type DifficultyResponse struct {
 	ClassName  string
 }
 
+//TODO take into account user reports, class pass rate, and other factors.
+// weight those factors appropriately and then use them to determine difficulty relative to other classes within the subject
+
 func getRelativeClassDifficulty(c *fiber.Ctx) error {
 	//get GPA of class
 	//get average GPA of subject
