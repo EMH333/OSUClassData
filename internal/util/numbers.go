@@ -27,7 +27,7 @@ func StringToFloatPanic(s string) float64 {
 	return num
 }
 
-var onlyNum *regexp.Regexp = regexp.MustCompile("[0-9]+")
+var onlyNum = regexp.MustCompile("[0-9]+")
 
 //converts a messy string (w/ other characters) to a number
 func IntFromMessyString(s string) int {

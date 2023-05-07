@@ -165,7 +165,7 @@ func serveClass(c *fiber.Ctx) error {
 		return util.SendError(c, http.StatusNotFound, "Class not found")
 	}
 
-	// we use the class from the query since it is properly formatted (uppercased, etc.)
+	// we use the class from the query since it is properly formatted (uppercase, etc.)
 	return c.Render("class", fiber.Map{
 		"Class": class,
 	})
@@ -209,7 +209,6 @@ func getClasses(c *fiber.Ctx) error {
 }
 
 func getClass(w http.ResponseWriter, r *http.Request) {
-	//TODO switch to path routing ie /api/v1/class/:classIdentifier/:term
 	class := r.URL.Query().Get("class")
 	if class == "" {
 		http.Error(w, "Missing class parameter", http.StatusBadRequest)
@@ -313,7 +312,7 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSitemap(c *fiber.Ctx) error {
-	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE ORDER BY ClassIdentifier ASC")
+	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE ORDER BY ClassIdentifier")
 	if err != nil {
 		log.Fatal(err)
 	}

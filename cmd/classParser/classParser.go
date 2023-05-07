@@ -45,7 +45,7 @@ func main() {
 		//if v[0] starts with "Course" then print the row
 		if strings.HasPrefix(v[0], "Course") {
 			//log.Println(v[0])
-			var header []string = strings.Split(v[0], " ")
+			var header = strings.Split(v[0], " ")
 
 			var c database.Class
 			c.ClassIdentifier = strings.TrimSpace(header[1] + header[2])
@@ -66,7 +66,7 @@ func main() {
 		}
 
 		if strings.HasPrefix(v[0], "Grade: ") {
-			var c *database.Class = &classes[len(classes)-1]
+			var c = &classes[len(classes)-1]
 			if util.StringToIntPanic(string(v[1][len(v[1])-1])) == c.Credits {
 				var letter = strings.Split(v[0], " ")[1]
 				var students = util.IntFromMessyString(v[2])
@@ -117,7 +117,7 @@ func main() {
 
 	//TODO also create SQL for ClassInfo table (could also do that in a follow up query)
 
-	var upsertString string = "REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES\n"
+	var upsertString = "REPLACE INTO Classes (classIdentifier, termID, students, credits, a, aMinus, b, bPlus, bMinus, c, cPlus, cMinus, d, dPlus, dMinus, f, s, u, w, i, classGPA) VALUES\n"
 	//print the classes
 	for index, v := range classes {
 		//log.Println(v)

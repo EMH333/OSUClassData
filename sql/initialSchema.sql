@@ -2,9 +2,6 @@ CREATE DATABASE IF NOT EXISTS OSUClassData;
 
 USE OSUClassData;
 
-GO
-;
-
 -- create Classes table
 -- TODO assert students adds up to all the other values
 CREATE TABLE IF NOT EXISTS Classes (

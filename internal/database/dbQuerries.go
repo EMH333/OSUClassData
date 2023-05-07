@@ -74,12 +74,15 @@ type ClassInfoResponse struct {
 
 //TODO remove withdrawn students from total count
 //TODO combine into one query
-//returns classinfo response, if the class name should be updated and error
+
+//GetClassInfo returns classinfo response, if the class name should be updated and error
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
-	var classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
-	var lastTermQuery = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
-	var lastTermInfo = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
-	var averageInfo = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	var (
+		classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
+		lastTermQuery  = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
+		lastTermInfo   = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
+		averageInfo    = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+	)
 
 	var classNamedRetrieved bool
 	var classNameNormalized bool

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="9deaf18e-d20a-4cd4-8d59-74ba5357a752" name="DDL Mapping">
+      <data-sources db="e028c5d8-3999-485e-8c12-72b939010ecc" ddl="024a09a5-ff6e-4da1-b2db-039d693d3373" />
+      <scope>
+        <node kind="database" negative="1" />
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="024a09a5-ff6e-4da1-b2db-039d693d3373" />
+          <option name="name" value="SQL Files" />
+          <option name="dbmsName" value="MYSQL" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/sql/initialSchema.sql" />
+              <option value="file://$PROJECT_DIR$/sql/testData.sql" />
+            </array>
+          </option>
+          <option name="outLayout" value="File per object by schema.groovy" />
+          <option name="scriptOptions">
+            <map>
+              <entry key="CreateIfNotExists" value="1" />
+              <entry key="CreateOrReplace" value="1" />
+            </map>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

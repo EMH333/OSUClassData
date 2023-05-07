@@ -42,8 +42,8 @@ func getSubjects(w http.ResponseWriter, r *http.Request) {
 		var class string
 		err := rows.Scan(&class)
 		if err != nil {
-			log.Fatal(err)
 			http.Error(w, "Error reading subjects", http.StatusInternalServerError)
+			log.Fatal(err)
 			return
 		}
 		classList = append(classList, class)

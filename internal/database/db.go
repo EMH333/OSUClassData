@@ -1,6 +1,6 @@
 package database
 
-//ClassIdentifier and TermID as primary key
+// Class ClassIdentifier and TermID as primary key
 type Class struct {
 	ClassIdentifier string
 	TermID          string
@@ -28,7 +28,7 @@ type Class struct {
 	Visible bool
 }
 
-//info about a class not specific to a term
+// ClassInfo info about a class not specific to a term
 type ClassInfo struct {
 	ClassIdentifier     string
 	Credits             int
@@ -44,7 +44,7 @@ type Professor struct {
 	Department string
 }
 
-//struct to tie a professor with a certian term of a classs
+// ProfessorTerm struct to tie a professor with a certain term of a class
 //All 3 values should be used as primary key
 type ProfessorTerm struct {
 	ProfessorID     int

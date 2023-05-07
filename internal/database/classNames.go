@@ -125,7 +125,7 @@ func getClassName(class string) (string, error) {
 
 	//if the API did return results, then we need to make sure that the class name is the same for at least some of them
 	//if not, then we need to return an error
-	var name string = response.Results[0]["title"].(string)
+	var name = response.Results[0]["title"].(string)
 	for i, result := range response.Results {
 		if name != result["title"].(string) {
 			name = ""
@@ -154,7 +154,7 @@ func getNameFromDB(db *sql.DB, ID string) string {
 func normalizeName(name string) string {
 	name = strings.TrimSpace(name)
 	name = properTitle(name)
-	name = caplitalizeRoman(name)
+	name = capitalizeRoman(name)
 	name = commonSubstitutions(name)
 	return name
 }
@@ -178,7 +178,7 @@ func properTitle(input string) string {
 	smallwords := " a an on the to in of and or for nor but yet so at by from with as if  "
 
 	for index, word := range words {
-		if strings.Contains(smallwords, " "+word+" ") && word != string(words[0]) {
+		if strings.Contains(smallwords, " "+word+" ") && word != words[0] {
 			words[index] = word
 		} else {
 			words[index] = caser.String(word)
@@ -187,7 +187,7 @@ func properTitle(input string) string {
 	return strings.Join(words, " ")
 }
 
-func caplitalizeRoman(input string) string {
+func capitalizeRoman(input string) string {
 	words := strings.Split(input, " ")
 	for index, initialWord := range words {
 		word := strings.ToUpper(initialWord)
@@ -199,7 +199,7 @@ func caplitalizeRoman(input string) string {
 }
 
 func commonSubstitutions(input string) string {
-	//note case senstive
+	//note case sensitive
 	substitutions := map[string]string{
 		"Computer Science": "CS",
 		"*":                "", //remove the asterisk from names (why are they there? :) )
