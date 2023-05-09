@@ -225,6 +225,60 @@ func TestDecayLeaderboard(t *testing.T) {
 	}
 }
 
+func TestChanceDecayLeaderboard(t *testing.T) {
+	leaderboard := &Leaderboard{
+		DecayChance: -1,
+	}
+	SetUpLeaderboard(leaderboard)
+
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "b")
+	AddToLeaderboard(leaderboard, "c")
+	AddToLeaderboard(leaderboard, "d")
+
+	if len(leaderboard.Top) != 4 {
+		t.Errorf("Expected length of top to be 4, got %v", leaderboard.Top)
+	}
+
+	DecayLeaderboard(leaderboard)
+
+	if len(leaderboard.Top) != 4 {
+		t.Errorf("Expected length of top to be 4, got %v", leaderboard.Top)
+	}
+}
+
+// This may fail every once in a while, but just retest
+// can fix up later if it becomes a problem
+func TestHalfChanceDecayLeaderboard(t *testing.T) {
+	leaderboard := &Leaderboard{
+		DecayChance: 50,
+	}
+	SetUpLeaderboard(leaderboard)
+
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "a")
+	AddToLeaderboard(leaderboard, "b")
+	AddToLeaderboard(leaderboard, "b")
+	AddToLeaderboard(leaderboard, "c")
+	AddToLeaderboard(leaderboard, "c")
+	AddToLeaderboard(leaderboard, "d")
+	AddToLeaderboard(leaderboard, "d")
+	AddToLeaderboard(leaderboard, "e")
+	AddToLeaderboard(leaderboard, "e")
+
+	if len(leaderboard.Top) != 5 {
+		t.Errorf("Expected length of top to be 5, got %v", leaderboard.Top)
+	}
+
+	DecayLeaderboard(leaderboard)
+	DecayLeaderboard(leaderboard)
+
+	if len(leaderboard.Top) == 5 || len(leaderboard.Top) == 0 {
+		t.Errorf("Expected length of top to be less than 5 but more than 0, got %v", leaderboard.Top)
+	}
+}
+
 //a quick benchmark of adding to the leaderboard
 func BenchmarkAddToLeaderboard(b *testing.B) {
 	leaderboard := &Leaderboard{

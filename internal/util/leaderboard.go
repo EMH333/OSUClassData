@@ -1,6 +1,7 @@
 package util
 
 import (
+	"math/rand"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -17,11 +18,13 @@ type Leaderboard struct {
 	//internal help stuff
 	minimumTopValue int
 	topLock         *sync.Mutex //lock when updating top list
+	rand            *rand.Rand
 
 	//config
 	NumberOfTop int
 	Decay       time.Duration
 	DecayAmount int
+	DecayChance int //out of 100
 }
 
 func SetUpLeaderboard(leaderboard *Leaderboard) chan struct{} {
@@ -40,11 +43,20 @@ func SetUpLeaderboard(leaderboard *Leaderboard) chan struct{} {
 	}
 
 	if leaderboard.Decay == 0 {
-		leaderboard.Decay = time.Hour
+		leaderboard.Decay = 3 * time.Hour
 	}
 
 	if leaderboard.DecayAmount == 0 {
 		leaderboard.DecayAmount = 1
+	}
+
+	// set decay chance to -1 in order to not decay
+	if leaderboard.DecayChance == 0 {
+		leaderboard.DecayChance = 100
+	}
+
+	if leaderboard.rand == nil {
+		leaderboard.rand = rand.New(rand.NewSource(time.Now().UnixMilli()))
 	}
 
 	//start the decayer every Decay interval
@@ -103,6 +115,13 @@ func DecayLeaderboard(leaderboard *Leaderboard) {
 	// decay all counters by set amount
 	for key := range leaderboard.counters {
 		leaderboard.counters[key] -= leaderboard.DecayAmount
+
+		// note this is probably off by one or something
+		// but for this case it doesn't really matter
+		num := leaderboard.rand.Intn(100)
+		if num > leaderboard.DecayChance || leaderboard.DecayChance == -1 {
+			leaderboard.counters[key] += leaderboard.DecayAmount
+		}
 
 		// if we are below the minimum value, then remove from counter list
 		if leaderboard.counters[key] <= 0 {

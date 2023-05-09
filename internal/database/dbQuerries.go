@@ -76,9 +76,8 @@ type ClassInfoResponse struct {
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	var (
 		classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
-		//TODO test this change
-		lastTermInfo = "SELECT ClassGPA, Students, TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
-		averageInfo  = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+		lastTermInfo   = "SELECT ClassGPA, Students, TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
+		averageInfo    = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 	)
 
 	var classNamedRetrieved bool

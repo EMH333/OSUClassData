@@ -25,6 +25,7 @@ var db *sql.DB
 
 var classLeaderboard = &util.Leaderboard{
 	NumberOfTop: 5,
+	DecayChance: 80, // start with a fairly high chance for now, but this can change as needed
 }
 
 var templateEngine = html.New("./frontend/distTemplates", ".html")
