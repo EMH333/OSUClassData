@@ -72,16 +72,13 @@ type ClassInfoResponse struct {
 	PassRate           float64 //This is percentage passed as a major class (so C or better)
 }
 
-//TODO remove withdrawn students from total count
-//TODO combine into one query
-
 //GetClassInfo returns classinfo response, if the class name should be updated and error
 func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	var (
 		classInfoQuery = "SELECT Credits, RetrievedClassName, NormalizedClassName, ClassName, ClassDescription FROM ClassInfo WHERE ClassIdentifier=?"
-		lastTermQuery  = "SELECT TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
-		lastTermInfo   = "SELECT ClassGPA, Students FROM Classes WHERE ClassIdentifier=? AND TermID=? AND Visible=TRUE"
-		averageInfo    = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
+		//TODO test this change
+		lastTermInfo = "SELECT ClassGPA, Students, TermID FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE ORDER BY TermID DESC LIMIT 1"
+		averageInfo  = "SELECT AVG(ClassGPA), AVG(Students), SUM(W)/SUM(Students) AS WithdrawalRate, SUM(A+AMinus+B+BPlus+BMinus+C+CPlus)/SUM(Students) AS PassRate FROM Classes WHERE ClassIdentifier=? AND Visible=TRUE"
 	)
 
 	var classNamedRetrieved bool
@@ -97,22 +94,12 @@ func GetClassInfo(db *sql.DB, id string) (ClassInfoResponse, bool, error) {
 	}
 	_ = row.Scan(&classData.Credits, &classNamedRetrieved, &classNameNormalized, &classData.ClassName, &classData.ClassDescription) // we expect errors here
 
-	// Get the last term the class was taught in
-	row = db.QueryRow(lastTermQuery, id)
-	if row.Err() != nil {
-		return ClassInfoResponse{}, false, row.Err()
-	}
-	err := row.Scan(&classData.LastTerm)
-	if err != nil {
-		return ClassInfoResponse{}, false, err
-	}
-
 	// Get the last term info
-	row = db.QueryRow(lastTermInfo, id, classData.LastTerm)
+	row = db.QueryRow(lastTermInfo, id)
 	if row.Err() != nil {
 		return ClassInfoResponse{}, false, row.Err()
 	}
-	err = row.Scan(&classData.AverageGPALastTerm, &classData.StudentsLastTerm)
+	err := row.Scan(&classData.AverageGPALastTerm, &classData.StudentsLastTerm, &classData.LastTerm)
 	if err != nil {
 		return ClassInfoResponse{}, false, err
 	}
