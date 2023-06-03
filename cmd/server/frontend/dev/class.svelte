@@ -53,7 +53,7 @@
       //make sure and uppercase the class
       selectedClass = selectedClass.toUpperCase();
       //confirm it is a valid class with regex
-      if (!selectedClass.match(/^[A-Z]{2,4}\d{3}/)) {
+      if (!selectedClass.match(/^[A-Z]{1,4}\d{3}/)) {
         // if it's not a valid class, then just return
         console.error("Invalid class: " + selectedClass);
         return;
