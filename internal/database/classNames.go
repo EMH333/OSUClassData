@@ -2,78 +2,71 @@ package database
 
 import (
 	"bytes"
-	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"ethohampton.com/OSUClassData/internal/util"
 	"html"
 	"io"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/enriquebris/goconcurrentqueue"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
 const classNameWaitTime = 30
 
-var classNameQueue = goconcurrentqueue.NewFixedFIFO(20)
-var classNameTaskRunning = false
+var classNameTaskQueue *util.TaskQueue
 
 func UpdateClassName(db *sql.DB, class string) {
-	err := classNameQueue.Enqueue(class)
-	// if there is an error then the queue is probably full so we don't add another item
-	if err != nil {
-		return
+	if classNameTaskQueue == nil {
+		classNameTaskQueue = util.NewTaskQueue(db, classNameTask, classNameWaitTime*time.Second, 20)
 	}
 
-	// start the thread to deal with the queue if it isn't already running
-	if !classNameTaskRunning {
-		go classNameTask(db)
+	err := classNameTaskQueue.Enqueue(class)
+	// if there is an error then the queue is probably full, so we don't add another item
+	// no harm in returning here, since a new request will queue it again
+	if err != nil {
+		return
 	}
 }
 
 func GetClassNameQueueLength() int {
-	return classNameQueue.GetLen()
+	return classNameTaskQueue.GetStats().CurrentQueue
 }
 
-func classNameTask(db *sql.DB) {
-	classNameTaskRunning = true
-	for classNameTaskRunning {
-		//context with a minute timeout
-		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+func classNameTask(db *sql.DB, element interface{}, _ *util.TaskQueue) util.TaskQueueReturn {
+	// it's possible that the same item ends up in the queue multiple times, so we need to check if it's still needed
+	// just to keep our requests to the API to a minimum
+	retrieveClassName, normalizeClassName := whatPartOfNameToUpdate(db, element.(string))
+	if retrieveClassName {
+		// we don't actually care about the API error because it will return an empty string which is fine for our purposes
+		name, _ := getClassName(element.(string))
+		name = normalizeName(name)
+		_ = updateClassNameDatabase(db, element.(string), name)
+	} else if normalizeClassName {
+		// this path doesn't touch the API at all, so we don't need to wait
+		name := getNameFromDB(db, element.(string))
+		name = normalizeName(name)
+		_ = updateClassNameDatabase(db, element.(string), name)
 
-		element, err := classNameQueue.DequeueOrWaitForNextElementContext(ctx)
-		if err != nil {
-			classNameTaskRunning = false
-			cancel()
-			return // return if we don't have any more elements to process
+		// no need, since doesn't touch api
+		return util.TaskQueueReturn{
+			NoWait: true,
 		}
-
-		cancel()
-
-		// it's possible that the same item ends up in the queue multiple times, so we need to check if it's still needed
-		// just to keep our requests to the API to a minimum
-		retrieveClassName, normalizeClassName := whatPartOfNameToUpdate(db, element.(string))
-		if retrieveClassName {
-			// we don't actually care about the API error because it will return an empty string which is fine for our purposes
-			name, _ := getClassName(element.(string))
-			name = normalizeName(name)
-			_ = updateClassNameDatabase(db, element.(string), name)
-
-			// wait so we don't overload API
-			time.Sleep(classNameWaitTime * time.Second)
-
-		} else if normalizeClassName {
-			// this path doesn't touch the API at all so we don't need to wait
-			name := getNameFromDB(db, element.(string))
-			name = normalizeName(name)
-			_ = updateClassNameDatabase(db, element.(string), name)
+	} else if !retrieveClassName && !normalizeClassName {
+		//don't need to do anything so don't wait
+		return util.TaskQueueReturn{
+			NoWait: true,
 		}
 	}
-	classNameTaskRunning = false
+
+	//wait by default
+	return util.TaskQueueReturn{
+		NoWait: false,
+	}
 }
 
 // bools are should retrieve, should normalize

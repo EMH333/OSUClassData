@@ -23,11 +23,18 @@ type TaskQueue struct {
 
 type TaskQueueReturn struct {
 	// if true, queue won't wait before processing next item
-	noWait bool
+	NoWait bool
+}
+
+type TaskQueueStats struct {
+	CurrentQueue        int
+	MaxSize             int
+	TotalItemsProcessed uint64
 }
 
 type TaskQueueImp interface {
 	Enqueue(item interface{}) error
+	GetStats() TaskQueueStats
 	runQueue()
 }
 
@@ -61,6 +68,14 @@ func (q *TaskQueue) Enqueue(item interface{}) error {
 	return nil
 }
 
+func (q *TaskQueue) GetStats() TaskQueueStats {
+	return TaskQueueStats{
+		CurrentQueue:        q.internalQueue.GetLen(),
+		MaxSize:             q.internalQueue.GetCap(),
+		TotalItemsProcessed: q.processedItems,
+	}
+}
+
 func (q *TaskQueue) runQueue() {
 	// if this func exits, make sure we know to start a new one
 	defer func() {
@@ -80,7 +95,7 @@ func (q *TaskQueue) runQueue() {
 		ret := q.task(q.db, element, q)
 		q.processedItems++
 
-		if !ret.noWait {
+		if !ret.NoWait {
 			time.Sleep(q.WaitDuration)
 		}
 	}

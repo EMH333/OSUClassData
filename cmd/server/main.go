@@ -245,7 +245,7 @@ func getClassInfo(c *fiber.Ctx) error {
 
 	// if we need to update the name of the class then do it
 	if nameUpdateNeeded {
-		database.UpdateClassName(db, class)
+		database.UpdateClassName(db, utils.CopyString(class))
 	}
 
 	util.AddToLeaderboard(classLeaderboard, classData.ClassIdentifier) //start tracking this but don't do anything with it for now

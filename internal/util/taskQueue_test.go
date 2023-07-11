@@ -11,11 +11,11 @@ func TestTaskQueue(t *testing.T) {
 		//if we send a bool as an item, it won't wait to process the next item
 		if v, ok := item.(bool); ok && v {
 			return TaskQueueReturn{
-				noWait: true,
+				NoWait: true,
 			}
 		}
 		return TaskQueueReturn{
-			noWait: false,
+			NoWait: false,
 		}
 	}, time.Millisecond*15, 3)
 
