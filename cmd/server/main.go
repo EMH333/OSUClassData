@@ -18,7 +18,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/utils"
-	"github.com/gofiber/template/html"
+	html "github.com/gofiber/template/html/v2"
 )
 
 var db *sql.DB

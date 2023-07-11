@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/etag"
-	"github.com/gofiber/template/html"
+	html "github.com/gofiber/template/html/v2"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
