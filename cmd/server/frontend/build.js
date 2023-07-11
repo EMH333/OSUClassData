@@ -126,7 +126,7 @@ function generateLinkHeader(imports) {
   for (let i = 0; i < imports.length; i++) {
     let fileName = imports[i].path.replace('dist/', '');
     if (fileName.startsWith("chunk")) { // only preload chunks, not async imports
-      header += `<link rel="preload" href="/${fileName}" as="script">`;
+      header += `<link rel="modulepreload" href="/${fileName}" as="script">`;
     }
   }
   return header;
