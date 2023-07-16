@@ -35,7 +35,7 @@
       </a>
     </p>
   {:else}
-    <div>Please pick a class!</div>
+    <div style="padding-top: 1em;">Please pick a subject and class!</div>
   {/if}
   <noscript>
     <div>
