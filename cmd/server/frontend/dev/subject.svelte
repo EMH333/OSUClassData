@@ -11,7 +11,7 @@
     LinearScale,
     PointElement,
   } from "chart.js";
-  import AutoComplete from "simple-svelte-autocomplete/src/SimpleAutocomplete.svelte";
+  import AutoComplete from "svelecte";
   import Footer from "./components/Footer.svelte";
 
   Chart.register(
@@ -26,16 +26,12 @@
 
   onMount(() => {
     loadSubjects();
-    selectedClassAny = "University-wide" as unknown as any[];
   });
 
   let selectedSubject: string = "University-wide";
 
   //for search
   let classesToPick: string[] = ["University-wide"];
-  let selectedClassAny: any[];
-
-  $: selectedSubject = selectedClassAny as unknown as string;
 
   $: {
     // reload charts when subject is changed
@@ -58,7 +54,7 @@
         let requestedSubject = query.get("subject");
         if (requestedSubject) {
           console.log("Selecting subject", requestedSubject);
-          selectedClassAny = requestedSubject as unknown as any[];
+          selectedSubject = requestedSubject;
         }
       })
       .catch((error) => {
@@ -198,13 +194,11 @@
 <p><a href="/" class="button-link">Go Back</a></p>
 <div class="center buffer selector">
   <AutoComplete
-    text={undefined}
-    items={classesToPick}
-    bind:selectedItem={selectedClassAny}
-    showClear={true}
-    onFocus={() => {
-      selectedClassAny = undefined;
-    }}
+    options={classesToPick}
+    bind:value={selectedSubject}
+    labelAsValue={true}
+    disableHighlight={true}
+    style="width: 12em;"
   />
 </div>
 <div class="chart-container">

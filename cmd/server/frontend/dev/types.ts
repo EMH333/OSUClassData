@@ -1,4 +1,4 @@
 export interface BasicClass {
-    displayName: string;
+    label: string;
     id: string;
 }

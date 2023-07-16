@@ -107,6 +107,7 @@ func main() {
 
 	api := app.Group("/api/v0")
 	api.Get("/status", getStatus)
+	api.Get("/classes/:subject", getSubjectClasses)
 	api.Get("/classes", getClasses)
 	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
 	api.Get("/classInfo/:class", getClassInfo)
@@ -191,6 +192,32 @@ func redirectClass(c *fiber.Ctx) error {
 
 func getClasses(c *fiber.Ctx) error {
 	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	var classList []string
+
+	for rows.Next() {
+		var class string
+		err := rows.Scan(&class)
+		if err != nil {
+			return util.SendError(c, http.StatusInternalServerError, "Error reading classes")
+		}
+		classList = append(classList, class)
+	}
+
+	return c.JSON(classList)
+}
+
+func getSubjectClasses(c *fiber.Ctx) error {
+	subject := c.Params("subject")
+	if subject == "" {
+		return util.SendError(c, http.StatusBadRequest, "Missing subject parameter")
+	}
+
+	subjectParam := subject + "%"
+	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE ClassIdentifier LIKE ? AND Visible=TRUE", subjectParam)
 	if err != nil {
 		log.Fatal(err)
 	}
