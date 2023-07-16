@@ -48,30 +48,34 @@
 </script>
 
 <div class="selector">
-  <div class="label">Subject:</div>
-  <AutoComplete
-    placeholder="Select a subject"
-    options={subjectsToPick}
-    bind:value={selectedSubject}
-    on:change={()=>{
+  <div class="subject">
+    <div class="label">Subject:</div>
+    <AutoComplete
+      placeholder="Select a subject"
+      options={subjectsToPick}
+      bind:value={selectedSubject}
+      on:change={()=>{
       classesToPick = []; // clear the class list
       selectedClass = null;
       loadClasses(selectedSubject.id); // load the classes
     }}
-    valueAsObject={true}
-    virtualList={true}
-    disableHighlight={true}
-  />
-  <div class="label">Class:</div>
-  <AutoComplete
-    placeholder="Search for a class"
-    options={classesToPick}
-    bind:value={selectedClass}
-    disabled={!(classesToPick?.length > 0 && selectedSubject)}
-    valueAsObject={true}
-    virtualList={true}
-    disableHighlight={true}
-  />
+      valueAsObject={true}
+      virtualList={true}
+      disableHighlight={true}
+    />
+  </div>
+  <div class="class">
+    <div class="label">Class:</div>
+    <AutoComplete
+      placeholder="Search for a class"
+      options={classesToPick}
+      bind:value={selectedClass}
+      disabled={!(classesToPick?.length > 0 && selectedSubject)}
+      valueAsObject={true}
+      virtualList={true}
+      disableHighlight={true}
+    />
+  </div>
 </div>
 
 <style>

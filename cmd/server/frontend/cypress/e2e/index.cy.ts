@@ -4,7 +4,10 @@ describe('Basic Navigation', () => {
     cy.contains('OSU Class Data Explorer')
 
     // select CS160 on class dropdown
-    cy.get('.sv-control').click()
+    cy.get('.subject>.svelecte>.sv-control').click()
+    cy.get('.sv-dropdown .sv-item').contains('CS').click()
+
+    cy.get('.class>.svelecte>.sv-control').click()
     cy.get('.sv-dropdown .sv-item').contains('CS160').click()
 
     // confirm the info card loaded correctly
