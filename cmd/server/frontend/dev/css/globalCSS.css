@@ -13,13 +13,13 @@
 
 @font-face {
   font-family: Asap;
-  src: url("./Asap-Medium.woff2") format("woff2");
+  src: local('Asap'), url("./Asap-Medium.woff2") format("woff2");
   font-display: swap;
 }
 
 @font-face {
   font-family: SourceSerif4;
-  src: url("./SourceSerif4-Regular.woff2") format("woff2");
+  src: local('Source Serif 4'), url("./SourceSerif4-Regular.woff2") format("woff2");
   font-display: swap;
 }
 
