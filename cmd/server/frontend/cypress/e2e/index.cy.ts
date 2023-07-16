@@ -1,5 +1,5 @@
 describe('Basic Navigation', () => {
-  it('Home Page Nav', () => {
+  it('should list expected classes and data', () => {
     cy.visit('/')
     cy.contains('OSU Class Data Explorer')
 
@@ -31,4 +31,12 @@ describe('Basic Navigation', () => {
     // confirm there is a .button-link with link back home
     cy.get('.button-link').should('have.attr', 'href', '/')
   })
+
+  it('should have all subjects on subject page', function () {
+    cy.visit('/subject.html')
+
+    // select CS subject
+    cy.get('.sv-control').click()
+    cy.get('.sv-dropdown .sv-item').contains('CS').click()
+  });
 })
