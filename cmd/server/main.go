@@ -230,6 +230,15 @@ func getSubjectClasses(c *fiber.Ctx) error {
 		if err != nil {
 			return util.SendError(c, http.StatusInternalServerError, "Error reading classes")
 		}
+
+		//check that the length of the class is either X123 or X123H, where X is the subject
+		//this whole function is cached so the performance penalty is worth it for correctness
+		subLength := len(subject)
+		classLength := len(class)
+		if !(classLength == subLength+3 || (classLength == subLength+4 && class[classLength-1:] == "H")) {
+			continue
+		}
+
 		classList = append(classList, class)
 	}
 

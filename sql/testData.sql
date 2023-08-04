@@ -12,6 +12,9 @@ VALUES
     ROW('CS161', '202101', 21, 4, 5, 5),
     ROW('CS161', '202201', 22, 4, 6, 3.90980980880608909890),
     ROW('CS999', '202001', 10, 4, 1, 1),
+    ROW('HCC407', '202001', 10, 4, 1, 1), -- This should not show up in the HC listing
+    ROW('HC407', '202001', 10, 4, 1, 1),
+    ROW('HC407H', '202001', 10, 4, 1, 1), -- This should show up in the HC listing
     ROW('HC407', '202001', 10, 4, 1, 1),
     ROW('CS162', '202001', 30, 4, 7, 7);
 
