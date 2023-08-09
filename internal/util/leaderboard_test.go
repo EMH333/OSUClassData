@@ -248,34 +248,42 @@ func TestChanceDecayLeaderboard(t *testing.T) {
 	}
 }
 
-// This may fail every once in a while, but just retest
-// can fix up later if it becomes a problem
+// Make sure that the decay function doesn't just always or never decay
 func TestHalfChanceDecayLeaderboard(t *testing.T) {
-	leaderboard := &Leaderboard{
-		DecayChance: 50,
+	var decayed = false
+	// give it 10 chances. If it can't do it then, there is likely a problem
+	for i := 0; i < 10; i++ {
+		leaderboard := &Leaderboard{
+			DecayChance: 50,
+		}
+		SetUpLeaderboard(leaderboard)
+
+		AddToLeaderboard(leaderboard, "a")
+		AddToLeaderboard(leaderboard, "a")
+		AddToLeaderboard(leaderboard, "b")
+		AddToLeaderboard(leaderboard, "b")
+		AddToLeaderboard(leaderboard, "c")
+		AddToLeaderboard(leaderboard, "c")
+		AddToLeaderboard(leaderboard, "d")
+		AddToLeaderboard(leaderboard, "d")
+		AddToLeaderboard(leaderboard, "e")
+		AddToLeaderboard(leaderboard, "e")
+
+		if len(leaderboard.Top) != 5 {
+			t.Errorf("Expected length of top to be 5, got %v", leaderboard.Top)
+		}
+
+		DecayLeaderboard(leaderboard)
+		DecayLeaderboard(leaderboard)
+
+		if !(len(leaderboard.Top) == 5 || len(leaderboard.Top) == 0) {
+			decayed = true
+			break
+		}
 	}
-	SetUpLeaderboard(leaderboard)
 
-	AddToLeaderboard(leaderboard, "a")
-	AddToLeaderboard(leaderboard, "a")
-	AddToLeaderboard(leaderboard, "b")
-	AddToLeaderboard(leaderboard, "b")
-	AddToLeaderboard(leaderboard, "c")
-	AddToLeaderboard(leaderboard, "c")
-	AddToLeaderboard(leaderboard, "d")
-	AddToLeaderboard(leaderboard, "d")
-	AddToLeaderboard(leaderboard, "e")
-	AddToLeaderboard(leaderboard, "e")
-
-	if len(leaderboard.Top) != 5 {
-		t.Errorf("Expected length of top to be 5, got %v", leaderboard.Top)
-	}
-
-	DecayLeaderboard(leaderboard)
-	DecayLeaderboard(leaderboard)
-
-	if len(leaderboard.Top) == 5 || len(leaderboard.Top) == 0 {
-		t.Errorf("Expected length of top to be less than 5 but more than 0, got %v", leaderboard.Top)
+	if !decayed {
+		t.Errorf("Expected length of top to be less than 5 but more than 0")
 	}
 }
 
