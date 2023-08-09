@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wretchInstance, chartColor, convertRawDataToPlotData } from "./util";
+  import { wretchInstance, chartColor, convertRawDataToPlotData, datasetOptions } from "./util";
   import {
     Chart,
     LineElement,
@@ -13,6 +13,8 @@
   } from "chart.js";
   import AutoComplete from "svelecte";
   import Footer from "./components/Footer.svelte";
+
+  import type { ChartConfiguration } from "chart.js";
 
   Chart.register(
     LineElement,
@@ -78,8 +80,7 @@
               data: convertRawDataToPlotData(terms, avgGPA),
               backgroundColor: chartColor,
               borderColor: chartColor,
-              spanGaps: true,
-              normalized: true,
+              ...datasetOptions,
             },
           ],
         };
@@ -107,7 +108,7 @@
                 },
               },
             },
-          }
+          } as ChartConfiguration<"line">
         );
       })
       .catch((err) => {
@@ -133,8 +134,7 @@
               data: convertRawDataToPlotData(terms, withdrawalRate),
               backgroundColor: chartColor,
               borderColor: chartColor,
-              spanGaps: true,
-              normalized: true,
+              ...datasetOptions,
             },
           ],
         };
@@ -182,7 +182,7 @@
                 },
               },
             },
-          }
+          } as ChartConfiguration<"line">
         );
       })
       .catch((err) => {

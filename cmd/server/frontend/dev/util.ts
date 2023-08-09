@@ -13,6 +13,13 @@ export const chartOptions = {
     scrollZoom: false,//!isTouchEnabled(),
 };
 
+export const datasetOptions = {
+    spanGaps: true,
+    normalized: true,
+    cubicInterpolationMode: 'monotone',
+    tension: 0.1,
+};
+
 export const chartColor = "rgb(215, 63, 9)";
 
 function isTouchEnabled() {

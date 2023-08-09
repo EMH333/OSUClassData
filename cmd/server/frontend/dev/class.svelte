@@ -6,6 +6,7 @@
     termIDtoString,
     chartColor,
     convertRawDataToPlotData,
+    datasetOptions,
   } from "./util";
   import {
     Chart,
@@ -20,6 +21,8 @@
     PointElement,
   } from "chart.js";
   import Footer from "./components/Footer.svelte";
+
+  import type { ChartConfiguration } from "chart.js";
 
   Chart.register(
     LineElement,
@@ -99,8 +102,7 @@
           data: convertRawDataToPlotData(terms, students),
           backgroundColor: chartColor,
           borderColor: chartColor,
-          spanGaps: true,
-          normalized: true,
+          ...datasetOptions,
         },
       ],
     };
@@ -124,7 +126,7 @@
             },
           },
         },
-      }
+      } as ChartConfiguration<"line">
     );
   }
   function createAvgGPAPerTermChart(data: CombinedResponse) {
@@ -138,8 +140,7 @@
           data: convertRawDataToPlotData(terms, avgGPA),
           backgroundColor: chartColor,
           borderColor: chartColor,
-          spanGaps: true,
-          normalized: true,
+          ...datasetOptions,
         },
       ],
     };
@@ -163,7 +164,7 @@
             },
           },
         },
-      }
+      } as ChartConfiguration<"line">
     );
   }
 
@@ -178,8 +179,7 @@
           data: convertRawDataToPlotData(terms, withdrawalRate),
           backgroundColor: chartColor,
           borderColor: chartColor,
-          spanGaps: true,
-          normalized: true,
+          ...datasetOptions,
         },
       ],
     };
@@ -223,7 +223,7 @@
             },
           },
         },
-      }
+      } as ChartConfiguration<"line">
     );
   }
 
@@ -307,7 +307,7 @@
                 },
               },
             },
-          }
+          }  as ChartConfiguration<"bar">
         );
       })
       .catch((err) => {
