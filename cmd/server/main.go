@@ -109,7 +109,6 @@ func main() {
 	api.Get("/status", getStatus)
 	api.Get("/classes/:subject", getSubjectClasses)
 	api.Get("/classes", getClasses)
-	api.Get("/class", adaptor.HTTPHandlerFunc(getClass))
 	api.Get("/classInfo/:class", getClassInfo)
 	api.Get("/classInfo", func(c *fiber.Ctx) error {
 		// if the class query parameter exists, then redirect to the one using path routing
@@ -243,28 +242,6 @@ func getSubjectClasses(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(classList)
-}
-
-func getClass(w http.ResponseWriter, r *http.Request) {
-	class := r.URL.Query().Get("class")
-	if class == "" {
-		http.Error(w, "Missing class parameter", http.StatusBadRequest)
-		return
-	}
-
-	term := r.URL.Query().Get("term")
-	if term == "" {
-		http.Error(w, "Missing term parameter", http.StatusBadRequest)
-		return
-	}
-
-	classData, err := database.GetTermClass(db, class, term)
-	if err != nil {
-		http.Error(w, "Class not found", http.StatusNotFound)
-		return
-	}
-
-	util.WriteJSON(w, classData)
 }
 
 func getClassInfo(c *fiber.Ctx) error {
