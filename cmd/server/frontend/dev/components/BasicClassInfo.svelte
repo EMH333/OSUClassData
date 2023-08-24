@@ -24,7 +24,7 @@
     // track what clsses are being looked at
     try {
       //get around typescript error here
-      (window as Window & typeof globalThis & { umami: any }).umami.trackEvent(
+      (window as Window & typeof globalThis & { umami: any }).umami.track(
         "classInfo",
         { class: id }
       );
