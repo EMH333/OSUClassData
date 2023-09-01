@@ -19,7 +19,7 @@
     "typescript": "^5.1.0"
   },
   "dependencies": {
-    "chart.js": "^4.3.0",
+    "chart.js": "^4.4.0",
     "svelecte": "^3.16.0",
     "svelte-toggle": "^4.0.0",
     "wretch": "^2.6.0"
