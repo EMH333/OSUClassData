@@ -1,8 +1,10 @@
-const typescript = require('svelte-preprocess');
+import typescript from "svelte-preprocess";
 
-module.exports = {
+const options  = {
     preprocess: typescript({}),
     compilerOptions: {
         hydratable: true,
     }
 };
+
+export default options;

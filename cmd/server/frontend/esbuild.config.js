@@ -1,7 +1,7 @@
-const esbuildSvelte = require('esbuild-svelte');
-const svelteConfig = require('./svelte.config');
+import esbuildSvelte from "esbuild-svelte";
+import svelteConfig from "./svelte.config.js";
 
-module.exports = {
+const options = {
     entryPoints: ['./dev/index.ts', './dev/class.ts', './dev/subject.ts'],
     format: 'esm',
     minify: true,
@@ -17,3 +17,5 @@ module.exports = {
     },
     assetNames: '[dir]/[name]',
 };
+
+export default options;

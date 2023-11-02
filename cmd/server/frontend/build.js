@@ -1,7 +1,11 @@
+import esbuild from "esbuild";
+import fs from "fs";
+import esbuildSvelte from "esbuild-svelte";
 
-const esbuild = require('esbuild');
-const esbuildOptions = require('./esbuild.config');
-const fs = require('fs');
+import esbuildOptions from "./esbuild.config.js";
+import svelteOptions from "./svelte.config.js";
+
+// TODO also render the class and subject pages
 
 function copyHTML() {
   const folders = [
@@ -49,7 +53,7 @@ if (process.argv[2] === "production") {
 if (process.argv.length >= 2 && (process.argv[2] === "clean" || process.argv[2] === "production")) {
   directories.forEach(directory => {
     if (fs.existsSync(directory)) {
-      fs.rmSync(directory, { recursive: true });
+      fs.rmSync(directory, {recursive: true});
     }
   });
 }
@@ -65,31 +69,28 @@ directories.forEach(directory => {
 //copy all the html files
 copyHTML();
 
-if (process.argv.length >= 2 && process.argv[2] === "serve") {
-  let serveOptions = esbuildOptions;
-  serveOptions.minify = false;
+if (process.argv.length >= 2 && process.argv[2] === "dev") {
+  ssr();
+  let devOptions = esbuildOptions;
+  devOptions.minify = false;
 
-  esbuild.serve({
-    port: 3000,
-    servedir: './dist',
-  }, serveOptions).then(server => {
-    // Call "stop" on the server when you're done
-    //server.stop()
-    //process.exit(0)
-  })
+  let ctx = await esbuild.context(devOptions);
+
+  await ctx.watch();
+
 } else {
   ssr();
-  //allow for non-minified code
-  if (process.argv.length >= 2 && process.argv[2] === "dev") { compileOptions.minify = false; compileOptions.watch = true; }
 
   //allow for non-minified code but no watching
-  if (process.argv.length >= 2 && process.argv[2] === "ci") { compileOptions.minify = false; }
+  if (process.argv.length >= 2 && process.argv[2] === "ci") {
+    compileOptions.minify = false;
+  }
 
   esbuild.build(compileOptions)
     .then(output => {
       //fs.writeFileSync('./dist/metafile.json', JSON.stringify(output.metafile));
 
-      for (file in output.metafile.outputs) {
+      for (let file in output.metafile.outputs) {
         let fileInfo = output.metafile.outputs[file];
         switch (file) {
           case "dist/index.js":
@@ -111,14 +112,19 @@ if (process.argv.length >= 2 && process.argv[2] === "serve") {
 
       //do some quick bundle calculations
       let bundleSize = 0;
-      for (file in output.metafile.outputs) {
+      for (let file in output.metafile.outputs) {
         //don't include map files
-        if (file.endsWith(".map")) { continue; }
+        if (file.endsWith(".map")) {
+          continue;
+        }
         bundleSize += output.metafile.outputs[file].bytes;
       }
       console.log(`Bundle size: ${(bundleSize / 1024).toFixed(1)} kb`);
     })
-    .catch((err) => { console.error(err); process.exit(1) });
+    .catch((err) => {
+      console.error(err);
+      process.exit(1)
+    });
 }
 
 function generateLinkHeader(imports) {
@@ -140,15 +146,12 @@ function insertPreload(htmlPath, imports) {
 }
 
 function ssr() {
-  // TODO also render the class and subject pages
-  const esbuildSvelte = require('esbuild-svelte');
-  const svelteOptions = require("./svelte.config");
   esbuild
     .build({
       ...esbuildOptions,
       entryPoints: ["ssr.js"],
       outdir: "./distSSR",
-      format: "cjs",
+      format: "esm",
       splitting: false,
       plugins: [
         esbuildSvelte({
@@ -159,16 +162,15 @@ function ssr() {
         }),
       ],
     })
-    .then(() => {
+    .then(async () => {
       //now we can generate the html
-      const fs = require("fs");
-      const output = require("./distSSR/ssr");
+      const output = await import("./distSSR/ssr.js");
 
       const initialHTML = fs.readFileSync("./dist/index.html");
       let rendered = output.render({
         target: "document.body"
       });
-      if (rendered.head != "") {
+      if (rendered.head !== "") {
         console.error("Head is not empty, this is not supported");
       }
       //console.log(rendered.html)
@@ -176,5 +178,8 @@ function ssr() {
 
       fs.writeFileSync("./dist/index.html", final);
     })
-    .catch((err) => { console.error(err); process.exit(1) });
+    .catch((err) => {
+      console.error(err);
+      process.exit(1)
+    });
 }
