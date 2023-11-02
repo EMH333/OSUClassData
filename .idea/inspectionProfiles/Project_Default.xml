@@ -1,0 +1,11 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CssMissingSemicolon" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ForLoopThatDoesntUseLoopVariableJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="FunctionWithInconsistentReturnsJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GoContextTodo" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="GoNilness" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NestedAssignmentJS" enabled="true" level="WARNING" enabled_by_default="true" />
+  </profile>
+</component>

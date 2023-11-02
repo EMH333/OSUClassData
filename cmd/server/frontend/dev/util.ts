@@ -57,14 +57,14 @@ export function termIDtoPlotID(termID: number): number {
 }
 
 export function convertRawDataToPlotData(terms: Array<number>, data: Array<any>): Array<{ x: string, y: string }> {
-    var rawMap = new Map();
-    var termConversionMap = new Map();
-    for (var i = 0; i < terms.length; i++) {
+    const rawMap = new Map();
+    const termConversionMap = new Map();
+    for (let i = 0; i < terms.length; i++) {
         rawMap.set(termIDtoPlotID(terms[i]), data[i]);
         termConversionMap.set(termIDtoPlotID(terms[i]), termIDtoString(terms[i]));
     }
 
-    var mediumData = Array();
+    const mediumData = Array();
     for (let index = termIDtoPlotID(terms[0]); index <= termIDtoPlotID(terms[terms.length - 1]); index++) {
         if (rawMap.has(index)) {
             mediumData.push({
@@ -73,7 +73,7 @@ export function convertRawDataToPlotData(terms: Array<number>, data: Array<any>)
             });
         } else {
             const numFake = termIDtoPlotID(terms[terms.length - 1]) - termIDtoPlotID(terms[0]) + 1; // the number of fake data points to add
-            var fake = " ";
+            let fake = " ";
             for (let i = 0; i < index % numFake; i++) {
                 fake += "​";
             }

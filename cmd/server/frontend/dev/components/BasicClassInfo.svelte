@@ -38,7 +38,7 @@
   {#if classInfo && classInfo.ClassName != null}
     <h2>
       {classInfo.ClassIdentifier}
-      {#if classInfo.ClassName != null && classInfo.ClassName != ""}
+      {#if classInfo.ClassName != null && classInfo.ClassName !== ""}
         - {classInfo.ClassName}
       {/if}
     </h2>

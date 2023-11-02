@@ -56,7 +56,7 @@ func main() {
 		}
 
 		//if not connected then wait and try again, up to 10 times, then exit with error
-		if err != nil && i == maxConnectionAttempts-1 {
+		if i == maxConnectionAttempts-1 {
 			log.Fatal(err)
 		}
 
