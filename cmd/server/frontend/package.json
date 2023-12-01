@@ -23,6 +23,6 @@
     "chart.js": "^4.4.0",
     "svelecte": "^3.17.2",
     "svelte-toggle": "^4.0.0",
-    "wretch": "^2.7.0"
+    "wretch": "^2.7.1"
   }
 }
