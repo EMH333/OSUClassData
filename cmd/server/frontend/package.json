@@ -12,7 +12,7 @@
   "license": "AGPL-3.0",
   "devDependencies": {
     "cypress": "^13.4.0",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.20.2",
     "esbuild-svelte": "^0.8.0",
     "svelte": "^4.2.2",
     "svelte-preprocess": "^5.0.4",
