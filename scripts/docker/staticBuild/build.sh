@@ -6,7 +6,7 @@ cd "$(dirname "$0")" || exit
 cp ../../../go.mod ./ || exit
 cp ../../../go.sum ./ || exit
 
-docker image build --pull -t ethohampton/osucd-static-build:latest .
+podman image build --pull -t ethohampton/osucd-static-build:latest .
 
 # remove temporary copies
 rm go.mod go.sum || exit

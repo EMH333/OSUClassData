@@ -20,7 +20,7 @@ mkdir -p build/frontend/dist
 #go build -o build/OSUCD-server cmd/server/main.go || exit
 #-compiler gccgo --gccgoflags "-static"
 #-ldflags="-extldflags=-static -w -s"
-docker run --rm -v "$PWD":/usr/src/ethohampton.com/OSUClassData -w /usr/src/ethohampton.com/OSUClassData/cmd/server \
+podman run --rm -v "$PWD":/usr/src/ethohampton.com/OSUClassData -w /usr/src/ethohampton.com/OSUClassData/cmd/server \
     ethohampton/osucd-static-build:latest \
     sh -c "go build -v -buildvcs=false -ldflags='-linkmode=external -extldflags=-static -w -s' -o ../../build/OSUCD-server && chown $(id -u):$(id -g) ../../build/OSUCD-server" || exit
 
