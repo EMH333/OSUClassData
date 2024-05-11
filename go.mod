@@ -6,7 +6,7 @@ require (
 	github.com/enriquebris/goconcurrentqueue v0.7.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gofiber/adaptor/v2 v2.2.1
-	github.com/gofiber/fiber/v2 v2.52.1
+	github.com/gofiber/fiber/v2 v2.52.4
 	github.com/gofiber/template/html/v2 v2.0.5
 	golang.org/x/text v0.13.0
 )
