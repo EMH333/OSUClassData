@@ -1,6 +1,6 @@
 module ethohampton.com/OSUClassData
 
-go 1.18
+go 1.21
 
 require (
 	github.com/enriquebris/goconcurrentqueue v0.7.0
