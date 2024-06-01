@@ -11,7 +11,7 @@
   "author": "Ethan Hampton",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "cypress": "^13.4.0",
+    "cypress": "^13.10.0",
     "esbuild": "^0.19.5",
     "esbuild-svelte": "^0.8.0",
     "svelte": "^4.2.2",
