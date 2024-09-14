@@ -192,13 +192,11 @@
 </script>
 
 <p><a href="/" class="button-link">Go Back</a></p>
-<div class="center buffer selector">
+<div class="selector">
   <AutoComplete
     options={classesToPick}
     bind:value={selectedSubject}
-    labelAsValue={true}
     disableHighlight={true}
-    style="width: 12em;"
   />
 </div>
 <div class="chart-container">
@@ -214,12 +212,10 @@
   @import "./css/globalCSS.css";
   @import "./css/classSelector.css";
 
-  .center {
+  .selector {
     margin: auto;
-    width: max-content;
+    width: 12em;
     max-width: 100%;
-  }
-  .buffer {
     margin-bottom: 3em;
   }
   .chart-container {

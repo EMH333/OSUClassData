@@ -5,10 +5,10 @@ describe('Basic Navigation', () => {
 
     // select CS160 on class dropdown
     cy.get('.subject>.svelecte>.sv-control').click()
-    cy.get('.sv-dropdown .sv-item').contains('CS').click()
+    cy.get('.subject .sv-dropdown-content .sv-item--wrap').contains('CS').click()
 
     cy.get('.class>.svelecte>.sv-control').click()
-    cy.get('.sv-dropdown .sv-item').contains('CS160').click()
+    cy.get('.class .sv-dropdown-content .sv-item--wrap').contains('CS160').click()
 
     // confirm the info card loaded correctly
     cy.get('h2').contains('CS160')
@@ -37,6 +37,6 @@ describe('Basic Navigation', () => {
 
     // select CS subject
     cy.get('.sv-control').click()
-    cy.get('.sv-dropdown .sv-item').contains('CS').click()
+    cy.get('.sv-dropdown-content .sv-item--wrap').contains('CS').click()
   });
 })

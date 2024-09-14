@@ -11,6 +11,7 @@ const options = {
     outdir: './dist',
     sourcemap: 'external',
     mainFields: ["svelte", "browser", "module", "main"],
+    conditions: ["svelte", "browser"],
     plugins: [esbuildSvelte(svelteConfig)],
     loader: {
         '.woff2': 'file',

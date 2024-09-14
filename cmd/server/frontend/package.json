@@ -12,7 +12,7 @@
   "license": "AGPL-3.0",
   "devDependencies": {
     "cypress": "^13.14.0",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.23.1",
     "esbuild-svelte": "^0.8.1",
     "svelte": "^4.2.19",
     "svelte-preprocess": "^6.0.2",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.0",
-    "svelecte": "^3.17.2",
+    "svelecte": "^4.2.5",
     "svelte-toggle": "^4.0.0",
     "wretch": "^2.10.0"
   }
