@@ -60,7 +60,7 @@
       loadClasses(selectedSubject.id); // load the classes
     }}
       valueAsObject={true}
-      virtualList={true}
+      virtualList={false}
       disableHighlight={true}
     />
   </div>
@@ -72,7 +72,7 @@
       bind:value={selectedClass}
       disabled={!(classesToPick?.length > 0 && selectedSubject)}
       valueAsObject={true}
-      virtualList={true}
+      virtualList={false}
       disableHighlight={true}
     />
   </div>

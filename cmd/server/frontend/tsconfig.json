@@ -3,6 +3,13 @@
     "module": "es2020",
     "moduleResolution": "node",
     "target": "es6",
-    "allowSyntheticDefaultImports": true
-  }
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "distSSR",
+    "distTemplates"
+  ]
 }
