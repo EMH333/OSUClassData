@@ -5,12 +5,16 @@
   import type { BasicClass } from "../types";
 
   //for subjects
-  let subjectsToPick: BasicClass[];
-  let selectedSubject: BasicClass;
+  let subjectsToPick: BasicClass[] = $state();
+  let selectedSubject: BasicClass = $state();
 
   //for classes
-  let classesToPick: BasicClass[];
-  export let selectedClass: BasicClass;
+  let classesToPick: BasicClass[] = $state();
+  interface Props {
+    selectedClass: BasicClass;
+  }
+
+  let { selectedClass = $bindable() }: Props = $props();
 
   onMount(() => loadSubjects());
 
@@ -54,7 +58,7 @@
       placeholder="Select a subject"
       options={subjectsToPick}
       bind:value={selectedSubject}
-      on:change={()=>{
+      onChange={()=>{
       classesToPick = []; // clear the class list
       selectedClass = null;
       loadClasses(selectedSubject.id); // load the classes

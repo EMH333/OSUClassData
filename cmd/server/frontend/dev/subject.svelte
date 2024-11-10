@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onMount } from "svelte";
   import { wretchInstance, chartColor, convertRawDataToPlotData, datasetOptions } from "./util";
   import {
@@ -30,18 +32,11 @@
     loadSubjects();
   });
 
-  let selectedSubject: string = "University-wide";
+  let selectedSubject: string = $state("University-wide");
 
   //for search
-  let classesToPick: string[] = ["University-wide"];
+  let classesToPick: string[] = $state(["University-wide"]);
 
-  $: {
-    // reload charts when subject is changed
-    if (selectedSubject) {
-      createAvgGPAPerTermChart();
-      createWithdrawalRatePerTermChart();
-    }
-  }
 
   function loadSubjects() {
     console.log("Loading subjects");
@@ -189,6 +184,13 @@
         console.error(err);
       });
   }
+  run(() => {
+    // reload charts when subject is changed
+    if (selectedSubject) {
+      createAvgGPAPerTermChart();
+      createWithdrawalRatePerTermChart();
+    }
+  });
 </script>
 
 <p><a href="/" class="button-link">Go Back</a></p>
@@ -200,10 +202,10 @@
   />
 </div>
 <div class="chart-container">
-  <canvas id="avgGPAPerTermChart" />
+  <canvas id="avgGPAPerTermChart"></canvas>
 </div>
 <div class="chart-container">
-  <canvas id="withdrawalRatePerTermChart" />
+  <canvas id="withdrawalRatePerTermChart"></canvas>
 </div>
 <br />
 <Footer />

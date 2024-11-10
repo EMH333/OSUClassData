@@ -1,4 +1,4 @@
 import Index from "./dev/index.svelte";
+import { render } from 'svelte/server';
 
-export let render;
-render = Index.render;
+export default render(Index);

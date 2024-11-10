@@ -5,7 +5,7 @@
   import type { BasicClass } from "./types";
   import Footer from "./components/Footer.svelte";
 
-  let selectedClass: BasicClass;
+  let selectedClass: BasicClass = $state();
 
   /*let Beta;
 
@@ -50,9 +50,9 @@
       </p>
     </div>
   </noscript>
-  <div class="spacer" />
+  <div class="spacer"></div>
   <Trending />
-  <div class="spacer" />
+  <div class="spacer"></div>
   <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
   <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
   <p><a href="about.html" class="button-link">About This Website</a></p>

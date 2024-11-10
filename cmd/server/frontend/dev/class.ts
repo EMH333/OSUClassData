@@ -1,6 +1,8 @@
 import Class from './class.svelte';
+import { mount } from "svelte";
+
 document.addEventListener('DOMContentLoaded', function () {
-    new Class({
-        target: document.body
-    })
+    mount(Class, {
+            target: document.body
+        })
 });
