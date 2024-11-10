@@ -1,7 +1,8 @@
 import Index from './index.svelte';
+import { hydrate } from "svelte";
+
 document.addEventListener('DOMContentLoaded', function () {
-    new Index({
-        target: document.body,
-        hydrate: true
-    })
+    hydrate(Index, {
+            target: document.body
+        })
 });

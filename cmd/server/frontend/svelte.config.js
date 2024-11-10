@@ -1,9 +1,9 @@
-import typescript from "svelte-preprocess";
+import { sveltePreprocess } from "svelte-preprocess";
 
 const options  = {
-    preprocess: typescript({}),
+    preprocess: sveltePreprocess({}),
     compilerOptions: {
-        hydratable: true,
+
     }
 };
 

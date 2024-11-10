@@ -41,7 +41,7 @@
     SpecificData: Map<string, Float64Array>;
   }
 
-  let selectedClass: string;
+  let selectedClass: string = $state();
 
   // TODO handle non-existent class
   //get class from query string (or URL) on mount
@@ -320,16 +320,16 @@
 <div class="center buffer"><BasicClassInfo {selectedClass} /></div>
 
 <div class="chart-container">
-  <canvas id="lastTermGradeDistributionChart" />
+  <canvas id="lastTermGradeDistributionChart"></canvas>
 </div>
 <div class="chart-container">
-  <canvas id="studentsPerTermChart" />
+  <canvas id="studentsPerTermChart"></canvas>
 </div>
 <div class="chart-container">
-  <canvas id="avgGPAPerTermChart" />
+  <canvas id="avgGPAPerTermChart"></canvas>
 </div>
 <div class="chart-container">
-  <canvas id="withdrawalRatePerTermChart" />
+  <canvas id="withdrawalRatePerTermChart"></canvas>
 </div>
 <br />
 <!--Possible Graphics:
