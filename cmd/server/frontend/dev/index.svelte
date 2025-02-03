@@ -7,7 +7,7 @@
 
   let selectedClass: BasicClass = $state();
 
-  /*let Beta;
+  /*let Beta = $state();
 
   async function loadBeta(eventDetails) {
     if (eventDetails.target.open && Beta === undefined) {
@@ -57,9 +57,9 @@
   <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
   <p><a href="about.html" class="button-link">About This Website</a></p>
 
-  <!--<details on:toggle={loadBeta}>
+  <!--<details ontoggle={loadBeta}>
     <summary>Advanced</summary>
-    <svelte:component this={Beta} />
+    <Beta></Beta>
   </details>-->
   <Footer />
 </div>
