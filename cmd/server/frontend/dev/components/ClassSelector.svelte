@@ -34,7 +34,7 @@
       });
   }
 
-  function loadClasses(subject) {
+  function loadClasses(subject: string) {
     console.log("Loading classes");
     wretchInstance
       .url(`classes/${subject}`)
