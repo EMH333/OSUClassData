@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.0",
-    "svelecte": "^4.2.5",
+    "svelecte": "^5.1.5",
     "svelte-toggle": "^4.0.0",
     "wretch": "^2.10.0"
   }
