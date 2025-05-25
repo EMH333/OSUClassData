@@ -67,9 +67,14 @@ func main() {
 
 		if strings.HasPrefix(v[0], "Grade: ") {
 			var c = &classes[len(classes)-1]
-			if util.StringToIntPanic(string(v[1][len(v[1])-1])) == c.Credits {
+			// handle the case where a zero credit withdrawl screws things up
+			if util.StringToIntPanic(string(v[1][len(v[1])-1])) == c.Credits || c.Credits == 0 {
 				var letter = strings.Split(v[0], " ")[1]
 				var students = util.IntFromMessyString(v[2])
+				if c.Credits == 0 {
+					c.Credits = util.IntFromMessyString(v[1])
+				}
+
 				//log.Printf("%s %d\n", letter, students)
 				switch letter {
 				case "A":
