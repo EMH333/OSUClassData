@@ -1,6 +1,8 @@
 import Subject from './subject.svelte';
+import { mount } from "svelte";
+
 document.addEventListener('DOMContentLoaded', function () {
-    new Subject({
-        target: document.body
-    })
+    mount(Subject, {
+            target: document.body
+        })
 });

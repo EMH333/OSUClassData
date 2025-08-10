@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { SvelteSet } from 'svelte/reactivity';
   import { wretchInstance, chartColor, convertRawDataToPlotData, datasetOptions } from "./util";
   import {
     Chart,
@@ -15,6 +16,7 @@
   import Footer from "./components/Footer.svelte";
 
   import type { ChartConfiguration } from "chart.js";
+  import type { BasicClass } from './types';
 
   Chart.register(
     LineElement,
@@ -26,22 +28,15 @@
     PointElement
   ); //make sure we register all the plugins we need
 
+  let selectedSubject: string = $state("University-wide");
+
+  //for search
+  const universitySubject = {label: "University-wide", id: "University-wide"};
+  let classesToPick: Set<BasicClass> = new SvelteSet([universitySubject]);
+
   onMount(() => {
     loadSubjects();
   });
-
-  let selectedSubject: string = "University-wide";
-
-  //for search
-  let classesToPick: string[] = ["University-wide"];
-
-  $: {
-    // reload charts when subject is changed
-    if (selectedSubject) {
-      createAvgGPAPerTermChart();
-      createWithdrawalRatePerTermChart();
-    }
-  }
 
   function loadSubjects() {
     console.log("Loading subjects");
@@ -49,8 +44,12 @@
       .url("subjects")
       .get()
       .json((json) => {
-        classesToPick.push(...(json as string[]));
-        classesToPick = classesToPick; //have to trigger svelte refresh
+        (json as string[]).flatMap((className: string) => ({
+          label: className,
+          id: className,
+        })).forEach((val) => {
+          classesToPick.add(val)
+        })
 
         const query = new URLSearchParams(window.location.search);
         let requestedSubject = query.get("subject");
@@ -189,21 +188,28 @@
         console.error(err);
       });
   }
+  $effect(() => {
+    // reload charts when subject is changed
+    if (selectedSubject) {
+      createAvgGPAPerTermChart();
+      createWithdrawalRatePerTermChart();
+    }
+  });
 </script>
 
 <p><a href="/" class="button-link">Go Back</a></p>
 <div class="selector">
   <AutoComplete
-    options={classesToPick}
+    options={[...classesToPick]}
     bind:value={selectedSubject}
     disableHighlight={true}
   />
 </div>
 <div class="chart-container">
-  <canvas id="avgGPAPerTermChart" />
+  <canvas id="avgGPAPerTermChart"></canvas>
 </div>
 <div class="chart-container">
-  <canvas id="withdrawalRatePerTermChart" />
+  <canvas id="withdrawalRatePerTermChart"></canvas>
 </div>
 <br />
 <Footer />

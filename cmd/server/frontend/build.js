@@ -47,6 +47,7 @@ let compileOptions = esbuildOptions;
 
 if (process.argv[2] === "production") {
   compileOptions.pure = ['console.log'];
+  compileOptions.conditions.push("production");
 }
 
 // remove build directory if building clean or for production
@@ -153,11 +154,12 @@ function ssr() {
       outdir: "./distSSR",
       format: "esm",
       splitting: false,
+      external: ["svelte"],
       plugins: [
         esbuildSvelte({
           ...svelteOptions,
           compilerOptions: {
-            generate: "ssr",
+            generate: "server",
           },
         }),
       ],
@@ -166,15 +168,13 @@ function ssr() {
       //now we can generate the html
       const output = await import("./distSSR/ssr.js");
 
-      const initialHTML = fs.readFileSync("./dist/index.html");
-      let rendered = output.render({
-        target: "document.body"
-      });
+      let rendered = output.default;
       if (rendered.head !== "") {
         console.error("Head is not empty, this is not supported");
       }
-      //console.log(rendered.html)
-      let final = initialHTML.toString().replace("<!--ssr-html-->", rendered.html)
+      
+      const initialHTML = fs.readFileSync("./dist/index.html");
+      let final = initialHTML.toString().replace("<!--ssr-html-->", rendered.body)
 
       fs.writeFileSync("./dist/index.html", final);
     })

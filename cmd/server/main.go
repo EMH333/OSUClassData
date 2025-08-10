@@ -172,7 +172,7 @@ func serveClass(c *fiber.Ctx) error {
 	})
 }
 
-//TODO remove once SEO is done
+// TODO remove once SEO is done
 func redirectClass(c *fiber.Ctx) error {
 	// don't redirect if class query parameter is missing
 	if c.Query("class") == "" {
@@ -297,14 +297,21 @@ func getCombinedClassStats(c *fiber.Ctx) error {
 		return util.SendError(c, fiber.StatusNotFound, "Class not found")
 	}
 
+	// subjectGPA, err := database.GetSubjectAvgGPAPerTerm(db, util.ClassToSubject(class))
+	// if err != nil {
+	// 	return util.SendError(c, fiber.StatusNotFound, "Class not found")
+	// }
+
 	var response util.CombinedClassGraphResponse
 
 	response.Terms = CombinedClassStats.Terms
-	response.SpecificData = make(map[string][]float64, 3)
+	response.SpecificData = make(map[string][]float64, 4)
 	response.SpecificData["WR"] = CombinedClassStats.WithdrawalRate
 	response.SpecificData["GPA"] = CombinedClassStats.GPA
 	response.SpecificData["S"] = CombinedClassStats.Students
 	//TODO add general subject data
+	// response.SpecificData["SubjectTerms"] = subjectGPA.Terms
+	// response.SpecificData["SubjectGPA"] = subjectGPA.GPA
 
 	return c.JSON(response)
 }

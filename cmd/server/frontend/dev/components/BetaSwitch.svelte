@@ -3,14 +3,14 @@
   import Toggle from "svelte-toggle";
   import { BetaEnabledKey, isBetaEnabled } from "../utils/beta";
 
-  let betaEnabled = false;
+  let betaEnabled = $state(false);
 
   // make sure it reflects the correct state across reloads
   onMount(() => {
     betaEnabled = isBetaEnabled();
   });
 
-  $: {
+  $effect(() => {
     if (betaEnabled) {
       //put in local storage
       localStorage.setItem(BetaEnabledKey, "true");
@@ -18,7 +18,7 @@
       //remove from local storage
       localStorage.removeItem(BetaEnabledKey);
     }
-  }
+  });
 </script>
 
 <div class="container">

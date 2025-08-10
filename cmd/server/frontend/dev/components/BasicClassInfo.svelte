@@ -1,14 +1,13 @@
 <script lang="ts">
   import { wretchInstance, termIDtoString, GPAToLetterGrade } from "../util";
 
-  export let selectedClass: string;
-  let classInfo: any;
-
-  $: {
-    if (selectedClass) {
-      loadClass(selectedClass);
-    }
+  interface Props {
+    selectedClass: string;
   }
+
+  let { selectedClass }: Props = $props();
+  let classInfo: any = $state();
+
 
   function loadClass(id: string) {
     wretchInstance
@@ -32,6 +31,11 @@
       // umami not loaded so don't worry about it
     }
   }
+  $effect(() => {
+    if (selectedClass) {
+      loadClass(selectedClass);
+    }
+  });
 </script>
 
 <div class="display">

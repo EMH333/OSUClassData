@@ -5,9 +5,9 @@
   import type { BasicClass } from "./types";
   import Footer from "./components/Footer.svelte";
 
-  let selectedClass: BasicClass;
+  let selectedClass: BasicClass = $state();
 
-  /*let Beta;
+  /*let Beta = $state();
 
   async function loadBeta(eventDetails) {
     if (eventDetails.target.open && Beta === undefined) {
@@ -50,16 +50,16 @@
       </p>
     </div>
   </noscript>
-  <div class="spacer" />
+  <div class="spacer"></div>
   <Trending />
-  <div class="spacer" />
+  <div class="spacer"></div>
   <p><a href="subject.html" class="button-link">Stats by Subject</a></p>
   <p><a href="leaderboards" class="button-link">Class Leaderboards</a></p>
   <p><a href="about.html" class="button-link">About This Website</a></p>
 
-  <!--<details on:toggle={loadBeta}>
+  <!--<details ontoggle={loadBeta}>
     <summary>Advanced</summary>
-    <svelte:component this={Beta} />
+    <Beta></Beta>
   </details>-->
   <Footer />
 </div>
