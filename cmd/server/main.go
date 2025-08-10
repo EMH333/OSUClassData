@@ -297,10 +297,10 @@ func getCombinedClassStats(c *fiber.Ctx) error {
 		return util.SendError(c, fiber.StatusNotFound, "Class not found")
 	}
 
-	subjectGPA, err := database.GetSubjectAvgGPAPerTerm(db, util.ClassToSubject(class))
-	if err != nil {
-		return util.SendError(c, fiber.StatusNotFound, "Class not found")
-	}
+	// subjectGPA, err := database.GetSubjectAvgGPAPerTerm(db, util.ClassToSubject(class))
+	// if err != nil {
+	// 	return util.SendError(c, fiber.StatusNotFound, "Class not found")
+	// }
 
 	var response util.CombinedClassGraphResponse
 
@@ -310,8 +310,8 @@ func getCombinedClassStats(c *fiber.Ctx) error {
 	response.SpecificData["GPA"] = CombinedClassStats.GPA
 	response.SpecificData["S"] = CombinedClassStats.Students
 	//TODO add general subject data
-	response.SpecificData["SubjectTerms"] = subjectGPA.Terms
-	response.SpecificData["SubjectGPA"] = subjectGPA.GPA
+	// response.SpecificData["SubjectTerms"] = subjectGPA.Terms
+	// response.SpecificData["SubjectGPA"] = subjectGPA.GPA
 
 	return c.JSON(response)
 }
