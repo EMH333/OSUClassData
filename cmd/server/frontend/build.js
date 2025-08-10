@@ -47,6 +47,7 @@ let compileOptions = esbuildOptions;
 
 if (process.argv[2] === "production") {
   compileOptions.pure = ['console.log'];
+  compileOptions.conditions.push("production");
 }
 
 // remove build directory if building clean or for production

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { SvelteSet } from 'svelte/reactivity';
   import { wretchInstance } from "../util";
 
   interface Props {
@@ -7,7 +8,7 @@
   }
 
   let { college = null }: Props = $props();
-  let classes: Set<string> = $state(new Set()); // this is a set because backend might send duplicates
+  let classes: Set<string> = new SvelteSet(); // this is a set because backend might send duplicates
 
   onMount(() => {
     //allow for a college to be passed in
@@ -25,7 +26,6 @@
           for (const c of json as string[]) {
             classes.add(c);
           }
-          classes = classes; //force update
         }
       })
       .catch((error) => {
@@ -35,7 +35,7 @@
 </script>
 
 <!--only display if able to load properly-->
-{#if classes != null && classes.size > 0}
+{#if classes.size > 0}
   <div id="trendingClasses">
     <h3 style="margin: 0;">Trending Classes:</h3>
     {#each [...classes] as c}
