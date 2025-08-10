@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { wretchInstance, termIDtoString, GPAToLetterGrade } from "../util";
 
   interface Props {
@@ -33,7 +31,7 @@
       // umami not loaded so don't worry about it
     }
   }
-  run(() => {
+  $effect(() => {
     if (selectedClass) {
       loadClass(selectedClass);
     }

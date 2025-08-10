@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onMount } from "svelte";
+  import { SvelteSet } from 'svelte/reactivity';
   import { wretchInstance, chartColor, convertRawDataToPlotData, datasetOptions } from "./util";
   import {
     Chart,
@@ -17,6 +16,7 @@
   import Footer from "./components/Footer.svelte";
 
   import type { ChartConfiguration } from "chart.js";
+  import type { BasicClass } from './types';
 
   Chart.register(
     LineElement,
@@ -28,15 +28,15 @@
     PointElement
   ); //make sure we register all the plugins we need
 
-  onMount(() => {
-    loadSubjects();
-  });
-
   let selectedSubject: string = $state("University-wide");
 
   //for search
-  let classesToPick: string[] = $state(["University-wide"]);
+  const universitySubject = {label: "University-wide", id: "University-wide"};
+  let classesToPick: Set<BasicClass> = new SvelteSet([universitySubject]);
 
+  onMount(() => {
+    loadSubjects();
+  });
 
   function loadSubjects() {
     console.log("Loading subjects");
@@ -44,8 +44,12 @@
       .url("subjects")
       .get()
       .json((json) => {
-        classesToPick.push(...(json as string[]));
-        classesToPick = classesToPick; //have to trigger svelte refresh
+        (json as string[]).flatMap((className: string) => ({
+          label: className,
+          id: className,
+        })).forEach((val) => {
+          classesToPick.add(val)
+        })
 
         const query = new URLSearchParams(window.location.search);
         let requestedSubject = query.get("subject");
@@ -184,7 +188,7 @@
         console.error(err);
       });
   }
-  run(() => {
+  $effect(() => {
     // reload charts when subject is changed
     if (selectedSubject) {
       createAvgGPAPerTermChart();
@@ -196,7 +200,7 @@
 <p><a href="/" class="button-link">Go Back</a></p>
 <div class="selector">
   <AutoComplete
-    options={classesToPick}
+    options={[...classesToPick]}
     bind:value={selectedSubject}
     disableHighlight={true}
   />

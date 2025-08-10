@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { onMount } from "svelte";
   import Toggle from "svelte-toggle";
   import { BetaEnabledKey, isBetaEnabled } from "../utils/beta";
@@ -12,7 +10,7 @@
     betaEnabled = isBetaEnabled();
   });
 
-  run(() => {
+  $effect(() => {
     if (betaEnabled) {
       //put in local storage
       localStorage.setItem(BetaEnabledKey, "true");
