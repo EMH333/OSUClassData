@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html"
 	"io"
 	"net/http"
@@ -93,12 +94,15 @@ func getClassName(class string) (string, error) {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Linux x86_64) Gecko/20100101 EMH Class Data (osuclassdata.ethohampton.com)")
 
+	fmt.Printf("Attempting to fetch class name for class '%s'\n", class)
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
 
 	if resp.StatusCode != 200 {
+		fmt.Printf("Fetching for class '%s' returned status code %d\n", class, resp.StatusCode)
 		return "", errors.New("API returned non-200 status code")
 	}
 
@@ -122,6 +126,7 @@ func getClassName(class string) (string, error) {
 	}
 
 	if response.Count < 1 {
+		fmt.Printf("Did not retrieve any results for '%s'\n", class)
 		return "", errors.New("API returned no results")
 	}
 
@@ -138,6 +143,8 @@ func getClassName(class string) (string, error) {
 			break
 		}
 	}
+
+	fmt.Printf("Successfully got name for class '%s': '%s'\n", class, name)
 
 	return name, nil
 }
