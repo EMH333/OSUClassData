@@ -22,7 +22,7 @@ type CombinedClassGraphResponse struct {
 }
 
 // Write data to the response, handles all errors
-func WriteJSON(w http.ResponseWriter, v interface{}) {
+func WriteJSON(w http.ResponseWriter, v any) {
 	jsonResponse, err := json.Marshal(v)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)

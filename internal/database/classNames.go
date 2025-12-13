@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"html"
 	"io"
 	"net/http"
@@ -39,7 +38,7 @@ func GetClassNameQueueLength() int {
 	return classNameTaskQueue.GetStats().CurrentQueue
 }
 
-func classNameTask(db *sql.DB, element interface{}, _ *util.TaskQueue) util.TaskQueueReturn {
+func classNameTask(db *sql.DB, element any, _ *util.TaskQueue) util.TaskQueueReturn {
 	// it's possible that the same item ends up in the queue multiple times, so we need to check if it's still needed
 	// just to keep our requests to the API to a minimum
 	retrieveClassName, normalizeClassName := whatPartOfNameToUpdate(db, element.(string))
@@ -111,9 +110,9 @@ func getClassName(class string) (string, error) {
 	}
 
 	type Response struct {
-		Srcdb   string                   `json:"srcdb"`
-		Count   int                      `json:"count"`
-		Results []map[string]interface{} `json:"results"`
+		Srcdb   string           `json:"srcdb"`
+		Count   int              `json:"count"`
+		Results []map[string]any `json:"results"`
 	}
 
 	var response Response

@@ -7,7 +7,7 @@ import (
 )
 
 func TestTaskQueue(t *testing.T) {
-	tq := NewTaskQueue(&sql.DB{}, func(db *sql.DB, item interface{}, queue *TaskQueue) TaskQueueReturn {
+	tq := NewTaskQueue(&sql.DB{}, func(db *sql.DB, item any, queue *TaskQueue) TaskQueueReturn {
 		//if we send a bool as an item, it won't wait to process the next item
 		if v, ok := item.(bool); ok && v {
 			return TaskQueueReturn{

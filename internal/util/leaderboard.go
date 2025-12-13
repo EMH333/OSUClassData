@@ -2,14 +2,15 @@ package util
 
 import (
 	"math/rand"
+	"slices"
 	"sync"
 	"sync/atomic"
 	"time"
 )
 
-//TODO eventually decay values over time
-//Leaderboard keeps track of the top values in a list
-//thread safe for the top calculations and the total count, not for the counters since that matters less
+// TODO eventually decay values over time
+// Leaderboard keeps track of the top values in a list
+// thread safe for the top calculations and the total count, not for the counters since that matters less
 type Leaderboard struct {
 	counters   map[string]int
 	Top        []string
@@ -86,11 +87,8 @@ func AddToLeaderboard(leaderboard *Leaderboard, key string) {
 	//move towards the max number of top entries if not already there
 	if len(leaderboard.Top) < leaderboard.NumberOfTop {
 		var alreadyInTop = false
-		for _, topKey := range leaderboard.Top {
-			if topKey == key {
-				alreadyInTop = true
-				break
-			}
+		if slices.Contains(leaderboard.Top, key) {
+			alreadyInTop = true
 		}
 		if !alreadyInTop {
 			leaderboard.Top = append(leaderboard.Top, key)
@@ -189,12 +187,7 @@ func bubbleDown(leaderboard *Leaderboard, pos int, key string) {
 
 // func contains
 func contains(slice []string, val string) bool {
-	for _, item := range slice {
-		if item == val {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(slice, val)
 }
 
 // func remove

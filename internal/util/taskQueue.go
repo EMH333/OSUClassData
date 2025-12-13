@@ -12,7 +12,7 @@ type TaskQueue struct {
 	internalQueue *goconcurrentqueue.FixedFIFO
 	taskRunning   bool
 	//stateMutex    sync.Mutex
-	task func(db *sql.DB, item interface{}, queue *TaskQueue) TaskQueueReturn
+	task func(db *sql.DB, item any, queue *TaskQueue) TaskQueueReturn
 	db   *sql.DB
 
 	WaitDuration time.Duration
@@ -33,12 +33,12 @@ type TaskQueueStats struct {
 }
 
 type TaskQueueImp interface {
-	Enqueue(item interface{}) error
+	Enqueue(item any) error
 	GetStats() TaskQueueStats
 	runQueue()
 }
 
-func NewTaskQueue(db *sql.DB, task func(db *sql.DB, item interface{}, queue *TaskQueue) TaskQueueReturn, waitDuration time.Duration, maxSize int) *TaskQueue {
+func NewTaskQueue(db *sql.DB, task func(db *sql.DB, item any, queue *TaskQueue) TaskQueueReturn, waitDuration time.Duration, maxSize int) *TaskQueue {
 	return &TaskQueue{
 		internalQueue: goconcurrentqueue.NewFixedFIFO(maxSize),
 		taskRunning:   false,
@@ -50,7 +50,7 @@ func NewTaskQueue(db *sql.DB, task func(db *sql.DB, item interface{}, queue *Tas
 	}
 }
 
-func (q *TaskQueue) Enqueue(item interface{}) error {
+func (q *TaskQueue) Enqueue(item any) error {
 	if q.internalQueue.GetLen() == q.internalQueue.GetCap() {
 		return errors.New("queue full")
 	}
