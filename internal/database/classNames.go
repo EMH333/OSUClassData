@@ -5,12 +5,14 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"ethohampton.com/OSUClassData/internal/util"
+	"fmt"
 	"html"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"ethohampton.com/OSUClassData/internal/util"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -84,7 +86,15 @@ func whatPartOfNameToUpdate(db *sql.DB, ID string) (bool, bool) {
 func getClassName(class string) (string, error) {
 	requestBody := `{"other":{"srcdb":"999999"}, "criteria":[{"field":"alias","value":"` + html.EscapeString(class) + `"}]}`
 
-	resp, err := http.Post("https://classes.oregonstate.edu/api/?page=fose&route=search", "application/json", bytes.NewBufferString(requestBody))
+	req, err := http.NewRequest(http.MethodPost, "https://classes.oregonstate.edu/api/?page=fose&route=search", bytes.NewBufferString(requestBody))
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Linux x86_64) Gecko/20100101 EMH Class Data (osuclassdata.ethohampton.com)")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
