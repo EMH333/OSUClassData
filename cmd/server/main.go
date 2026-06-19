@@ -10,15 +10,16 @@ import (
 	"os"
 	"time"
 
+	"github.com/gofiber/fiber/v3/middleware/static"
+
 	"ethohampton.com/OSUClassData/internal/database"
 	"ethohampton.com/OSUClassData/internal/util"
 	"github.com/go-sql-driver/mysql"
-	"github.com/gofiber/adaptor/v2"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
-	"github.com/gofiber/fiber/v2/middleware/etag"
-	"github.com/gofiber/fiber/v2/utils"
-	html "github.com/gofiber/template/html/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cache"
+	"github.com/gofiber/fiber/v3/middleware/etag"
+	html "github.com/gofiber/template/html/v3"
+	"github.com/gofiber/utils/v2"
 )
 
 var db *sql.DB
@@ -48,7 +49,7 @@ func main() {
 
 	// Try to connect to the database
 	const maxConnectionAttempts = 10
-	for i := 0; i < maxConnectionAttempts; i++ {
+	for i := range maxConnectionAttempts {
 		err := tryToConnectToDB(&cfg)
 		//if connected then start server
 		if err == nil {
@@ -70,27 +71,26 @@ func main() {
 	stopLeaderboard := util.SetUpLeaderboard(classLeaderboard) //make sure everything is configured
 
 	app := fiber.New(fiber.Config{
-		EnableTrustedProxyCheck: true,
-		TrustedProxies:          []string{"127.0.0.1"}, // localhost
-		ProxyHeader:             fiber.HeaderXForwardedFor,
+		TrustProxy:       true,
+		TrustProxyConfig: fiber.TrustProxyConfig{Proxies: []string{"127.0.0.1"}}, // localhost
+		ProxyHeader:      fiber.HeaderXForwardedFor,
 
 		Views: templateEngine,
 	})
 
 	app.Use(etag.New())
 
-	app.Static("/", "./frontend/dist")
+	app.Get("/*", static.New("./frontend/dist"))
 
 	// Can use a cache for all requests right now since we don't have any dynamic content per user
 	// for 10 minutes
 	app.Use(cache.New(cache.Config{
-		Expiration:   30 * time.Minute,
-		CacheControl: true,
-		MaxBytes:     1024 * 1024 * 20, // 20 MB
-		KeyGenerator: func(c *fiber.Ctx) string {
+		Expiration: 30 * time.Minute,
+		MaxBytes:   1024 * 1024 * 20, // 20 MB
+		KeyGenerator: func(c fiber.Ctx) string {
 			return utils.CopyString(c.Path()) + utils.CopyString(c.Query("class")) + utils.CopyString(c.Query("term")) + utils.CopyString(c.Query("subject"))
 		},
-		Next: func(c *fiber.Ctx) bool {
+		Next: func(c fiber.Ctx) bool {
 			// Don't cache if getting trending classes
 			shouldSkip := c.Path() == "/api/v0/trendingClasses" || c.Path() == "/api/v0/status"
 			if dev {
@@ -110,19 +110,19 @@ func main() {
 	api.Get("/classes/:subject", getSubjectClasses)
 	api.Get("/classes", getClasses)
 	api.Get("/classInfo/:class", getClassInfo)
-	api.Get("/classInfo", func(c *fiber.Ctx) error {
+	api.Get("/classInfo", func(c fiber.Ctx) error {
 		// if the class query parameter exists, then redirect to the one using path routing
 		if c.Query("class") != "" {
-			return c.Redirect("/api/v0/classInfo/"+c.Query("class"), fiber.StatusMovedPermanently)
+			return c.Redirect().Status(fiber.StatusMovedPermanently).To("/api/v0/classInfo/" + c.Query("class"))
 		}
 		return c.SendStatus(http.StatusBadRequest)
 	})
-	api.Get("/chart/lastTermGradeDistribution", adaptor.HTTPHandlerFunc(getLastTermGradeDistribution))
+	api.Get("/chart/lastTermGradeDistribution", getLastTermGradeDistribution)
 	api.Get("/chart/combinedData/:class", getCombinedClassStats)
 
-	api.Get("/subjects", adaptor.HTTPHandlerFunc(getSubjects))
-	api.Get("/subject/chart/avgGPAPerTerm", adaptor.HTTPHandlerFunc(getSubjectAvgGPAPerTerm))
-	api.Get("/subject/chart/withdrawalRatePerTerm", adaptor.HTTPHandlerFunc(getSubjectWithdrawalRatePerTerm))
+	api.Get("/subjects", getSubjects)
+	api.Get("/subject/chart/avgGPAPerTerm", getSubjectAvgGPAPerTerm)
+	api.Get("/subject/chart/withdrawalRatePerTerm", getSubjectWithdrawalRatePerTerm)
 
 	api.Get("/trendingClasses", getTrendingClasses)
 
@@ -158,7 +158,7 @@ func tryToConnectToDB(config *mysql.Config) error {
 	return nil
 }
 
-func serveClass(c *fiber.Ctx) error {
+func serveClass(c fiber.Ctx) error {
 	// confirm class exists
 	var class string
 	err := db.QueryRow("SELECT ClassIdentifier FROM Classes WHERE ClassIdentifier=?", c.Params("class")).Scan(&class)
@@ -173,7 +173,7 @@ func serveClass(c *fiber.Ctx) error {
 }
 
 // TODO remove once SEO is done
-func redirectClass(c *fiber.Ctx) error {
+func redirectClass(c fiber.Ctx) error {
 	// don't redirect if class query parameter is missing
 	if c.Query("class") == "" {
 		return util.SendError(c, http.StatusBadRequest, "Missing class query parameter")
@@ -186,10 +186,10 @@ func redirectClass(c *fiber.Ctx) error {
 		return util.SendError(c, http.StatusNotFound, "Class not found")
 	}
 
-	return c.Redirect("/class/" + c.Query("class"))
+	return c.Redirect().To("/class/" + c.Query("class"))
 }
 
-func getClasses(c *fiber.Ctx) error {
+func getClasses(c fiber.Ctx) error {
 	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE")
 	if err != nil {
 		log.Fatal(err)
@@ -209,7 +209,7 @@ func getClasses(c *fiber.Ctx) error {
 	return c.JSON(classList)
 }
 
-func getSubjectClasses(c *fiber.Ctx) error {
+func getSubjectClasses(c fiber.Ctx) error {
 	subject := c.Params("subject")
 	if subject == "" {
 		return util.SendError(c, http.StatusBadRequest, "Missing subject parameter")
@@ -244,7 +244,7 @@ func getSubjectClasses(c *fiber.Ctx) error {
 	return c.JSON(classList)
 }
 
-func getClassInfo(c *fiber.Ctx) error {
+func getClassInfo(c fiber.Ctx) error {
 	class := c.Params("class")
 	if class == "" {
 		return util.SendError(c, http.StatusBadRequest, "Missing class parameter")
@@ -266,7 +266,7 @@ func getClassInfo(c *fiber.Ctx) error {
 	return c.JSON(classData)
 }
 
-func getStatus(c *fiber.Ctx) error {
+func getStatus(c fiber.Ctx) error {
 	pingErr := db.Ping()
 	if pingErr != nil {
 		return util.SendError(c, http.StatusInternalServerError, "Can't ping DB")
@@ -281,11 +281,11 @@ func getStatus(c *fiber.Ctx) error {
 
 // pretty simple method to get all the top trending classes
 // TODO: allow trending classes per college
-func getTrendingClasses(c *fiber.Ctx) error {
+func getTrendingClasses(c fiber.Ctx) error {
 	return c.JSON(classLeaderboard.Top)
 }
 
-func getCombinedClassStats(c *fiber.Ctx) error {
+func getCombinedClassStats(c fiber.Ctx) error {
 	class := c.Params("class")
 	if class == "" {
 		return util.SendError(c, fiber.StatusBadRequest, "Missing class")
@@ -332,7 +332,7 @@ func getLastTermGradeDistribution(w http.ResponseWriter, r *http.Request) {
 	util.WriteJSON(w, latestClass)
 }
 
-func getSitemap(c *fiber.Ctx) error {
+func getSitemap(c fiber.Ctx) error {
 	rows, err := db.Query("SELECT DISTINCT ClassIdentifier FROM Classes WHERE Visible=TRUE ORDER BY ClassIdentifier")
 	if err != nil {
 		log.Fatal(err)

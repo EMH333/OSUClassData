@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 // This includes the data specific to the API response as well as the data generalized over the whole college (CS, PH, etc.)
@@ -35,7 +35,7 @@ func WriteJSON(w http.ResponseWriter, v any) {
 	}
 }
 
-func SendError(c *fiber.Ctx, status int, message string) error {
+func SendError(c fiber.Ctx, status int, message string) error {
 	err := c.SendString(message)
 	if err != nil {
 		return err

@@ -5,11 +5,10 @@ import (
 
 	"github.com/enriquebris/goconcurrentqueue"
 	"github.com/go-sql-driver/mysql"
-	"github.com/gofiber/adaptor/v2"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
-	"github.com/gofiber/fiber/v2/middleware/etag"
-	html "github.com/gofiber/template/html/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cache"
+	"github.com/gofiber/fiber/v3/middleware/etag"
+	html "github.com/gofiber/template/html/v3"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -19,7 +18,6 @@ Create a file that will be used to generate the dependencies for the static buil
 */
 func main() {
 	_ = mysql.Config{}
-	_ = adaptor.FiberApp(fiber.New())
 	_ = fiber.New()
 	_ = goconcurrentqueue.NewFixedFIFO(20)
 	_ = html.New("", "")

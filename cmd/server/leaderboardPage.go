@@ -7,7 +7,7 @@ import (
 
 	"ethohampton.com/OSUClassData/internal/database"
 	"ethohampton.com/OSUClassData/internal/util"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type LeaderboardDisplay struct {
@@ -21,7 +21,7 @@ type LeaderboardEntry struct {
 	Score string
 }
 
-func getLeaderboards(c *fiber.Ctx) error {
+func getLeaderboards(c fiber.Ctx) error {
 	termID, err := database.GetLatestTerm(db)
 	if err != nil {
 		return err
