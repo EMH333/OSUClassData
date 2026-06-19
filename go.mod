@@ -7,7 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/gofiber/fiber/v3 v3.3.0
 	github.com/gofiber/template/html/v3 v3.0.0
-	github.com/gofiber/utils/v2 v2.0.6
+	github.com/gofiber/utils/v2 v2.1.0
 	golang.org/x/text v0.38.0
 )
 
