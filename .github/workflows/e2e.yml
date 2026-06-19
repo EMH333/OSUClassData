@@ -32,12 +32,12 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: "1.21"
+        go-version: "1.25"
     
     - name: Set up nodejs
       uses: actions/setup-node@v6
       with:
-        node-version: "20"
+        node-version: "24"
         cache: 'npm'
         cache-dependency-path: 'cmd/server/frontend/package-lock.json'
 
