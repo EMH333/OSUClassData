@@ -17,7 +17,7 @@
     "cypress": "^15.17.0",
     "esbuild": "^0.28.1",
     "esbuild-svelte": "^0.9.3",
-    "svelte": "^5.56.3",
+    "svelte": "^5.56.4",
     "svelte-preprocess": "^6.0.3",
     "svelte-preprocess-esbuild": "^3.0.1",
     "typescript": "^6.0.3"
