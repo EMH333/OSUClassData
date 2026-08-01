@@ -6,8 +6,8 @@ require (
 	github.com/enriquebris/goconcurrentqueue v0.7.0
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/gofiber/fiber/v3 v3.4.0
-	github.com/gofiber/template/html/v3 v3.0.0
-	github.com/gofiber/utils/v2 v2.1.1
+	github.com/gofiber/template/html/v3 v3.0.7
+	github.com/gofiber/utils/v2 v2.4.1
 	golang.org/x/text v0.38.0
 )
 
@@ -15,8 +15,7 @@ require (
 	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/andybalholm/brotli v1.2.2 // indirect
 	github.com/gofiber/schema v1.8.0 // indirect
-	github.com/gofiber/template/v2 v2.0.0 // indirect
-	github.com/gofiber/utils v1.1.0 // indirect
+	github.com/gofiber/template/v2 v2.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.19.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
@@ -27,5 +26,5 @@ require (
 	github.com/valyala/fasthttp v1.72.0 // indirect
 	golang.org/x/crypto v0.53.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 )
