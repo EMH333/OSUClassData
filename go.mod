@@ -1,6 +1,6 @@
 module ethohampton.com/OSUClassData
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/enriquebris/goconcurrentqueue v0.7.0
@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.4.0
 	github.com/gofiber/template/html/v3 v3.0.0
 	github.com/gofiber/utils/v2 v2.1.1
-	golang.org/x/text v0.38.0
+	golang.org/x/text v0.42.0
 )
 
 require (
